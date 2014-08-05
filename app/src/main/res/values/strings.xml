@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">TeachersChores</string>
+    <string name="title_seatplan">자리배치도</string>
+    <string name="title_eachrole">1인 1역</string>
+    <string name="title_classtime">수업시수관리</string>
+    <string name="title_fillinfo">기본정보 입력</string>
+    <string name="title_setting">설 정</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_done">저장</string>
+	<string name="action_cancel">취소</string>
+	<string name="action_deleteAll">전체 삭제</string>
+    <string name="action_example">Example action</string>
+    <string name="action_settings">Settings</string>
+    
+    <string name="section">section</string>
+    <string name="textview">textview</string>
+    <string name="icon">icon</string>
+    <string name="done">done</string>
+    <string name="cancel">cancel</string>
+	<string name="deleteAll">deleteAll</string>
+	
+	<string name="edittext_name_hint">이름</string>
+	
+	<string-array name="gender_string">
+	    <item>남</item>
+	    <item>여</item>
+	</string-array>
+
+</resources>
