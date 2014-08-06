@@ -36,15 +36,21 @@
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
             android:inputType="number"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            android:textAlignment="center"
+            android:text="1"
+            android:imeOptions="actionNext"
+            android:nextFocusDown="@+id/edittext_name"/>
         
         <EditText
-            android:id="@+id/edittext_name"
+            android:id="@id/edittext_name"
             android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
-            android:hint="@string/edittext_name_hint"
-            android:textSize="18sp" />
+            android:hint="@string/hint_edittext_name"
+            android:textSize="18sp"
+            android:inputType="textPersonName"
+            android:maxLength="6"/>
         
         <ToggleButton
             android:id="@+id/tglbtn_boygirl"

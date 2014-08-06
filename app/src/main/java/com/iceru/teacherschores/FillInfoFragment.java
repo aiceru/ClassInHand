@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.text.InputType;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,6 +18,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -44,8 +46,27 @@ public class FillInfoFragment extends Fragment {
 	private studentListAdapter	mStudentListAdapter;
 	//<-------------------------------
 
-
 	private static final String ARG_SECTION_NUMBER = "section_number";
+
+	View.OnClickListener btnAddPersonListener = new View.OnClickListener() {
+
+		@Override
+		public void onClick(View v) {
+			// TODO Auto-generated method stub
+			add_student();
+		}
+	};
+
+	TextView.OnEditorActionListener editTextNameEditorActionListener = new TextView.OnEditorActionListener() {
+		@Override
+		public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+			if(actionId == EditorInfo.IME_ACTION_DONE) {
+				add_student();
+				return true;
+			}
+			return false;
+		}
+	};
 
 
 	//------------------> 리스트뷰 추가중
@@ -116,15 +137,17 @@ public class FillInfoFragment extends Fragment {
 	 * Returns a new instance of this fragment for the given section
 	 * number.
 	 */
-	public static FillInfoFragment newInstance(int sectionNumber) {
+	public static FillInfoFragment newInstance() {
 		FillInfoFragment fragment = new FillInfoFragment();
-		Bundle args = new Bundle();
-		args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-		fragment.setArguments(args);
 		return fragment;
 	}
 
 	public FillInfoFragment() {
+	}
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 	}
 
 	@Override
@@ -139,42 +162,49 @@ public class FillInfoFragment extends Fragment {
 		this.rootView = rootView;
 
 		mStudentListView = (ListView)rootView.findViewById(R.id.listview_students);
-		
-		//------->
-		// TODO 이거... onCreate 로 옮겨야 하나 아님 생성자로...? fragment lifecycle 공부하자 ㅠㅠ
-		
-		
+
 		mStudents = new ArrayList<Student>();
 		mStudentListAdapter = new studentListAdapter(this.getActivity(), mStudents);
 		mStudentListView.setAdapter(mStudentListAdapter);
-		
-		SwipeDismissListViewTouchListener touchListener =
-                new SwipeDismissListViewTouchListener(
-                        mStudentListView,
-                        new SwipeDismissListViewTouchListener.DismissCallbacks() {
-                            @Override
-                            public boolean canDismiss(int position) {
-                                return true;
-                            }
 
-                            @Override
-                            public void onDismiss(ListView listView, int[] reverseSortedPositions) {
-                                for (int position : reverseSortedPositions) {
-                                    mStudentListAdapter.remove(mStudentListAdapter.getItem(position));
-                                }
-                                mStudentListAdapter.notifyDataSetChanged();
-                            }
-                        });
+		SwipeDismissListViewTouchListener touchListener =
+				new SwipeDismissListViewTouchListener(
+						mStudentListView,
+						new SwipeDismissListViewTouchListener.DismissCallbacks() {
+							@Override
+							public boolean canDismiss(int position) {
+								return true;
+							}
+
+							@Override
+							public void onDismiss(ListView listView, int[] reverseSortedPositions) {
+								for (int position : reverseSortedPositions) {
+									mStudentListAdapter.remove(mStudentListAdapter.getItem(position));
+								}
+								mStudentListAdapter.notifyDataSetChanged();
+							}
+						});
 		mStudentListView.setOnTouchListener(touchListener);
-        // Setting this scroll listener is required to ensure that during ListView scrolling,
-        // we don't look for swipes.
+		// Setting this scroll listener is required to ensure that during ListView scrolling,
+		// we don't look for swipes.
 		mStudentListView.setOnScrollListener(touchListener.makeScrollListener());
-		
-		
-		//<-------
 
 		mEditTextNum = (EditText)rootView.findViewById(R.id.edittext_num);
+		mEditTextNum.setOnEditorActionListener(new EditText.OnEditorActionListener() {
+			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+				// TODO Auto-generated method stub
+				if (actionId == EditorInfo.IME_ACTION_NEXT) {
+					mEditTextName.requestFocus();
+
+					return false;
+				}
+				return false;
+			}
+		});
+
 		mEditTextName = (EditText)rootView.findViewById(R.id.edittext_name);
+		mEditTextName.setOnEditorActionListener(editTextNameEditorActionListener);
+
 		mTglbtnBoygirl = (ToggleButton)rootView.findViewById(R.id.tglbtn_boygirl);
 
 		mBtnAddPerson = (Button)rootView.findViewById(R.id.btn_addperson);
@@ -208,29 +238,36 @@ public class FillInfoFragment extends Fragment {
 		}
 	}
 
-	View.OnClickListener btnAddPersonListener = new View.OnClickListener() {
+	private void add_student() {
+		String curNumString = mEditTextNum.getText().toString();
+		String curName = mEditTextName.getText().toString();
 
-		@Override
-		public void onClick(View v) {
-			// TODO Auto-generated method stub    			
-			int curNum = Integer.valueOf(mEditTextNum.getText().toString());
-			String curName = mEditTextName.getText().toString();
-			
-			// TODO curName check!! NULL 이면 에러처리할것!!
-			
-			// 학생 추가, 리스트에 반영.
-			Student student = new Student(curNum, curName, mTglbtnBoygirl.isChecked()? true : false);
-			mStudentListAdapter.add(student);
-			mStudentListAdapter.notifyDataSetChanged();
-			mStudentListView.setSelection(mStudentListAdapter.getCount()-1);
-			
-			// TODO student -> 임시 Data로 저장할것...
-			// *DB에 저장은 actionbar에서 확인 눌렀을 때 한다!!
-			
-			// 다음 입력란 마련하기...
-			mEditTextNum.setText(String.valueOf(curNum+1));
-			mEditTextName.setText(null);
+		if(curNumString.isEmpty()) {
+			Toast.makeText(getActivity(), R.string.warning_edittext_num_is_null, Toast.LENGTH_SHORT).show();
+			return;
 		}
-	};
+
+		if(curName.isEmpty()) {
+			Toast.makeText(getActivity(), R.string.warning_edittext_name_is_null, Toast.LENGTH_SHORT).show();
+			return;
+		}
+
+		int curNum = Integer.valueOf(mEditTextNum.getText().toString());
+
+		// TODO 번호 중복검사!!
+
+		// 학생 추가, 리스트에 반영.
+		Student student = new Student(curNum, curName, mTglbtnBoygirl.isChecked()? true : false);
+		mStudentListAdapter.add(student);
+		mStudentListAdapter.notifyDataSetChanged();
+		mStudentListView.setSelection(mStudentListAdapter.getCount()-1);
+
+		// TODO student -> 임시 Data로 저장할것...
+		// *DB에 저장은 actionbar에서 확인 눌렀을 때 한다!!
+
+		// 다음 입력란 마련하기...
+		mEditTextNum.setText(String.valueOf(curNum+1));
+		mEditTextName.setText(null);
+	}
 
 }

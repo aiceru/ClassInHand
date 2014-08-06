@@ -15,6 +15,7 @@ public class MainActivity extends Activity
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
     private NavigationDrawerFragment mNavigationDrawerFragment;
+	private FillInfoFragment mFillInfoFragment;
 
     /**
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
@@ -28,6 +29,7 @@ public class MainActivity extends Activity
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getFragmentManager().findFragmentById(R.id.navigation_drawer);
+	    mFillInfoFragment = FillInfoFragment.newInstance();
         mTitle = getTitle();
 
         // Set up the drawer.
@@ -42,7 +44,7 @@ public class MainActivity extends Activity
         FragmentManager fragmentManager = getFragmentManager();
         switch(position+1) {
         case 5:
-        	fragmentManager.beginTransaction().replace(R.id.container, FillInfoFragment.newInstance(position+1)).commit();
+        	fragmentManager.beginTransaction().replace(R.id.container, mFillInfoFragment).commit();
         	break;
         default:
         	break;
