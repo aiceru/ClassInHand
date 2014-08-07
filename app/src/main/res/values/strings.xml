@@ -26,6 +26,11 @@
 
     <string name="warning_edittext_name_is_null">이름을 입력하세요</string>
     <string name="warning_edittext_num_is_null">번호를 입력하세요</string>
+
+    <string name="sharedpref_name_list">com.iceru.teacherschores.PREF_KEY_STUDENT_LIST</string>
+    <string name="sharedpref_boygirl_list">com.iceru.teacherschores.PREF_KEY_BOYGIRL_LIST</string>
+    <string name="sharedpref_class_info">com.iceru.teacherschores.PREF_KEY_CLASS_INFO</string>
+    <string name="sharedpref_keystring_no_of_students">No. of Students</string>
 	
 	<string-array name="gender_string">
 	    <item>남</item>

@@ -1,31 +1,32 @@
 package com.iceru.teacherschores;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeSet;
 
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.text.InputType;
-import android.view.GestureDetector.SimpleOnGestureListener;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -42,9 +43,13 @@ public class FillInfoFragment extends Fragment {
 	private View				rootView;
 	//------------------> 리스트뷰 추가중
 	private ListView			mStudentListView;
-	private ArrayList<Student>	mStudents;
+	private TreeSet<Student>    mStudents;
+	private ArrayList<Student>	mStudents11;
 	private studentListAdapter	mStudentListAdapter;
 	//<-------------------------------
+
+	private SharedPreferences mSharedPrefNameList;
+	private SharedPreferences mSharedPrefBoygirlList;
 
 	private static final String ARG_SECTION_NUMBER = "section_number";
 
@@ -100,16 +105,43 @@ public class FillInfoFragment extends Fragment {
 		}
 	}
 
-	private class studentListAdapter extends ArrayAdapter<Student> {
+	private class studentListAdapter extends BaseAdapter {
 		private LayoutInflater mInflater;
+		private Context mContext;
 
-		public studentListAdapter(Context context, ArrayList<Student> object) {
-			super(context, 0, object);
+		private TreeSet<Student> mItems = new TreeSet<Student>(new Comparator<Student>() {
+			@Override
+			public int compare(Student lhs, Student rhs) {
+				return lhs.num - rhs.num;
+			}
+		});
+
+		public studentListAdapter(Context context, TreeSet<Student> object) {
+			mContext = context;
+			mItems = object;
 			mInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		}
 
+		public int getCount() {
+			return mItems.size();
+		}
+
+		public Object getItem(int position) {
+			Student st = null;
+			Iterator<Student> i = mItems.iterator();
+			while(i.hasNext() && position >= 0) {
+				position--;
+				st = i.next();
+			}
+			return st;
+		}
+
+		public long getItemId(int position) {
+			return position;
+		}
+
 		public View getView(int position, View v, ViewGroup parent) {
-			View view = null;
+			View view;
 			if(v == null) {
 				view = mInflater.inflate(R.layout.student_info, null);
 			}
@@ -117,7 +149,7 @@ public class FillInfoFragment extends Fragment {
 				view = v;
 			}
 
-			final Student student = this.getItem(position);
+			final Student student = (Student)this.getItem(position);
 
 			if(student != null) {
 				TextView tvNum = (TextView)view.findViewById(R.id.textview_num);
@@ -148,6 +180,27 @@ public class FillInfoFragment extends Fragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		//mStudents = new ArrayList<Student>();
+		mStudents = new TreeSet<Student>(new Comparator<Student>() {
+			@Override
+			public int compare(Student lhs, Student rhs) {
+				return lhs.num - rhs.num;
+			}
+		});
+		mStudentListAdapter = new studentListAdapter(this.getActivity(), mStudents);
+
+		mSharedPrefNameList = getActivity().getSharedPreferences(getString(R.string.sharedpref_name_list), Context.MODE_PRIVATE);
+		mSharedPrefBoygirlList = getActivity().getSharedPreferences(getString(R.string.sharedpref_boygirl_list), Context.MODE_PRIVATE);
+
+		Map<String, ?> allEntries = mSharedPrefNameList.getAll();
+		for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
+			Student student = new Student(Integer.valueOf(entry.getKey()),
+					entry.getValue().toString(),
+					mSharedPrefBoygirlList.getBoolean(entry.getKey(), true));
+			mStudents.add(student);
+			//mStudentListAdapter.add(student);
+		}
 	}
 
 	@Override
@@ -162,9 +215,6 @@ public class FillInfoFragment extends Fragment {
 		this.rootView = rootView;
 
 		mStudentListView = (ListView)rootView.findViewById(R.id.listview_students);
-
-		mStudents = new ArrayList<Student>();
-		mStudentListAdapter = new studentListAdapter(this.getActivity(), mStudents);
 		mStudentListView.setAdapter(mStudentListAdapter);
 
 		SwipeDismissListViewTouchListener touchListener =
@@ -179,7 +229,8 @@ public class FillInfoFragment extends Fragment {
 							@Override
 							public void onDismiss(ListView listView, int[] reverseSortedPositions) {
 								for (int position : reverseSortedPositions) {
-									mStudentListAdapter.remove(mStudentListAdapter.getItem(position));
+									mStudents.remove(mStudentListAdapter.getItem(position));
+									//mStudentListAdapter.remove(mStudentListAdapter.getItem(position));
 								}
 								mStudentListAdapter.notifyDataSetChanged();
 							}
@@ -258,12 +309,20 @@ public class FillInfoFragment extends Fragment {
 
 		// 학생 추가, 리스트에 반영.
 		Student student = new Student(curNum, curName, mTglbtnBoygirl.isChecked()? true : false);
-		mStudentListAdapter.add(student);
+		mStudents.add(student);
+		//mStudentListAdapter.add(student);
 		mStudentListAdapter.notifyDataSetChanged();
 		mStudentListView.setSelection(mStudentListAdapter.getCount()-1);
 
 		// TODO student -> 임시 Data로 저장할것...
-		// *DB에 저장은 actionbar에서 확인 눌렀을 때 한다!!
+		SharedPreferences.Editor editor;
+		editor = mSharedPrefNameList.edit();
+		editor.putString(curNumString, curName);
+		editor.commit();
+		editor = mSharedPrefBoygirlList.edit();
+		editor.putBoolean(curNumString, student.isBoy());
+		editor.commit();
+		// TODO DB에 저장은 actionbar에서 확인 눌렀을 때 한다!!
 
 		// 다음 입력란 마련하기...
 		mEditTextNum.setText(String.valueOf(curNum+1));
