@@ -12,7 +12,7 @@
     -->
 
     <FrameLayout
-        android:id="@+id/container"
+        android:id="@+id/main_contents"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
@@ -33,6 +33,7 @@
         android:name="com.iceru.teacherschores.NavigationDrawerFragment"
         android:layout_width="@dimen/navigation_drawer_width"
         android:layout_height="match_parent"
-        android:layout_gravity="start" />
+        android:layout_gravity="start"
+        tools:layout="@layout/fragment_navigation_drawer"/>
 
 </android.support.v4.widget.DrawerLayout>

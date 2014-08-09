@@ -4,9 +4,6 @@ import android.app.Activity;
 import android.app.FragmentManager;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
-import android.view.Gravity;
-import android.view.View;
-import android.widget.Toast;
 
 public class MainActivity extends Activity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -15,7 +12,8 @@ public class MainActivity extends Activity
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
     private NavigationDrawerFragment mNavigationDrawerFragment;
-	private FillInfoFragment mFillInfoFragment;
+	private FillInfoPagerFragment mFillInfoPagerFragment;
+	//private FillStudentInfoFragment mFillInfoFragment;
 
     /**
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
@@ -29,7 +27,8 @@ public class MainActivity extends Activity
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getFragmentManager().findFragmentById(R.id.navigation_drawer);
-	    mFillInfoFragment = FillInfoFragment.newInstance();
+	//    mFillInfoFragment = FillStudentInfoFragment.newInstance();
+	    mFillInfoPagerFragment = new FillInfoPagerFragment();
         mTitle = getTitle();
 
         // Set up the drawer.
@@ -44,7 +43,7 @@ public class MainActivity extends Activity
         FragmentManager fragmentManager = getFragmentManager();
         switch(position+1) {
         case 5:
-        	fragmentManager.beginTransaction().replace(R.id.container, mFillInfoFragment).commit();
+        	fragmentManager.beginTransaction().replace(R.id.main_contents, mFillInfoPagerFragment).commit();
         	break;
         default:
         	break;
