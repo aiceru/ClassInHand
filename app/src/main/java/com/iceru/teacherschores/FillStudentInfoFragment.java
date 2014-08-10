@@ -190,6 +190,26 @@ public class FillStudentInfoFragment extends Fragment {
 					mSharedPrefBoygirlList.getBoolean(entry.getKey(), true));
 			mStudents.add(student);
 		}
+
+		ActionBar actionBar = getActionBar();
+		ActionBar.TabListener tabListener = new ActionBar.TabListener() {
+			public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
+				// show the given tab
+			}
+
+			public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
+				// hide the given tab
+			}
+
+			public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
+				// probably ignore this event
+			}
+		};
+
+		actionBar.addTab(actionBar.newTab().
+				setText(R.string.tabtitle_studentinfo).setTabListener(tabListener));
+		actionBar.addTab(actionBar.newTab().
+				setText(R.string.tabtitle_roleinfo).setTabListener(tabListener));
 	}
 
 	@Override
