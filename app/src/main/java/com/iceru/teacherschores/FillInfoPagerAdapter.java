@@ -2,26 +2,30 @@ package com.iceru.teacherschores;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Context;
 import android.support.v13.app.FragmentPagerAdapter;
 
 /**
  * Created by iceru on 14. 8. 9.
  */
 public class FillInfoPagerAdapter extends FragmentPagerAdapter{
-	private FillStudentInfoFragment mFillStudentInfoFragment;
+	private FillStudentInfoFragment mFillStudentInfoFragment, temp;
+	private Context mContext;
 
-	public FillInfoPagerAdapter(FragmentManager fm) {
+	public FillInfoPagerAdapter(Context context, FragmentManager fm) {
 		super(fm);
+		mContext = context;
 		mFillStudentInfoFragment = FillStudentInfoFragment.newInstance();
+		temp = FillStudentInfoFragment.newInstance();
 	}
 
 	@Override
 	public Fragment getItem(int i) {
 		switch(i) {
-			case 1:
+			case 0:
 				return mFillStudentInfoFragment;
-			case 2:
-				break;
+			case 1:
+				return temp;
 		}
 		return null;
 	}
@@ -29,5 +33,16 @@ public class FillInfoPagerAdapter extends FragmentPagerAdapter{
 	@Override
 	public int getCount() {
 		return 2;
+	}
+
+	@Override
+	public CharSequence getPageTitle(int position) {
+		switch(position) {
+			case 0:
+				return mContext.getString(R.string.tabtitle_studentinfo);
+			case 1:
+				return mContext.getString(R.string.tabtitle_roleinfo);
+		}
+		return null;
 	}
 }

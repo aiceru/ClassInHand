@@ -5,17 +5,13 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeSet;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
@@ -190,26 +186,6 @@ public class FillStudentInfoFragment extends Fragment {
 					mSharedPrefBoygirlList.getBoolean(entry.getKey(), true));
 			mStudents.add(student);
 		}
-
-		ActionBar actionBar = getActionBar();
-		ActionBar.TabListener tabListener = new ActionBar.TabListener() {
-			public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
-				// show the given tab
-			}
-
-			public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
-				// hide the given tab
-			}
-
-			public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
-				// probably ignore this event
-			}
-		};
-
-		actionBar.addTab(actionBar.newTab().
-				setText(R.string.tabtitle_studentinfo).setTabListener(tabListener));
-		actionBar.addTab(actionBar.newTab().
-				setText(R.string.tabtitle_roleinfo).setTabListener(tabListener));
 	}
 
 	@Override
@@ -284,7 +260,7 @@ public class FillStudentInfoFragment extends Fragment {
 		return rootView;
 	}
 
-	@Override
+/*	@Override
 	public void onActivityCreated (Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		// Indicate that this fragment would like to influence the set of actions in the action bar.
@@ -307,7 +283,7 @@ public class FillStudentInfoFragment extends Fragment {
 			inflater.inflate(R.menu.menu_fillinfo, menu);
 			showActionBar();
 		}
-	}
+	}*/
 
 	private void add_student() {
 		String curNumString = mEditTextNum.getText().toString();
