@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/linearlayout_fillinfo"
+    android:id="@+id/linearlayout_fillstudentinfo"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_horizontal"
@@ -11,7 +11,15 @@
     android:paddingRight="70dp"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.iceru.teacherschores.MainActivty" >
-    
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:layout_marginBottom="8dp"
+        android:id="@+id/textview_totalstudents"
+        android:textSize="18sp"/>
+
     <ListView
         android:id="@+id/listview_students"
         android:layout_width="match_parent"
@@ -26,7 +34,7 @@
     </ListView>
     
     <LinearLayout
-        android:id="@+id/linearlayout_inputform"
+        android:id="@+id/linearlayout_studentinputform"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" >
         

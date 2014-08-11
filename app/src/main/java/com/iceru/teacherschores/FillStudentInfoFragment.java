@@ -34,6 +34,7 @@ public class FillStudentInfoFragment extends Fragment {
 	private Button				mBtnAddPerson;
 	private View				rootView;
 	private ListView			mStudentListView;
+	private TextView            mTotalTextView;
 	private TreeSet<Student>    mStudents;
 	private studentListAdapter	mStudentListAdapter;
 
@@ -41,6 +42,9 @@ public class FillStudentInfoFragment extends Fragment {
 	private SharedPreferences mSharedPrefBoygirlList;
 
 	private static final String ARG_SECTION_NUMBER = "section_number";
+
+	private int num_boys = 0;
+	private int num_girls = 0;
 
 	View.OnClickListener btnAddPersonListener = new View.OnClickListener() {
 
@@ -167,7 +171,6 @@ public class FillStudentInfoFragment extends Fragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		//mStudents = new ArrayList<Student>();
 		mStudents = new TreeSet<Student>(new Comparator<Student>() {
 			@Override
 			public int compare(Student lhs, Student rhs) {
@@ -185,6 +188,9 @@ public class FillStudentInfoFragment extends Fragment {
 					entry.getValue().toString(),
 					mSharedPrefBoygirlList.getBoolean(entry.getKey(), true));
 			mStudents.add(student);
+
+			if(student.isBoy()) num_boys++;
+			else num_girls++;
 		}
 	}
 
@@ -223,6 +229,9 @@ public class FillStudentInfoFragment extends Fragment {
 										editor = mSharedPrefBoygirlList.edit();
 										editor.remove(String.valueOf(removingStudent.getNum()));
 										editor.apply();
+										if(removingStudent.isBoy()) num_boys--;
+										else num_girls--;
+										setTotalText();
 									}
 									else {
 										// remove fails... won't reach here
@@ -256,6 +265,9 @@ public class FillStudentInfoFragment extends Fragment {
 
 		mBtnAddPerson = (Button)rootView.findViewById(R.id.btn_addperson);
 		mBtnAddPerson.setOnClickListener(btnAddPersonListener);
+
+		mTotalTextView = (TextView)rootView.findViewById(R.id.textview_totalstudents);
+		setTotalText();
 		
 		return rootView;
 	}
@@ -322,10 +334,19 @@ public class FillStudentInfoFragment extends Fragment {
 			// 다음 입력란 마련하기...
 			mEditTextNum.setText(String.valueOf(curNum + 1));
 			mEditTextName.setText(null);
+
+			if(student.isBoy()) num_boys++;
+			else num_girls++;
+			setTotalText();
 		}
 		else {
 			Toast.makeText(getActivity(), getString(R.string.warning_existing_num), Toast.LENGTH_SHORT).show();
 		}
+	}
+
+	private void setTotalText() {
+		mTotalTextView.setText("남자 : " + String.valueOf(num_boys) + "명, 여자 : " + String.valueOf(num_girls)
+				+ "명, 합계 : " + String.valueOf(num_boys+num_girls) + "명");
 	}
 
 }

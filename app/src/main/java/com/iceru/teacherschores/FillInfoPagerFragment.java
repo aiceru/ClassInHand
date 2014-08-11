@@ -50,10 +50,21 @@ public class FillInfoPagerFragment extends Fragment {
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		ActionBar actionBar = getActionBar();
+
 		mViewPager = (ViewPager)inflater.inflate(R.layout.fragment_fillinfopager, container, false);
 		mViewPager.setAdapter(new FillInfoPagerAdapter(getActivity(), getChildFragmentManager()));
 
-		ActionBar actionBar = getActionBar();
+		mViewPager.setOnPageChangeListener(
+				new ViewPager.SimpleOnPageChangeListener() {
+					@Override
+					public void onPageSelected(int position) {
+						// When swiping between pages, select the
+						// corresponding tab.
+						getActionBar().setSelectedNavigationItem(position);
+					}
+				});
+
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
 		//if(actionBar.getTabCount() == 0) {

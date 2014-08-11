@@ -23,6 +23,7 @@
 	<string name="deleteAll">deleteAll</string>
 	
 	<string name="hint_edittext_name">이름</string>
+    <string name="hint_edittext_role">역할</string>
 
     <string name="warning_edittext_name_is_null">이름을 입력하세요</string>
     <string name="warning_edittext_num_is_null">번호를 입력하세요</string>
@@ -36,9 +37,13 @@
     <string name="tabtitle_studentinfo">학생정보</string>
     <string name="tabtitle_roleinfo">역할정보</string>
 	
-	<string-array name="gender_string">
-	    <item>남</item>
-	    <item>여</item>
+	<string-array name="roleconsume_array">
+	    <item>1</item>
+	    <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
 	</string-array>
 
 </resources>

@@ -9,14 +9,15 @@ import android.support.v13.app.FragmentPagerAdapter;
  * Created by iceru on 14. 8. 9.
  */
 public class FillInfoPagerAdapter extends FragmentPagerAdapter{
-	private FillStudentInfoFragment mFillStudentInfoFragment, temp;
+	private FillStudentInfoFragment mFillStudentInfoFragment;
+	private FillRoleInfoFragment mFillRoleInfoFragment;
 	private Context mContext;
 
 	public FillInfoPagerAdapter(Context context, FragmentManager fm) {
 		super(fm);
 		mContext = context;
 		mFillStudentInfoFragment = FillStudentInfoFragment.newInstance();
-		temp = FillStudentInfoFragment.newInstance();
+		mFillRoleInfoFragment = FillRoleInfoFragment.newInstance();
 	}
 
 	@Override
@@ -25,7 +26,7 @@ public class FillInfoPagerAdapter extends FragmentPagerAdapter{
 			case 0:
 				return mFillStudentInfoFragment;
 			case 1:
-				return temp;
+				return mFillRoleInfoFragment;
 		}
 		return null;
 	}
