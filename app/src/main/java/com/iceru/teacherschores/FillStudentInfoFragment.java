@@ -38,8 +38,8 @@ public class FillStudentInfoFragment extends Fragment {
 	private TreeSet<Student>    mStudents;
 	private studentListAdapter	mStudentListAdapter;
 
-	private SharedPreferences mSharedPrefNameList;
-	private SharedPreferences mSharedPrefBoygirlList;
+	private SharedPreferences mShPrefStudentNameList;
+	private SharedPreferences mShPrefStudentBoygirlList;
 
 	private static final String ARG_SECTION_NUMBER = "section_number";
 
@@ -179,14 +179,14 @@ public class FillStudentInfoFragment extends Fragment {
 		});
 		mStudentListAdapter = new studentListAdapter(this.getActivity(), mStudents);
 
-		mSharedPrefNameList = getActivity().getSharedPreferences(getString(R.string.sharedpref_name_list), Context.MODE_PRIVATE);
-		mSharedPrefBoygirlList = getActivity().getSharedPreferences(getString(R.string.sharedpref_boygirl_list), Context.MODE_PRIVATE);
+		mShPrefStudentNameList = getActivity().getSharedPreferences(getString(R.string.sharedpref_student_name_list), Context.MODE_PRIVATE);
+		mShPrefStudentBoygirlList = getActivity().getSharedPreferences(getString(R.string.sharedpref_boygirl_list), Context.MODE_PRIVATE);
 
-		Map<String, ?> allEntries = mSharedPrefNameList.getAll();
+		Map<String, ?> allEntries = mShPrefStudentNameList.getAll();
 		for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
 			Student student = new Student(Integer.valueOf(entry.getKey()),
 					entry.getValue().toString(),
-					mSharedPrefBoygirlList.getBoolean(entry.getKey(), true));
+					mShPrefStudentBoygirlList.getBoolean(entry.getKey(), true));
 			mStudents.add(student);
 
 			if(student.isBoy()) num_boys++;
@@ -223,10 +223,10 @@ public class FillStudentInfoFragment extends Fragment {
 									Student removingStudent = (Student)mStudentListAdapter.getItem(position);
 									if(mStudents.remove(removingStudent)) {
 										SharedPreferences.Editor editor;
-										editor = mSharedPrefNameList.edit();
+										editor = mShPrefStudentNameList.edit();
 										editor.remove(String.valueOf(removingStudent.getNum()));
 										editor.apply();
-										editor = mSharedPrefBoygirlList.edit();
+										editor = mShPrefStudentBoygirlList.edit();
 										editor.remove(String.valueOf(removingStudent.getNum()));
 										editor.apply();
 										if(removingStudent.isBoy()) num_boys--;
@@ -320,10 +320,10 @@ public class FillStudentInfoFragment extends Fragment {
 		if(mStudents.add(student)) {
 			// TODO student -> 임시 Data로 저장할것...
 			SharedPreferences.Editor editor;
-			editor = mSharedPrefNameList.edit();
+			editor = mShPrefStudentNameList.edit();
 			editor.putString(String.valueOf(student.getNum()), student.getName());
 			editor.apply();
-			editor = mSharedPrefBoygirlList.edit();
+			editor = mShPrefStudentBoygirlList.edit();
 			editor.putBoolean(String.valueOf(student.getNum()), student.isBoy());
 			editor.apply();
 			// TODO DB에 저장은 actionbar에서 확인 눌렀을 때 한다!!
@@ -345,8 +345,9 @@ public class FillStudentInfoFragment extends Fragment {
 	}
 
 	private void setTotalText() {
-		mTotalTextView.setText("남자 : " + String.valueOf(num_boys) + "명, 여자 : " + String.valueOf(num_girls)
-				+ "명, 합계 : " + String.valueOf(num_boys+num_girls) + "명");
+		int sum = num_boys + num_girls;
+		mTotalTextView.setText("남자 " + num_boys + "명, 여자 " + num_girls
+				+ "명, 합계 " + sum + "명");
 	}
 
 }
