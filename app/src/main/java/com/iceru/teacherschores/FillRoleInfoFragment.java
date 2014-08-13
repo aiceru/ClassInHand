@@ -24,6 +24,7 @@ import java.util.Map;
  * Created by iceru on 14. 8. 11.
  */
 public class FillRoleInfoFragment extends Fragment{
+	private MainActivity    mainActivity;
 	private ArrayList<Role> mRoles;
 	private RoleListAdapter mRoleListAdapter;
 	private int mTotalConsume = 0;
@@ -32,32 +33,6 @@ public class FillRoleInfoFragment extends Fragment{
 	private Spinner mSpinnerConsume;
 	private EditText mEditTextName;
 	private Button mBtnAddRole;
-
-	private SharedPreferences mShPrefRoleList;
-
-	private class Role {
-		private int id;
-		private String name;
-		private int consume;
-
-		public Role(int id, String name, int consume) {
-			this.id = id;
-			this.name = name;
-			this.consume = consume;
-		}
-
-		public int getId() {
-			return id;
-		}
-
-		public String getName() {
-			return name;
-		}
-
-		public int getConsume() {
-			return consume;
-		}
-	}
 
 	private class RoleListAdapter extends ArrayAdapter<Role> {
 		private ArrayList<Role> items;
@@ -93,16 +68,10 @@ public class FillRoleInfoFragment extends Fragment{
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		mRoles = new ArrayList<Role>();
-		mRoleListAdapter = new RoleListAdapter(getActivity(), android.R.layout.simple_list_item_1, mRoles);
 
-		mShPrefRoleList = getActivity().getSharedPreferences(getString(R.string.sharedpref_role_list), Context.MODE_PRIVATE);
-		Map<String, ?> allEntries = mShPrefRoleList.getAll();
-		for(Map.Entry<String, ?> entry : allEntries.entrySet()) {
-			Role aRole = new Role(0, entry.getKey().toString(), Integer.valueOf(entry.getValue().toString()));
-			mRoleListAdapter.add(aRole);
-			mTotalConsume += aRole.getConsume();
-		}
+		mainActivity = (MainActivity)getActivity();
+		mRoles = mainActivity.getmRoles();
+		mRoleListAdapter = new RoleListAdapter(getActivity(), android.R.layout.simple_list_item_1, mRoles);
 	}
 
 	@Override
@@ -156,17 +125,9 @@ public class FillRoleInfoFragment extends Fragment{
 							@Override
 							public void onDismiss(ListView listView, int[] reverseSortedPositions) {
 								for (int position : reverseSortedPositions) {
-									Role removingRole = (Role)mRoleListAdapter.getItem(position);
-									if(mRoles.remove(removingRole)) {
-										SharedPreferences.Editor editor = mShPrefRoleList.edit();
-										editor.remove(String.valueOf(removingRole.getName()));
-										editor.apply();
-										mTotalConsume -= removingRole.getConsume();
-										setTotalText();
-									}
-									else {
-										// remove fails... won't reach here
-									}
+									Role removingRole = mRoleListAdapter.getItem(position);
+									mainActivity.removeRole(removingRole);
+									setTotalText();
 								}
 								mRoleListAdapter.notifyDataSetChanged();
 							}
@@ -188,22 +149,22 @@ public class FillRoleInfoFragment extends Fragment{
 			return;
 		}
 
-		Role aRole = new Role(0, curRoleName, curConsume);
-		mRoles.add(aRole);
-		SharedPreferences.Editor editor = mShPrefRoleList.edit();
-		editor.putInt(aRole.getName(), aRole.getConsume());
-		editor.commit();
+		Role role = new Role(0, curRoleName, curConsume);
+		if(mainActivity.addRole(role)) {
+			mRoleListAdapter.notifyDataSetChanged();
+			mRoleListView.setSelection(mRoleListAdapter.getCount() - 1);
 
-		mTotalConsume += aRole.getConsume();
-		setTotalText();
+			mEditTextName.setText(null);
 
-		mRoleListAdapter.notifyDataSetChanged();
-		mRoleListView.setSelection(mRoleListAdapter.getCount() - 1);
-
-		mEditTextName.setText(null);
+			setTotalText();
+		}
+		else {
+			Toast.makeText(mainActivity, getString(R.string.warning_existing_rolename), Toast.LENGTH_SHORT).show();
+		}
 	}
 
 	private void setTotalText() {
-		mTotalTextView.setText("총원 XX명, 역할인원 " + mTotalConsume + "명");
+		mTotalTextView.setText("총원 XX명, 역할인원 " +
+				mainActivity.getNum_roleConsume() + "명");
 	}
 }

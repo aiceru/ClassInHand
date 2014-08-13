@@ -28,6 +28,7 @@
     <string name="warning_edittext_name_is_null">이름을 입력하세요</string>
     <string name="warning_edittext_num_is_null">번호를 입력하세요</string>
     <string name="warning_existing_num">이미 등록된 출석번호입니다</string>
+    <string name="warning_existing_rolename">이미 등록된 역할입니다</string>
 
     <string name="sharedpref_student_name_list">com.iceru.teacherschores.PREF_KEY_STUDENT_LIST</string>
     <string name="sharedpref_boygirl_list">com.iceru.teacherschores.PREF_KEY_BOYGIRL_LIST</string>

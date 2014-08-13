@@ -1,14 +1,11 @@
 package com.iceru.teacherschores;
 
-import java.util.Comparator;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.TreeSet;
 
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -29,6 +26,7 @@ import android.widget.ToggleButton;
  * Fragment providing for user to input students' information
  */
 public class FillStudentInfoFragment extends Fragment {
+	private MainActivity        mainActivity;
 	private EditText			mEditTextNum, mEditTextName;
 	private ToggleButton		mTglbtnBoygirl;
 	private Button				mBtnAddPerson;
@@ -38,74 +36,10 @@ public class FillStudentInfoFragment extends Fragment {
 	private TreeSet<Student>    mStudents;
 	private studentListAdapter	mStudentListAdapter;
 
-	private SharedPreferences mShPrefStudentNameList;
-	private SharedPreferences mShPrefStudentBoygirlList;
-
-	private static final String ARG_SECTION_NUMBER = "section_number";
-
-	private int num_boys = 0;
-	private int num_girls = 0;
-
-	View.OnClickListener btnAddPersonListener = new View.OnClickListener() {
-
-		@Override
-		public void onClick(View v) {
-			// TODO Auto-generated method stub
-			add_student();
-		}
-	};
-
-	TextView.OnEditorActionListener editTextNameEditorActionListener = new TextView.OnEditorActionListener() {
-		@Override
-		public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-			if(actionId == EditorInfo.IME_ACTION_DONE) {
-				add_student();
-				return true;
-			}
-			return false;
-		}
-	};
-
-	class Student {
-		private int		num;
-		private String	name;
-		private boolean boy;		// true -> boy, false -> girl... T/F has no meaning. :)
-
-		public Student(int num, String name, boolean boy) {
-			this.num = num;
-			this.name = name;
-			this.boy = boy;
-		}
-		/**
-		 * @return the num
-		 */
-		public int getNum() {
-			return num;
-		}
-		/**
-		 * @return the name
-		 */
-		public String getName() {
-			return name;
-		}
-		/**
-		 * @return the gender
-		 */
-		public boolean isBoy() {
-			return boy;
-		}
-	}
-
 	private class studentListAdapter extends BaseAdapter {
 		private LayoutInflater mInflater;
 		private Context mContext;
-
-		private TreeSet<Student> mItems = new TreeSet<Student>(new Comparator<Student>() {
-			@Override
-			public int compare(Student lhs, Student rhs) {
-				return lhs.num - rhs.num;
-			}
-		});
+		private TreeSet<Student> mItems;
 
 		public studentListAdapter(Context context, TreeSet<Student> object) {
 			mContext = context;
@@ -171,27 +105,9 @@ public class FillStudentInfoFragment extends Fragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		mStudents = new TreeSet<Student>(new Comparator<Student>() {
-			@Override
-			public int compare(Student lhs, Student rhs) {
-				return lhs.num - rhs.num;
-			}
-		});
+		mainActivity = (MainActivity)getActivity();
+		mStudents = mainActivity.getmStudents();
 		mStudentListAdapter = new studentListAdapter(this.getActivity(), mStudents);
-
-		mShPrefStudentNameList = getActivity().getSharedPreferences(getString(R.string.sharedpref_student_name_list), Context.MODE_PRIVATE);
-		mShPrefStudentBoygirlList = getActivity().getSharedPreferences(getString(R.string.sharedpref_boygirl_list), Context.MODE_PRIVATE);
-
-		Map<String, ?> allEntries = mShPrefStudentNameList.getAll();
-		for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
-			Student student = new Student(Integer.valueOf(entry.getKey()),
-					entry.getValue().toString(),
-					mShPrefStudentBoygirlList.getBoolean(entry.getKey(), true));
-			mStudents.add(student);
-
-			if(student.isBoy()) num_boys++;
-			else num_girls++;
-		}
 	}
 
 	@Override
@@ -221,21 +137,8 @@ public class FillStudentInfoFragment extends Fragment {
 							public void onDismiss(ListView listView, int[] reverseSortedPositions) {
 								for (int position : reverseSortedPositions) {
 									Student removingStudent = (Student)mStudentListAdapter.getItem(position);
-									if(mStudents.remove(removingStudent)) {
-										SharedPreferences.Editor editor;
-										editor = mShPrefStudentNameList.edit();
-										editor.remove(String.valueOf(removingStudent.getNum()));
-										editor.apply();
-										editor = mShPrefStudentBoygirlList.edit();
-										editor.remove(String.valueOf(removingStudent.getNum()));
-										editor.apply();
-										if(removingStudent.isBoy()) num_boys--;
-										else num_girls--;
-										setTotalText();
-									}
-									else {
-										// remove fails... won't reach here
-									}
+									mainActivity.removeStudent(removingStudent);
+									setTotalText();
 								}
 								mStudentListAdapter.notifyDataSetChanged();
 							}
@@ -259,12 +162,26 @@ public class FillStudentInfoFragment extends Fragment {
 		});
 
 		mEditTextName = (EditText)rootView.findViewById(R.id.edittext_name);
-		mEditTextName.setOnEditorActionListener(editTextNameEditorActionListener);
+		mEditTextName.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+			@Override
+			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+				if(actionId == EditorInfo.IME_ACTION_DONE) {
+					addStudent();
+					return true;
+				}
+				return false;
+			}
+		});
 
 		mTglbtnBoygirl = (ToggleButton)rootView.findViewById(R.id.tglbtn_boygirl);
 
 		mBtnAddPerson = (Button)rootView.findViewById(R.id.btn_addperson);
-		mBtnAddPerson.setOnClickListener(btnAddPersonListener);
+		mBtnAddPerson.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				addStudent();;
+			}
+		});
 
 		mTotalTextView = (TextView)rootView.findViewById(R.id.textview_totalstudents);
 		setTotalText();
@@ -272,32 +189,7 @@ public class FillStudentInfoFragment extends Fragment {
 		return rootView;
 	}
 
-/*	@Override
-	public void onActivityCreated (Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-		// Indicate that this fragment would like to influence the set of actions in the action bar.
-		setHasOptionsMenu(true);
-	}
-
-	private ActionBar getActionBar() {
-		return getActivity().getActionBar();
-	}
-
-	public void showActionBar() {
-		ActionBar actionBar = getActionBar();
-		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-		actionBar.setDisplayShowTitleEnabled(true);
-		actionBar.setTitle(R.string.title_fillinfo);
-	}
-
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		if (!((MainActivity)getActivity()).isDrawerOpen()) {
-			inflater.inflate(R.menu.menu_fillinfo, menu);
-			showActionBar();
-		}
-	}*/
-
-	private void add_student() {
+	private void addStudent() {
 		String curNumString = mEditTextNum.getText().toString();
 		String curName = mEditTextName.getText().toString();
 
@@ -317,17 +209,7 @@ public class FillStudentInfoFragment extends Fragment {
 
 		// 학생 추가, 리스트에 반영.
 		Student student = new Student(curNum, curName, mTglbtnBoygirl.isChecked()? true : false);
-		if(mStudents.add(student)) {
-			// TODO student -> 임시 Data로 저장할것...
-			SharedPreferences.Editor editor;
-			editor = mShPrefStudentNameList.edit();
-			editor.putString(String.valueOf(student.getNum()), student.getName());
-			editor.apply();
-			editor = mShPrefStudentBoygirlList.edit();
-			editor.putBoolean(String.valueOf(student.getNum()), student.isBoy());
-			editor.apply();
-			// TODO DB에 저장은 actionbar에서 확인 눌렀을 때 한다!!
-
+		if(mainActivity.addStudent(student)) {
 			mStudentListAdapter.notifyDataSetChanged();
 			mStudentListView.setSelection(mStudentListAdapter.getCount() - 1);
 
@@ -335,18 +217,17 @@ public class FillStudentInfoFragment extends Fragment {
 			mEditTextNum.setText(String.valueOf(curNum + 1));
 			mEditTextName.setText(null);
 
-			if(student.isBoy()) num_boys++;
-			else num_girls++;
 			setTotalText();
 		}
 		else {
-			Toast.makeText(getActivity(), getString(R.string.warning_existing_num), Toast.LENGTH_SHORT).show();
+			Toast.makeText(mainActivity, getString(R.string.warning_existing_num), Toast.LENGTH_SHORT).show();
 		}
 	}
 
 	private void setTotalText() {
-		int sum = num_boys + num_girls;
-		mTotalTextView.setText("남자 " + num_boys + "명, 여자 " + num_girls
+		int sum = mainActivity.getNum_boys() + mainActivity.getNum_girls();
+		mTotalTextView.setText("남자 " + mainActivity.getNum_boys() + "명, 여자 "
+				+ mainActivity.getNum_girls()
 				+ "명, 합계 " + sum + "명");
 	}
 
