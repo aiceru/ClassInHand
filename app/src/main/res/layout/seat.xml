@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:gravity="center"
+              android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/textview_seated_num"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="1"
+        android:gravity="center"
+        android:textSize="14sp" ></TextView>
+
+    <TextView
+        android:id="@+id/textview_seated_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="김개똥"
+        android:gravity="center"
+        android:textSize="16sp"></TextView>
+
+</LinearLayout>
