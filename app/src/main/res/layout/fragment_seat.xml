@@ -54,7 +54,7 @@
         <GridView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.3"
+            android:layout_weight="0.32"
             android:id="@+id/gridview_sep1"
             android:numColumns="2"
             android:horizontalSpacing="1dp"
@@ -64,12 +64,12 @@
         <Space
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight="0.05"/>
+            android:layout_weight="0.02"/>
 
         <GridView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.3"
+            android:layout_weight="0.32"
             android:id="@+id/gridview_sep2"
             android:numColumns="2"
             android:horizontalSpacing="1dp"
@@ -79,12 +79,12 @@
         <Space
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight="0.05"/>
+            android:layout_weight="0.02"/>
 
         <GridView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.3"
+            android:layout_weight="0.32"
             android:id="@+id/gridview_sep3"
             android:numColumns="2"
             android:horizontalSpacing="1dp"

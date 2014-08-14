@@ -98,9 +98,6 @@ public class FillStudentInfoFragment extends Fragment {
 		return fragment;
 	}
 
-	public FillStudentInfoFragment() {
-	}
-
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

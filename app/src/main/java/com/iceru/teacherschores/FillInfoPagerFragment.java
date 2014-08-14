@@ -15,8 +15,11 @@ import android.view.ViewGroup;
  * Created by iceru on 14. 8. 9.
  */
 public class FillInfoPagerFragment extends Fragment {
-	//private FillInfoPagerAdapter mFillInfoPagerAdapter;
-	private ViewPager mViewPager;
+
+	public static FillInfoPagerFragment newInstance() {
+		FillInfoPagerFragment fragment = new FillInfoPagerFragment();
+		return fragment;
+	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -52,7 +55,7 @@ public class FillInfoPagerFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		ActionBar actionBar = getActionBar();
 
-		mViewPager = (ViewPager)inflater.inflate(R.layout.fragment_fillinfopager, container, false);
+		final ViewPager mViewPager = (ViewPager)inflater.inflate(R.layout.fragment_fillinfopager, container, false);
 		mViewPager.setAdapter(new FillInfoPagerAdapter(getActivity(), getChildFragmentManager()));
 
 		mViewPager.setOnPageChangeListener(
@@ -67,25 +70,24 @@ public class FillInfoPagerFragment extends Fragment {
 
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
-		//if(actionBar.getTabCount() == 0) {
-			ActionBar.TabListener tabListener = new ActionBar.TabListener() {
-				public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
-					// show the given tab
-					mViewPager.setCurrentItem(tab.getPosition());
-				}
+		ActionBar.TabListener tabListener = new ActionBar.TabListener() {
+			public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
+				// show the given tab
+				mViewPager.setCurrentItem(tab.getPosition());
+			}
 
-				public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
-					// hide the given tab
-				}
+			public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
+				// hide the given tab
+			}
 
-				public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
-					// probably ignore this event
-				}
-			};
+			public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
+				// probably ignore this event
+			}
+		};
 
-			actionBar.addTab(actionBar.newTab().setText(R.string.tabtitle_studentinfo).setTabListener(tabListener));
-			actionBar.addTab(actionBar.newTab().setText(R.string.tabtitle_roleinfo).setTabListener(tabListener));
-		//}
+		actionBar.removeAllTabs();
+		actionBar.addTab(actionBar.newTab().setText(R.string.tabtitle_studentinfo).setTabListener(tabListener));
+		actionBar.addTab(actionBar.newTab().setText(R.string.tabtitle_roleinfo).setTabListener(tabListener));
 		return mViewPager;
 	}
 }

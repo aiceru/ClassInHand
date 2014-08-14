@@ -22,6 +22,7 @@
         android:layout_height="wrap_content"
         android:text="김개똥"
         android:gravity="center"
-        android:textSize="16sp"></TextView>
+        android:textSize="16sp"
+        android:singleLine="true"></TextView>
 
 </LinearLayout>
