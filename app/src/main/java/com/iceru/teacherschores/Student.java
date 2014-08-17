@@ -7,11 +7,13 @@ public class Student {
 	private int		num;
 	private String	name;
 	private boolean boy;		// true -> boy, false -> girl... T/F has no meaning. :)
+	private Seat    itsCurrentSeat;
 
 	public Student(int num, String name, boolean boy) {
 		this.num = num;
 		this.name = name;
 		this.boy = boy;
+		this.itsCurrentSeat = null;
 	}
 	/**
 	 * @return the num
@@ -30,5 +32,14 @@ public class Student {
 	 */
 	public boolean isBoy() {
 		return boy;
+	}
+
+	public Seat getItsCurrentSeat() {
+		return itsCurrentSeat;
+	}
+
+	public void setItsCurrentSeat(Seat itsCurrentSeat) {
+		this.itsCurrentSeat = itsCurrentSeat;
+		itsCurrentSeat.setItsStudent(this);
 	}
 }

@@ -12,6 +12,10 @@ public class Seat {
 		this.itsStudent = st;
 	}
 
+	public Seat(int id) {
+		this(id, null);
+	}
+
 	public int getId() {
 		return id;
 	}

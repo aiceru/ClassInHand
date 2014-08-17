@@ -4,14 +4,17 @@ import java.util.Iterator;
 import java.util.TreeSet;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -121,7 +124,7 @@ public class FillStudentInfoFragment extends Fragment {
 		mStudentListView = (ListView)rootView.findViewById(R.id.listview_students);
 		mStudentListView.setAdapter(mStudentListAdapter);
 
-		SwipeDismissListViewTouchListener touchListener =
+		/*SwipeDismissListViewTouchListener touchListener =
 				new SwipeDismissListViewTouchListener(
 						mStudentListView,
 						new SwipeDismissListViewTouchListener.DismissCallbacks() {
@@ -143,7 +146,23 @@ public class FillStudentInfoFragment extends Fragment {
 		mStudentListView.setOnTouchListener(touchListener);
 		// Setting this scroll listener is required to ensure that during ListView scrolling,
 		// we don't look for swipes.
-		mStudentListView.setOnScrollListener(touchListener.makeScrollListener());
+		mStudentListView.setOnScrollListener(touchListener.makeScrollListener());*/
+
+		mStudentListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+			@Override
+			public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+				AlertDialog.Builder alertDlg_Delete = new AlertDialog.Builder(mainActivity);
+				alertDlg_Delete.setMessage("Delete?");
+				alertDlg_Delete.setPositiveButton("예", new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+
+							}
+						});
+				alertDlg_Delete.show();
+				return true;
+			}
+		});
 
 		mEditTextNum = (EditText)rootView.findViewById(R.id.edittext_num);
 		mEditTextNum.setOnEditorActionListener(new EditText.OnEditorActionListener() {

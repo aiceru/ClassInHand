@@ -14,6 +14,8 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.TreeSet;
@@ -22,16 +24,19 @@ import java.util.TreeSet;
  * Created by iceru on 14. 8. 14.
  */
 public class SeatFragment extends Fragment {
-	MainActivity mainActivity;
-	TreeSet<Student> tempStudents;
-	TreeSet<Seat> tempSeats;
+	MainActivity        mainActivity;
+	TreeSet<Student>    mStudents;
+	//TreeSet<Seat>       tempSeats;
+	ArrayList<Seat> mSegment1, mSegment2, mSegment3;
+
+	int                 mTotalSeats;
 
 	private class segAdapter extends BaseAdapter {
 		private LayoutInflater mInflater;
 		private Context mContext;
-		private TreeSet<Seat> mItems;
+		private ArrayList<Seat> mItems;
 
-		public segAdapter(Context context, TreeSet<Seat> object) {
+		public segAdapter(Context context, ArrayList<Seat> object) {
 			mContext = context;
 			mItems = object;
 			mInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -43,13 +48,14 @@ public class SeatFragment extends Fragment {
 
 		@Override
 		public Object getItem(int position) {
-			Seat st = null;
+			/*Seat st = null;
 			Iterator<Seat> i = mItems.iterator();
 			while(i.hasNext() && position >= 0) {
 				position--;
 				st = i.next();
 			}
-			return st;
+			return st;*/
+			return mItems.get(position);
 		}
 
 		@Override
@@ -69,11 +75,13 @@ public class SeatFragment extends Fragment {
 
 			final Seat seat = (Seat)this.getItem(position);
 
-			if(seat != null) {
+			if(seat != null && seat.getItsStudent() != null) {
 				TextView tvNum = (TextView)view.findViewById(R.id.textview_seated_num);
 				TextView tvName = (TextView)view.findViewById(R.id.textview_seated_name);
+				ImageView ivBoygirl = (ImageView)view.findViewById(R.id.imageview_seated_boygirl);
 				tvNum.setText(String.valueOf(seat.getItsStudent().getNum()));
 				tvName.setText(seat.getItsStudent().getName());
+				ivBoygirl.setImageResource(seat.getItsStudent().isBoy()? R.drawable.ic_toggle_boy : R.drawable.ic_toggle_girl);
 			}
 
 			return view;
@@ -91,23 +99,47 @@ public class SeatFragment extends Fragment {
 
 		mainActivity = (MainActivity)getActivity();
 
-		tempStudents = mainActivity.getmStudents();
-		tempSeats = new TreeSet<Seat>(new Comparator<Seat>() {
+		mStudents = mainActivity.getmStudents();
+		mTotalSeats = mainActivity.getNum_boys() + mainActivity.getNum_girls();
+		int rows = (int)Math.ceil(((double)mTotalSeats) / (double)6.0);
+
+		mSegment1 = new ArrayList<Seat>();
+		mSegment2 = new ArrayList<Seat>();
+		mSegment3 = new ArrayList<Seat>();
+		/*mSegment3 = new TreeSet<Seat>(new Comparator<Seat>() {
 			@Override
 			public int compare(Seat lhs, Seat rhs) {
 				return lhs.getId() - rhs.getId();
 			}
-		});
+		});*/
+		for(int i = 0; i < mTotalSeats; i++) {
+			Seat seat = new Seat(i);
+			switch(seat.getId() % 6) {
+				case 0:
+				case 1:
+					mSegment1.add(seat);
+					break;
+				case 2:
+				case 3:
+					mSegment2.add(seat);
+					break;
+				case 4:
+				case 5:
+					mSegment3.add(seat);
+					break;
+				default:
+					break;
+			}
+		}
 
 		Student st = null;
 		Seat seat = null;
 		int seatId = 0;
-		Iterator<Student> i = tempStudents.iterator();
+		Iterator<Student> i = mStudents.iterator();
 		while(i.hasNext()) {
 			st = i.next();
+			st.setItsCurrentSeat(getSeatByAbsolutePosition(seatId));
 			seatId++;
-			seat = new Seat(seatId, st);
-			tempSeats.add(seat);
 		}
 	}
 
@@ -140,9 +172,37 @@ public class SeatFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootview = inflater.inflate(R.layout.fragment_seat, container, false);
 
-		GridView seg1view = (GridView)rootview.findViewById(R.id.gridview_sep1);
-		seg1view.setAdapter(new segAdapter(mainActivity, tempSeats));
+		GridView gv_segment1 = (GridView)rootview.findViewById(R.id.gridview_segment1);
+		GridView gv_segment2 = (GridView)rootview.findViewById(R.id.gridview_segment2);
+		GridView gv_segment3 = (GridView)rootview.findViewById(R.id.gridview_segment3);
+		gv_segment1.setAdapter(new segAdapter(mainActivity, mSegment1));
+		gv_segment2.setAdapter(new segAdapter(mainActivity, mSegment2));
+		gv_segment3.setAdapter(new segAdapter(mainActivity, mSegment3));
 
 		return rootview;
+	}
+
+	private Seat getSeatByAbsolutePosition(int seatId) {
+		int mod = seatId % 6;
+		int mod2 = mod % 2;
+		int div = seatId / 6;
+		ArrayList<Seat> seg = mSegment1;
+		switch(mod) {
+			case 0:
+			case 1:
+				seg = mSegment1;
+				break;
+			case 2:
+			case 3:
+				seg = mSegment2;
+				break;
+			case 4:
+			case 5:
+				seg = mSegment3;
+				break;
+			default:
+				break;
+		}
+		return seg.get((div * 2) + (mod2));
 	}
 }

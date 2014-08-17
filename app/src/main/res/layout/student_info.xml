@@ -31,6 +31,6 @@
         android:layout_height="20dp"
         android:gravity="center"
         android:contentDescription="gender_icon"
-        android:layout_margin="4dp"></ImageView>    
+        android:layout_margin="4dp"></ImageView>
     
 </LinearLayout>

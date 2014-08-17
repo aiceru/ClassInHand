@@ -22,26 +22,25 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0.1"
+            android:layout_weight="0.3"
             android:layout_gravity="center_vertical"
-            android:id="@+id/imageview_lecturn"
-            android:src="@drawable/ic_action_3d_cube"
+            android:background="@drawable/desk"
             android:contentDescription="Lecturn"/>
 
         <Space
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight="0.8"
+            android:layout_weight="0.6"
             android:layout_gravity="center_vertical"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.1"
-            android:layout_gravity="center_vertical"
             android:textSize="20sp"
             android:text="2014년 8월"
-            android:id="@+id/textview_current_month"/>
+            android:id="@+id/textview_current_month"
+            android:gravity="end"/>
     </LinearLayout>
 
     <LinearLayout
@@ -55,7 +54,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.32"
-            android:id="@+id/gridview_sep1"
+            android:id="@+id/gridview_segment1"
             android:numColumns="2"
             android:horizontalSpacing="1dp"
             android:verticalSpacing="1dp"
@@ -70,7 +69,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.32"
-            android:id="@+id/gridview_sep2"
+            android:id="@+id/gridview_segment2"
             android:numColumns="2"
             android:horizontalSpacing="1dp"
             android:verticalSpacing="1dp"
@@ -85,7 +84,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.32"
-            android:id="@+id/gridview_sep3"
+            android:id="@+id/gridview_segment3"
             android:numColumns="2"
             android:horizontalSpacing="1dp"
             android:verticalSpacing="1dp"
