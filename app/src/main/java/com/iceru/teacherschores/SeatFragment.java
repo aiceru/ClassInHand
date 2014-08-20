@@ -31,6 +31,8 @@ public class SeatFragment extends Fragment {
 
 	int                 mTotalSeats;
 
+	static private View rootView = null;
+
 	private class segAdapter extends BaseAdapter {
 		private LayoutInflater mInflater;
 		private Context mContext;
@@ -132,14 +134,21 @@ public class SeatFragment extends Fragment {
 			}
 		}
 
+		assignRandom();
+	}
+
+	private void assignRandom() {
+		boolean seatIsFull[] = new boolean[mTotalSeats];
 		Student st = null;
-		Seat seat = null;
-		int seatId = 0;
+		int seatId;
 		Iterator<Student> i = mStudents.iterator();
 		while(i.hasNext()) {
 			st = i.next();
+			do {
+				seatId = (int)(Math.random() * mTotalSeats);
+			} while(seatIsFull[seatId] == true);
 			st.setItsCurrentSeat(getSeatByAbsolutePosition(seatId));
-			seatId++;
+			seatIsFull[seatId] = true;
 		}
 	}
 
@@ -170,16 +179,17 @@ public class SeatFragment extends Fragment {
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View rootview = inflater.inflate(R.layout.fragment_seat, container, false);
+		if(rootView == null) {
+			rootView = inflater.inflate(R.layout.fragment_seat, container, false);
 
-		GridView gv_segment1 = (GridView)rootview.findViewById(R.id.gridview_segment1);
-		GridView gv_segment2 = (GridView)rootview.findViewById(R.id.gridview_segment2);
-		GridView gv_segment3 = (GridView)rootview.findViewById(R.id.gridview_segment3);
-		gv_segment1.setAdapter(new segAdapter(mainActivity, mSegment1));
-		gv_segment2.setAdapter(new segAdapter(mainActivity, mSegment2));
-		gv_segment3.setAdapter(new segAdapter(mainActivity, mSegment3));
-
-		return rootview;
+			GridView gv_segment1 = (GridView) rootView.findViewById(R.id.gridview_segment1);
+			GridView gv_segment2 = (GridView) rootView.findViewById(R.id.gridview_segment2);
+			GridView gv_segment3 = (GridView) rootView.findViewById(R.id.gridview_segment3);
+			gv_segment1.setAdapter(new segAdapter(mainActivity, mSegment1));
+			gv_segment2.setAdapter(new segAdapter(mainActivity, mSegment2));
+			gv_segment3.setAdapter(new segAdapter(mainActivity, mSegment3));
+		}
+		return rootView;
 	}
 
 	private Seat getSeatByAbsolutePosition(int seatId) {

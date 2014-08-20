@@ -3,18 +3,25 @@ package com.iceru.teacherschores;
 import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.os.Bundle;
+import android.support.v13.app.FragmentTabHost;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.TabHost;
 
 /**
  * Created by iceru on 14. 8. 9.
  */
 public class FillInfoPagerFragment extends Fragment {
+
+	private View rootView = null;
 
 	public static FillInfoPagerFragment newInstance() {
 		FillInfoPagerFragment fragment = new FillInfoPagerFragment();
@@ -39,7 +46,7 @@ public class FillInfoPagerFragment extends Fragment {
 
     public void showActionBar() {
         ActionBar actionBar = getActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setTitle(R.string.title_fillinfo);
     }
@@ -53,41 +60,53 @@ public class FillInfoPagerFragment extends Fragment {
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		ActionBar actionBar = getActionBar();
+		if(rootView == null) {
+			rootView = (LinearLayout) inflater.inflate(R.layout.fragment_fillinfopager, container, false);
+			final TabHost mTabHost = (TabHost) rootView.findViewById(R.id.tabhost_fillinfo);
+			mTabHost.setup();
 
-		final ViewPager mViewPager = (ViewPager)inflater.inflate(R.layout.fragment_fillinfopager, container, false);
-		mViewPager.setAdapter(new FillInfoPagerAdapter(getActivity(), getChildFragmentManager()));
+			TabHost.TabSpec mTabSpec1 = mTabHost.newTabSpec("studentinfo").setIndicator("학생정보");
+			TabHost.TabSpec mTabSpec2 = mTabHost.newTabSpec("roleinfo").setIndicator("역할정보");
 
-		mViewPager.setOnPageChangeListener(
-				new ViewPager.SimpleOnPageChangeListener() {
-					@Override
-					public void onPageSelected(int position) {
-						// When swiping between pages, select the
-						// corresponding tab.
-						getActionBar().setSelectedNavigationItem(position);
-					}
-				});
+			mTabSpec1.setContent(new TabFactory(getActivity()));
+			mTabSpec2.setContent(new TabFactory(getActivity()));
 
-		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+			mTabHost.addTab(mTabSpec1);
+			mTabHost.addTab(mTabSpec2);
 
-		ActionBar.TabListener tabListener = new ActionBar.TabListener() {
-			public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
-				// show the given tab
-				mViewPager.setCurrentItem(tab.getPosition());
-			}
+			final ViewPager mViewPager = (ViewPager) rootView.findViewById(R.id.viewpager_fillinfo);
+			mViewPager.setAdapter(new FillInfoPagerAdapter(getActivity(), getChildFragmentManager()));
 
-			public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
-				// hide the given tab
-			}
+			mTabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
+				@Override
+				public void onTabChanged(String tabId) {
+					int pos = mTabHost.getCurrentTab();
+					mViewPager.setCurrentItem(pos);
+				}
+			});
 
-			public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
-				// probably ignore this event
-			}
-		};
+			mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+				@Override
+				public void onPageSelected(int position) {
+					mTabHost.setCurrentTab(position);
+				}
+			});
+		}
+		return rootView;
+	}
 
-		actionBar.removeAllTabs();
-		actionBar.addTab(actionBar.newTab().setText(R.string.tabtitle_studentinfo).setTabListener(tabListener));
-		actionBar.addTab(actionBar.newTab().setText(R.string.tabtitle_roleinfo).setTabListener(tabListener));
-		return mViewPager;
+	private class TabFactory implements TabHost.TabContentFactory {
+		private final Context mContext;
+
+		public TabFactory(Context context) {
+			mContext = context;
+		}
+
+		public View createTabContent(String tag) {
+			View v = new View(mContext);
+			v.setMinimumWidth(0);
+			v.setMinimumHeight(0);
+			return v;
+		}
 	}
 }

@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.TreeSet;
 
 import android.app.Activity;
-import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -151,15 +151,52 @@ public class FillStudentInfoFragment extends Fragment {
 		mStudentListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 			@Override
 			public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-				AlertDialog.Builder alertDlg_Delete = new AlertDialog.Builder(mainActivity);
-				alertDlg_Delete.setMessage("Delete?");
-				alertDlg_Delete.setPositiveButton("예", new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog, int which) {
+				final Dialog longClickDialog = new Dialog(mainActivity);
+				longClickDialog.setContentView(R.layout.dialog_student_edit);
+				longClickDialog.setTitle(getString(R.string.title_dialog_student_edit));
 
-							}
-						});
-				alertDlg_Delete.show();
+				final Student target = (Student)mStudentListAdapter.getItem(position);
+
+				TextView tv_num = (TextView)longClickDialog.findViewById(R.id.textview_dialog_student_edit_num);
+				TextView tv_name = (TextView)longClickDialog.findViewById(R.id.textview_dialog_student_edit_name);
+				ImageView iv_boygirl = (ImageView)longClickDialog.findViewById(R.id.imageview_dialog_student_edit_boygirl);
+				tv_num.setText(String.valueOf(target.getNum()));
+				tv_name.setText(target.getName().toString());
+				iv_boygirl.setImageResource(target.isBoy()? R.drawable.ic_toggle_boy : R.drawable.ic_toggle_girl);
+
+				Button btn_delete = (Button) longClickDialog.findViewById(R.id.button_dialog_student_edit_delete);
+				Button btn_edit = (Button) longClickDialog.findViewById(R.id.button_dialog_student_edit_edit);
+				Button btn_cancel = (Button) longClickDialog.findViewById(R.id.button_dialog_student_edit_cancel);
+
+				btn_edit.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						mainActivity.removeStudent(target);
+						setTotalText();
+						mEditTextNum.setText(String.valueOf(target.getNum()));
+						mEditTextName.setText(target.getName().toString());
+						mTglbtnBoygirl.setChecked(target.isBoy()? true : false);
+						longClickDialog.dismiss();
+						mStudentListAdapter.notifyDataSetChanged();
+					}
+				});
+				btn_delete.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						mainActivity.removeStudent(target);
+						setTotalText();
+						longClickDialog.dismiss();
+						mStudentListAdapter.notifyDataSetChanged();
+					}
+				});
+				btn_cancel.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						longClickDialog.dismiss();
+					}
+				});
+
+				longClickDialog.show();
 				return true;
 			}
 		});

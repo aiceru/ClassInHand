@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:divider="?android:dividerHorizontal"
+              android:showDividers="middle"
+              style="@style/AppBaseTheme">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:padding="@dimen/activity_vertical_margin">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:id="@+id/textview_dialog_student_edit_num"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:id="@+id/textview_dialog_student_edit_name"/>
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_margin="4dp"
+            android:id="@+id/imageview_dialog_student_edit_boygirl"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="?android:buttonBarStyle"
+        android:weightSum="3">
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            style="?android:buttonBarButtonStyle"
+            android:id="@+id/button_dialog_student_edit_delete"
+            android:text="@string/action_delete"/>
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            style="?android:buttonBarButtonStyle"
+            android:id="@+id/button_dialog_student_edit_edit"
+            android:text="@string/action_edit"/>
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            style="?android:buttonBarButtonStyle"
+            android:id="@+id/button_dialog_student_edit_cancel"
+            android:text="@string/action_cancel"/>
+
+    </LinearLayout>
+
+</LinearLayout>
