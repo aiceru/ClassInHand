@@ -10,11 +10,13 @@
     <string name="title_dialog_student_edit">학생정보 수정</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_new">새로 생성</string>
     <string name="action_done">저장</string>
     <string name="action_edit">수정</string>
 	<string name="action_cancel">취소</string>
     <string name="action_delete">삭제</string>
 	<string name="action_deleteAll">전체 삭제</string>
+    <string name="action_history">지난 좌석표</string>
     <string name="action_example">Example action</string>
     <string name="action_settings">Settings</string>
     

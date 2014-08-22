@@ -4,6 +4,7 @@ import android.app.ActionBar;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -30,6 +31,8 @@ public class SeatFragment extends Fragment {
 	ArrayList<Seat> mSegment1, mSegment2, mSegment3;
 
 	int                 mTotalSeats;
+	int                 mBoysSeats;
+	int                 mGirlsSeats;
 
 	static private View rootView = null;
 
@@ -102,18 +105,14 @@ public class SeatFragment extends Fragment {
 		mainActivity = (MainActivity)getActivity();
 
 		mStudents = mainActivity.getmStudents();
-		mTotalSeats = mainActivity.getNum_boys() + mainActivity.getNum_girls();
-		int rows = (int)Math.ceil(((double)mTotalSeats) / (double)6.0);
+		mBoysSeats = mainActivity.getNum_boys();
+		mGirlsSeats = mainActivity.getNum_girls();
+		mTotalSeats = mBoysSeats + mGirlsSeats;
 
 		mSegment1 = new ArrayList<Seat>();
 		mSegment2 = new ArrayList<Seat>();
 		mSegment3 = new ArrayList<Seat>();
-		/*mSegment3 = new TreeSet<Seat>(new Comparator<Seat>() {
-			@Override
-			public int compare(Seat lhs, Seat rhs) {
-				return lhs.getId() - rhs.getId();
-			}
-		});*/
+
 		for(int i = 0; i < mTotalSeats; i++) {
 			Seat seat = new Seat(i);
 			switch(seat.getId() % 6) {
@@ -141,11 +140,23 @@ public class SeatFragment extends Fragment {
 		boolean seatIsFull[] = new boolean[mTotalSeats];
 		Student st = null;
 		int seatId;
+		boolean boys_are_more = (mBoysSeats > mGirlsSeats);
+		int diff_seats = Math.abs(mBoysSeats - mGirlsSeats);
 		Iterator<Student> i = mStudents.iterator();
 		while(i.hasNext()) {
 			st = i.next();
 			do {
-				seatId = (int)(Math.random() * mTotalSeats);
+				//seatId = (int)(Math.random() * mTotalSeats);
+				if(boys_are_more == st.isBoy()) {   // 많은쪽
+					seatId = (int)(Math.random() * mTotalSeats);
+					if(seatId < mTotalSeats - diff_seats) {
+						seatId = st.isBoy()? seatId - (seatId % 2) : seatId - (seatId % 2) + 1;
+					}
+				}
+				else {                              // 적은쪽
+					seatId = (int)(Math.random() * (mTotalSeats - diff_seats));
+					seatId = st.isBoy()? seatId - (seatId % 2) : seatId - (seatId % 2) + 1;
+				}
 			} while(seatIsFull[seatId] == true);
 			st.setItsCurrentSeat(getSeatByAbsolutePosition(seatId));
 			seatIsFull[seatId] = true;
@@ -172,7 +183,7 @@ public class SeatFragment extends Fragment {
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		if (!mainActivity.isDrawerOpen()) {
-			inflater.inflate(R.menu.menu_fillinfo, menu);
+			inflater.inflate(R.menu.menu_seatplan, menu);
 			showActionBar();
 		}
 	}
@@ -214,5 +225,23 @@ public class SeatFragment extends Fragment {
 				break;
 		}
 		return seg.get((div * 2) + (mod2));
+	}
+
+	private Seat getSeatBySegAndRow(int seg, int row, boolean isBoy) {
+		ArrayList<Seat> segment = null;
+		switch(seg) {
+			case 1:
+				segment = mSegment1;
+				break;
+			case 2:
+				segment = mSegment2;
+				break;
+			case 3:
+				segment = mSegment3;
+				break;
+			default:
+				break;
+		}
+		return isBoy? (segment.get((row-1) * 2 + 1)) : (segment.get((row-1) * 2));
 	}
 }
