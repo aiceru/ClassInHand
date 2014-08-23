@@ -17,14 +17,14 @@ public class ClassDBHelper extends SQLiteOpenHelper {
 
 	public ClassDBHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        wDB = getWritableDatabase();
+        rDB = getReadableDatabase();
 	}
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
-		db.execSQL(ClassDBContract.SQL_CREATE_TABLE_STUDENTINFO);
-		db.execSQL(ClassDBContract.SQL_CREATE_TABLE_SEATHISTORY);
-		wDB = this.getWritableDatabase();
-		rDB = this.getReadableDatabase();
+        db.execSQL(ClassDBContract.SQL_CREATE_TABLE_STUDENTINFO);
+        db.execSQL(ClassDBContract.SQL_CREATE_TABLE_SEATHISTORY);
 	}
 
 	@Override

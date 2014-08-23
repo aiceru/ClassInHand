@@ -1,6 +1,7 @@
 package com.iceru.teacherschores;
 
 import android.app.ActionBar;
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
@@ -27,14 +28,11 @@ import java.util.TreeSet;
 public class SeatFragment extends Fragment {
 	MainActivity        mainActivity;
 	TreeSet<Student>    mStudents;
-	//TreeSet<Seat>       tempSeats;
 	ArrayList<Seat> mSegment1, mSegment2, mSegment3;
 
 	int                 mTotalSeats;
 	int                 mBoysSeats;
 	int                 mGirlsSeats;
-
-	static private View rootView = null;
 
 	private class segAdapter extends BaseAdapter {
 		private LayoutInflater mInflater;
@@ -98,8 +96,15 @@ public class SeatFragment extends Fragment {
 		return fragment;
 	}
 
-	@Override
+    @Override
+    public void onAttach(Activity activity) {
+        Log.d(this.getClass().getSimpleName(), "onAttach()");
+        super.onAttach(activity);
+    }
+
+    @Override
 	public void onCreate(Bundle savedInstanceState) {
+        Log.d(this.getClass().getSimpleName(), "onCreate()");
 		super.onCreate(savedInstanceState);
 
 		mainActivity = (MainActivity)getActivity();
@@ -136,51 +141,40 @@ public class SeatFragment extends Fragment {
 		assignRandom();
 	}
 
-	private void assignRandom() {
-		boolean seatIsFull[] = new boolean[mTotalSeats];
-		Student st = null;
-		int seatId;
-		boolean boys_are_more = (mBoysSeats > mGirlsSeats);
-		int diff_seats = Math.abs(mBoysSeats - mGirlsSeats);
-		Iterator<Student> i = mStudents.iterator();
-		while(i.hasNext()) {
-			st = i.next();
-			do {
-				//seatId = (int)(Math.random() * mTotalSeats);
-				if(boys_are_more == st.isBoy()) {   // 많은쪽
-					seatId = (int)(Math.random() * mTotalSeats);
-					if(seatId < mTotalSeats - diff_seats) {
-						seatId = st.isBoy()? seatId - (seatId % 2) : seatId - (seatId % 2) + 1;
-					}
-				}
-				else {                              // 적은쪽
-					seatId = (int)(Math.random() * (mTotalSeats - diff_seats));
-					seatId = st.isBoy()? seatId - (seatId % 2) : seatId - (seatId % 2) + 1;
-				}
-			} while(seatIsFull[seatId] == true);
-			st.setItsCurrentSeat(getSeatByAbsolutePosition(seatId));
-			seatIsFull[seatId] = true;
-		}
-	}
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Log.d(this.getClass().getSimpleName(), "onCreateView()");
+        View rootView = inflater.inflate(R.layout.fragment_seat, container, false);
 
-	private ActionBar getActionBar() {
-		return getActivity().getActionBar();
-	}
+        GridView gv_segment1 = (GridView) rootView.findViewById(R.id.gridview_segment1);
+        GridView gv_segment2 = (GridView) rootView.findViewById(R.id.gridview_segment2);
+        GridView gv_segment3 = (GridView) rootView.findViewById(R.id.gridview_segment3);
+        gv_segment1.setAdapter(new segAdapter(mainActivity, mSegment1));
+        gv_segment2.setAdapter(new segAdapter(mainActivity, mSegment2));
+        gv_segment3.setAdapter(new segAdapter(mainActivity, mSegment3));
+        return rootView;
+    }
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
+        Log.d(this.getClass().getSimpleName(), "onActivityCreated()");
 		super.onActivityCreated(savedInstanceState);
 		setHasOptionsMenu(true);
 	}
 
-	public void showActionBar() {
-		ActionBar actionBar = getActionBar();
-		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-		actionBar.setDisplayShowTitleEnabled(true);
-		actionBar.setTitle(R.string.title_seatplan);
-	}
+    @Override
+    public void onStart() {
+        Log.d(this.getClass().getSimpleName(), "onStart()");
+        super.onStart();
+    }
 
-	@Override
+    @Override
+    public void onResume() {
+        Log.d(this.getClass().getSimpleName(), "onResume()");
+        super.onResume();
+    }
+
+    @Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		if (!mainActivity.isDrawerOpen()) {
 			inflater.inflate(R.menu.menu_seatplan, menu);
@@ -188,20 +182,46 @@ public class SeatFragment extends Fragment {
 		}
 	}
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		if(rootView == null) {
-			rootView = inflater.inflate(R.layout.fragment_seat, container, false);
+    @Override
+    public void onPause() {
+        Log.d(this.getClass().getSimpleName(), "onPause()");
+        super.onPause();
+    }
 
-			GridView gv_segment1 = (GridView) rootView.findViewById(R.id.gridview_segment1);
-			GridView gv_segment2 = (GridView) rootView.findViewById(R.id.gridview_segment2);
-			GridView gv_segment3 = (GridView) rootView.findViewById(R.id.gridview_segment3);
-			gv_segment1.setAdapter(new segAdapter(mainActivity, mSegment1));
-			gv_segment2.setAdapter(new segAdapter(mainActivity, mSegment2));
-			gv_segment3.setAdapter(new segAdapter(mainActivity, mSegment3));
-		}
-		return rootView;
-	}
+    @Override
+    public void onStop() {
+        Log.d(this.getClass().getSimpleName(), "onStop()");
+        super.onStop();
+    }
+
+    @Override
+    public void onDestroyView() {
+        Log.d(this.getClass().getSimpleName(), "onDestroyView()");
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onDestroy() {
+        Log.d(this.getClass().getSimpleName(), "onDestroy()");
+        super.onDestroy();
+    }
+
+    @Override
+    public void onDetach() {
+        Log.d(this.getClass().getSimpleName(), "onDetach()");
+        super.onDetach();
+    }
+
+    private ActionBar getActionBar() {
+        return getActivity().getActionBar();
+    }
+
+    public void showActionBar() {
+        ActionBar actionBar = getActionBar();
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+        actionBar.setDisplayShowTitleEnabled(true);
+        actionBar.setTitle(R.string.title_seatplan);
+    }
 
 	private Seat getSeatByAbsolutePosition(int seatId) {
 		int mod = seatId % 6;
@@ -244,4 +264,31 @@ public class SeatFragment extends Fragment {
 		}
 		return isBoy? (segment.get((row-1) * 2 + 1)) : (segment.get((row-1) * 2));
 	}
+
+    private void assignRandom() {
+        boolean seatIsFull[] = new boolean[mTotalSeats];
+        Student st = null;
+        int seatId;
+        boolean boys_are_more = (mBoysSeats > mGirlsSeats);
+        int diff_seats = Math.abs(mBoysSeats - mGirlsSeats);
+        Iterator<Student> i = mStudents.iterator();
+        while(i.hasNext()) {
+            st = i.next();
+            do {
+                //seatId = (int)(Math.random() * mTotalSeats);
+                if(boys_are_more == st.isBoy()) {   // 많은쪽
+                    seatId = (int)(Math.random() * mTotalSeats);
+                    if(seatId < mTotalSeats - diff_seats) {
+                        seatId = st.isBoy()? seatId - (seatId % 2) : seatId - (seatId % 2) + 1;
+                    }
+                }
+                else {                              // 적은쪽
+                    seatId = (int)(Math.random() * (mTotalSeats - diff_seats));
+                    seatId = st.isBoy()? seatId - (seatId % 2) : seatId - (seatId % 2) + 1;
+                }
+            } while(seatIsFull[seatId] == true);
+            st.setItsCurrentSeat(getSeatByAbsolutePosition(seatId));
+            seatIsFull[seatId] = true;
+        }
+    }
 }

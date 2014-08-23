@@ -6,6 +6,7 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 
@@ -19,6 +20,7 @@ public class MainActivity extends Activity
 	private TreeSet<Student> mStudents;
 	private ArrayList<Role> mRoles;
 	private int num_boys, num_girls, num_roleConsume;
+    private ClassDBHelper dbHelper;
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -51,6 +53,18 @@ public class MainActivity extends Activity
 	    });
 	    mRoles = new ArrayList<Role>();
 
+        dbHelper = new ClassDBHelper(this);
+        Cursor c = dbHelper.getStudents();
+        while(c.moveToNext()) {
+            int id = c.getInt(c.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_STUDENT_ID));
+            String name = c.getString(c.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_STUDENT_NAME));
+            boolean isBoy = (c.getInt(c.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_STUDENT_GENDER)) == 1)?
+                    true : false;
+            mStudents.add(new Student(id, name, isBoy));
+            if(isBoy) num_boys++;
+            else num_girls++;
+        }
+
 	    mShPrefStudentNameList = getSharedPreferences(getString(
 			    R.string.sharedpref_student_name_list), Context.MODE_PRIVATE);
 	    mShPrefStudentBoygirlList = getSharedPreferences(getString(
@@ -58,7 +72,7 @@ public class MainActivity extends Activity
 	    mShPrefRoleList = getSharedPreferences(getString(
 			    R.string.sharedpref_role_list), Context.MODE_PRIVATE);
 
-	    Map<String, ?> allEntries = mShPrefStudentNameList.getAll();
+	    /*Map<String, ?> allEntries = mShPrefStudentNameList.getAll();
 	    for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
 		    Student student = new Student(Integer.valueOf(entry.getKey()),
 				    entry.getValue().toString(),
@@ -66,9 +80,9 @@ public class MainActivity extends Activity
 		    mStudents.add(student);
 		    if(student.isBoy()) num_boys++;
 		    else num_girls++;
-	    }
+	    }*/
 
-	    allEntries = mShPrefRoleList.getAll();
+        Map<String, ?> allEntries = mShPrefRoleList.getAll();
 	    for(Map.Entry<String, ?> entry : allEntries.entrySet()) {
 		    Role role = new Role(0,
 				    entry.getKey().toString(),
@@ -108,7 +122,11 @@ public class MainActivity extends Activity
     	return mNavigationDrawerFragment.isDrawerOpen();
     }
 
-	public int getNum_boys() {
+    public ClassDBHelper getDbHelper() {
+        return dbHelper;
+    }
+
+    public int getNum_boys() {
 		return num_boys;
 	}
 
@@ -133,13 +151,14 @@ public class MainActivity extends Activity
 		if(success) {
 			if(student.isBoy()) num_boys++;
 			else num_girls++;
+            dbHelper.insert(student);
 
-			SharedPreferences.Editor editor = mShPrefStudentNameList.edit();
+			/*SharedPreferences.Editor editor = mShPrefStudentNameList.edit();
 			editor.putString(String.valueOf(student.getNum()), student.getName());
 			editor.apply();
 			editor = mShPrefStudentBoygirlList.edit();
 			editor.putBoolean(String.valueOf(student.getNum()), student.isBoy());
-			editor.apply();
+			editor.apply();*/
 		}
 		return success;
 	}

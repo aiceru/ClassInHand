@@ -7,7 +7,6 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -103,22 +102,25 @@ public class FillStudentInfoFragment extends Fragment {
 	}
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-
-		mainActivity = (MainActivity)getActivity();
-		mStudents = mainActivity.getmStudents();
-		mStudentListAdapter = new studentListAdapter(this.getActivity(), mStudents);
-	}
-
-	@Override
 	public void onAttach(Activity activity) {
+        Log.d(this.getClass().getSimpleName(), "onAttach()");
 		super.onAttach(activity);
 	}
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        Log.d(this.getClass().getSimpleName(), "onCreate()");
+        super.onCreate(savedInstanceState);
+
+        mainActivity = (MainActivity)getActivity();
+        mStudents = mainActivity.getmStudents();
+        mStudentListAdapter = new studentListAdapter(this.getActivity(), mStudents);
+    }
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+        Log.d(this.getClass().getSimpleName(), "onCreateView()");
 		View rootView = inflater.inflate(R.layout.fragment_fillstudentinfo, container, false);
 		this.rootView = rootView;
 
@@ -243,7 +245,55 @@ public class FillStudentInfoFragment extends Fragment {
 		return rootView;
 	}
 
-	private void addStudent() {
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        Log.d(this.getClass().getSimpleName(), "onActivityCreated()");
+        super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
+    public void onStart() {
+        Log.d(this.getClass().getSimpleName(), "onStart()");
+        super.onStart();
+    }
+
+    @Override
+    public void onResume() {
+        Log.d(this.getClass().getSimpleName(), "onResume()");
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        Log.d(this.getClass().getSimpleName(), "onPause()");
+        super.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        Log.d(this.getClass().getSimpleName(), "onStop()");
+        super.onStop();
+    }
+
+    @Override
+    public void onDestroyView() {
+        Log.d(this.getClass().getSimpleName(), "onDestoryView()");
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onDestroy() {
+        Log.d(this.getClass().getSimpleName(), "onDestroy()");
+        super.onDestroy();
+    }
+
+    @Override
+    public void onDetach() {
+        Log.d(this.getClass().getSimpleName(), "onDetach()");
+        super.onDetach();
+    }
+
+    private void addStudent() {
 		String curNumString = mEditTextNum.getText().toString();
 		String curName = mEditTextName.getText().toString();
 
