@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:context="com.iceru.teacherschores.MainActivity" >
+
+    <item
+        android:id="@+id/seatplan_done"
+        android:showAsAction="always"
+        android:title="@string/action_done"
+        android:icon="@drawable/ic_action_accept"/>
+
+    <item
+        android:id="@+id/seatplan_cancel"
+        android:showAsAction="always"
+        android:title="@string/action_cancel"
+        android:icon="@drawable/ic_action_cancel"/>
+
+</menu>

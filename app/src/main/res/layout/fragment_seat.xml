@@ -6,8 +6,7 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:padding="@dimen/activity_vertical_margin"
-              android:weightSum="1"
-    android:textAlignment="center">
+              android:weightSum="1">
 
     <LinearLayout
         android:orientation="horizontal"
@@ -39,7 +38,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.1"
             android:textSize="20sp"
-            android:text="2014년 8월"
             android:id="@+id/textview_current_month"
             android:gravity="end"/>
     </LinearLayout>
@@ -92,4 +90,14 @@
             tools:listitem="@layout/seat"/>
 
     </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_random_assign"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="40dp"
+        android:layout_gravity="center"
+        android:background="@drawable/ic_action_shuffle"
+        />
+
 </LinearLayout>

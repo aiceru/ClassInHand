@@ -1,5 +1,6 @@
 package com.iceru.teacherschores;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -28,9 +29,9 @@ public class MainActivity extends Activity
     private NavigationDrawerFragment    mNavigationDrawerFragment;
 
     /**
-     * Used to store the last screen title. For use in {@link #restoreActionBar()}.
+     * Used to store the last screen title. For use in {link #restoreActionBar()}.
      */
-    private CharSequence mTitle;
+    //private CharSequence mTitle;
 
 	private SharedPreferences mShPrefStudentNameList;
 	private SharedPreferences mShPrefStudentBoygirlList;
@@ -94,7 +95,7 @@ public class MainActivity extends Activity
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getFragmentManager().findFragmentById(R.id.navigation_drawer);
 
-	    mTitle = getTitle();
+	    //mTitle = getTitle();
 
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(
@@ -168,13 +169,14 @@ public class MainActivity extends Activity
 		if(success) {
 			if(student.isBoy()) num_boys--;
 			else num_girls--;
+			dbHelper.delete(student);
 
-			SharedPreferences.Editor editor = mShPrefStudentNameList.edit();
+			/*SharedPreferences.Editor editor = mShPrefStudentNameList.edit();
 			editor.remove(String.valueOf(student.getNum()));
 			editor.apply();
 			editor = mShPrefStudentBoygirlList.edit();
 			editor.remove(String.valueOf(student.getNum()));
-			editor.apply();
+			editor.apply();*/
 		}
 		return success;
 	}
@@ -204,15 +206,15 @@ public class MainActivity extends Activity
 	}
 
     
-/*
-    public void restoreActionBar() {
+
+/*    public void restoreActionBar() {
         ActionBar actionBar = getActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setTitle(mTitle);
-    }
+    }*/
 
-
+/*
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (!mNavigationDrawerFragment.isDrawerOpen()) {

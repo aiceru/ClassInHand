@@ -9,16 +9,20 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.lang.reflect.Array;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.TreeSet;
 
@@ -26,9 +30,19 @@ import java.util.TreeSet;
  * Created by iceru on 14. 8. 14.
  */
 public class SeatFragment extends Fragment {
-	MainActivity        mainActivity;
-	TreeSet<Student>    mStudents;
-	ArrayList<Seat> mSegment1, mSegment2, mSegment3;
+	private MainActivity        mainActivity;
+	private TreeSet<Student>    mStudents;
+	private ArrayList<Seat>     mSegment1, mSegment2, mSegment3;
+	private segAdapter          mSegAdpt1, mSegAdpt2, mSegAdpt3;
+
+	/* View variables */
+	private GridView    gv_segment1;
+	private GridView    gv_segment2;
+	private GridView    gv_segment3;
+
+	private TextView    tv_curDate;
+	private Menu        mMenu;
+	private Button      btn_shuffle;
 
 	int                 mTotalSeats;
 	int                 mBoysSeats;
@@ -138,7 +152,7 @@ public class SeatFragment extends Fragment {
 			}
 		}
 
-		assignRandom();
+		//assignRandom();
 	}
 
     @Override
@@ -146,12 +160,23 @@ public class SeatFragment extends Fragment {
         Log.d(this.getClass().getSimpleName(), "onCreateView()");
         View rootView = inflater.inflate(R.layout.fragment_seat, container, false);
 
-        GridView gv_segment1 = (GridView) rootView.findViewById(R.id.gridview_segment1);
-        GridView gv_segment2 = (GridView) rootView.findViewById(R.id.gridview_segment2);
-        GridView gv_segment3 = (GridView) rootView.findViewById(R.id.gridview_segment3);
-        gv_segment1.setAdapter(new segAdapter(mainActivity, mSegment1));
-        gv_segment2.setAdapter(new segAdapter(mainActivity, mSegment2));
-        gv_segment3.setAdapter(new segAdapter(mainActivity, mSegment3));
+	    tv_curDate = (TextView) rootView.findViewById(R.id.textview_current_month);
+	    SimpleDateFormat sdf = new SimpleDateFormat("yyyy. MM. dd");
+	    tv_curDate.setText(sdf.format(new Date()));
+
+        gv_segment1 = (GridView) rootView.findViewById(R.id.gridview_segment1);
+        gv_segment2 = (GridView) rootView.findViewById(R.id.gridview_segment2);
+        gv_segment3 = (GridView) rootView.findViewById(R.id.gridview_segment3);
+
+	    mSegAdpt1 = new segAdapter(mainActivity, mSegment1);
+	    mSegAdpt2 = new segAdapter(mainActivity, mSegment2);
+	    mSegAdpt3 = new segAdapter(mainActivity, mSegment3);
+        gv_segment1.setAdapter(mSegAdpt1);
+        gv_segment2.setAdapter(mSegAdpt2);
+        gv_segment3.setAdapter(mSegAdpt3);
+
+	    btn_shuffle = (Button)rootView.findViewById(R.id.btn_random_assign);
+	    btn_shuffle.setVisibility(View.INVISIBLE);
         return rootView;
     }
 
@@ -176,7 +201,9 @@ public class SeatFragment extends Fragment {
 
     @Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+	    mMenu = menu;
 		if (!mainActivity.isDrawerOpen()) {
+			menu.clear();
 			inflater.inflate(R.menu.menu_seatplan, menu);
 			showActionBar();
 		}
@@ -212,7 +239,17 @@ public class SeatFragment extends Fragment {
         super.onDetach();
     }
 
-    private ActionBar getActionBar() {
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		int id = item.getItemId();
+		if (id == R.id.seatplan_new) {
+			createNewPlan();
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+
+	private ActionBar getActionBar() {
         return getActivity().getActionBar();
     }
 
@@ -266,6 +303,7 @@ public class SeatFragment extends Fragment {
 	}
 
     private void assignRandom() {
+	    Log.d(this.getClass().getSimpleName(), "assignRandom()");
         boolean seatIsFull[] = new boolean[mTotalSeats];
         Student st = null;
         int seatId;
@@ -290,5 +328,26 @@ public class SeatFragment extends Fragment {
             st.setItsCurrentSeat(getSeatByAbsolutePosition(seatId));
             seatIsFull[seatId] = true;
         }
+	    mSegAdpt1.notifyDataSetChanged();
+	    mSegAdpt2.notifyDataSetChanged();
+	    mSegAdpt3.notifyDataSetChanged();
     }
+
+	private void createNewPlan() {
+		tv_curDate.setVisibility(View.INVISIBLE);
+		MenuInflater inflater = mainActivity.getMenuInflater();
+		if (!mainActivity.isDrawerOpen()) {
+			mMenu.clear();
+			inflater.inflate(R.menu.menu_seatplan_new, mMenu);
+			showActionBar();
+
+			btn_shuffle.setVisibility(View.VISIBLE);
+			btn_shuffle.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					assignRandom();
+				}
+			});
+		}
+	}
 }

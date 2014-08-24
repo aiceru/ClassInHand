@@ -4,20 +4,19 @@
       tools:context="com.iceru.teacherschores.MainActivity" >
 
     <item
-        android:id="@+id/action_edit"
+        android:id="@+id/seatplan_edit"
         android:showAsAction="always"
         android:title="@string/action_edit"
         android:icon="@drawable/ic_action_edit"/>
 
     <item
-        android:id="@+id/action_new"
+        android:id="@+id/seatplan_new"
         android:showAsAction="never"
         android:title="@string/action_new"
         android:icon="@drawable/ic_action_new"/>
 
     <item
-        android:id="@+id/action_history"
+        android:id="@+id/seatplan_history"
         android:showAsAction="never"
         android:title="@string/action_history"/>
 </menu>
-
