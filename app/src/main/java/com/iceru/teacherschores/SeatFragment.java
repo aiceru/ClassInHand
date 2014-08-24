@@ -34,6 +34,7 @@ public class SeatFragment extends Fragment {
 	private TreeSet<Student>    mStudents;
 	private ArrayList<Seat>     mSegment1, mSegment2, mSegment3;
 	private segAdapter          mSegAdpt1, mSegAdpt2, mSegAdpt3;
+    private boolean             mEditMode = false;
 
 	/* View variables */
 	private GridView    gv_segment1;
@@ -176,6 +177,12 @@ public class SeatFragment extends Fragment {
         gv_segment3.setAdapter(mSegAdpt3);
 
 	    btn_shuffle = (Button)rootView.findViewById(R.id.btn_random_assign);
+        btn_shuffle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                assignRandom();
+            }
+        });
 	    btn_shuffle.setVisibility(View.INVISIBLE);
         return rootView;
     }
@@ -201,11 +208,18 @@ public class SeatFragment extends Fragment {
 
     @Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-	    mMenu = menu;
+        Log.d(this.getClass().getSimpleName(), "onCreateOptionMenu()");
 		if (!mainActivity.isDrawerOpen()) {
-			menu.clear();
-			inflater.inflate(R.menu.menu_seatplan, menu);
-			showActionBar();
+            if(mEditMode) {
+                menu.clear();
+                inflater.inflate(R.menu.menu_seatplan_new, menu);
+                showActionBar();
+            }
+            else {
+                menu.clear();
+                inflater.inflate(R.menu.menu_seatplan, menu);
+                showActionBar();
+            }
 		}
 	}
 
@@ -241,11 +255,20 @@ public class SeatFragment extends Fragment {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		int id = item.getItemId();
-		if (id == R.id.seatplan_new) {
-			createNewPlan();
-			return true;
+        int id = item.getItemId();
+		if(id == R.id.seatplan_new) {
+            createNewPlan();
+            return true;
+        }
+        else if(id == R.id.seatplan_done) {
+            saveCurrentPlan();
+            return true;
 		}
+        else if(id == R.id.seatplan_cancel) {
+            mEditMode = false;
+            getActivity().invalidateOptionsMenu();
+            return true;
+        }
 		return super.onOptionsItemSelected(item);
 	}
 
@@ -334,20 +357,20 @@ public class SeatFragment extends Fragment {
     }
 
 	private void createNewPlan() {
+        mEditMode = true;
+        getActivity().invalidateOptionsMenu();
 		tv_curDate.setVisibility(View.INVISIBLE);
-		MenuInflater inflater = mainActivity.getMenuInflater();
-		if (!mainActivity.isDrawerOpen()) {
-			mMenu.clear();
-			inflater.inflate(R.menu.menu_seatplan_new, mMenu);
-			showActionBar();
 
-			btn_shuffle.setVisibility(View.VISIBLE);
-			btn_shuffle.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					assignRandom();
-				}
-			});
-		}
+		btn_shuffle.setVisibility(View.VISIBLE);
 	}
+
+    private void saveCurrentPlan() {
+        // TODO : check if all students have his/her own seat
+        // TODO : save seat plan to DataBase
+        mEditMode = false;
+        getActivity().invalidateOptionsMenu();
+        tv_curDate.setVisibility(View.VISIBLE);
+
+        btn_shuffle.setVisibility(View.INVISIBLE);
+    }
 }
