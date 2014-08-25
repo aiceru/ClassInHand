@@ -2,6 +2,7 @@ package com.iceru.teacherschores;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -21,8 +23,10 @@ import android.widget.TextView;
 import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.TreeSet;
 
@@ -45,9 +49,7 @@ public class SeatFragment extends Fragment {
 	private Menu        mMenu;
 	private Button      btn_shuffle;
 
-	int                 mTotalSeats;
-	int                 mBoysSeats;
-	int                 mGirlsSeats;
+	private int         mTotalSeats, mBoysSeats, mGirlsSeats;
 
 	private class segAdapter extends BaseAdapter {
 		private LayoutInflater mInflater;
@@ -162,8 +164,8 @@ public class SeatFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_seat, container, false);
 
 	    tv_curDate = (TextView) rootView.findViewById(R.id.textview_current_month);
-	    SimpleDateFormat sdf = new SimpleDateFormat("yyyy. MM. dd");
-	    tv_curDate.setText(sdf.format(new Date()));
+	    /*SimpleDateFormat sdf = new SimpleDateFormat("yyyy. MM. dd");
+	    tv_curDate.setText(sdf.format(new Date()));*/
 
         gv_segment1 = (GridView) rootView.findViewById(R.id.gridview_segment1);
         gv_segment2 = (GridView) rootView.findViewById(R.id.gridview_segment2);
@@ -367,6 +369,20 @@ public class SeatFragment extends Fragment {
     private void saveCurrentPlan() {
         // TODO : check if all students have his/her own seat
         // TODO : save seat plan to DataBase
+        int year, month, day;
+        GregorianCalendar cal = new GregorianCalendar();
+        year = cal.get(Calendar.YEAR);
+        month = cal.get(Calendar.MONTH);
+        day = cal.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                tv_curDate.setText(String.format("%d. %d. %d", year, monthOfYear+1, dayOfMonth));
+            }
+        };
+        new DatePickerDialog(mainActivity, dateSetListener, year, month, day).show();
+
         mEditMode = false;
         getActivity().invalidateOptionsMenu();
         tv_curDate.setVisibility(View.VISIBLE);
