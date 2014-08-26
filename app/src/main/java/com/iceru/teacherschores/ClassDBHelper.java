@@ -41,10 +41,10 @@ public class ClassDBHelper extends SQLiteOpenHelper {
 		return wDB.insert(ClassDBContract.StudentInfo.TABLE_NAME, null, values);
 	}
 
-	public long insert(Seat seat, int month) {
+	public long insert(Seat seat, long date) {
 		ContentValues values = new ContentValues();
 		values.put(ClassDBContract.SeatHistory.COLUMN_NAME_SEAT_ID, seat.getId());
-		values.put(ClassDBContract.SeatHistory.COLUMN_NAME_MONTH, month);
+		values.put(ClassDBContract.SeatHistory.COLUMN_NAME_DATE, date);
 		if(seat.getItsStudent() != null) {
 			values.put(ClassDBContract.SeatHistory.COLUMN_NAME_STUDENT_ID, seat.getItsStudent().getNum());
 		}
@@ -73,14 +73,14 @@ public class ClassDBHelper extends SQLiteOpenHelper {
 		);
 	}
 
-	public Cursor getSeats() {
+	public Cursor getRecentSeats() {
 		String[] projection = {
 				ClassDBContract.SeatHistory.COLUMN_NAME_SEAT_ID,
 				ClassDBContract.SeatHistory.COLUMN_NAME_STUDENT_ID,
-				ClassDBContract.SeatHistory.COLUMN_NAME_MONTH
+				ClassDBContract.SeatHistory.COLUMN_NAME_DATE
 		};
 		String sortOrder =
-				ClassDBContract.SeatHistory.COLUMN_NAME_SEAT_ID + " ASC";
+				ClassDBContract.SeatHistory.COLUMN_NAME_SEAT_ID + " DESC";
 
 		return rDB.query(
 				ClassDBContract.SeatHistory.TABLE_NAME,

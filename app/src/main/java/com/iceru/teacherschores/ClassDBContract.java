@@ -1,7 +1,5 @@
 package com.iceru.teacherschores;
 
-import android.provider.BaseColumns;
-
 /**
  * Created by iceru on 14. 8. 23.
  */
@@ -19,7 +17,7 @@ public final class ClassDBContract {
 		public static final String TABLE_NAME = "seat_history";
 		public static final String COLUMN_NAME_SEAT_ID = "seat_id";
 		public static final String COLUMN_NAME_STUDENT_ID = "student_id";
-		public static final String COLUMN_NAME_MONTH = "month";
+		public static final String COLUMN_NAME_DATE = "date";
 
 		public static final String COLUMN_NAME_NULLABLE =
 				SeatHistory.COLUMN_NAME_STUDENT_ID;
@@ -39,9 +37,9 @@ public final class ClassDBContract {
 
 	public static final String SQL_CREATE_TABLE_SEATHISTORY =
 			"CREATE TABLE " + SeatHistory.TABLE_NAME + " (" +
-					SeatHistory.COLUMN_NAME_SEAT_ID + INTEGER_TYPE + " PRIMARY KEY," +
+					SeatHistory.COLUMN_NAME_SEAT_ID + INTEGER_TYPE + COMMA_SEP +
 					SeatHistory.COLUMN_NAME_STUDENT_ID + INTEGER_TYPE + COMMA_SEP +
-					SeatHistory.COLUMN_NAME_MONTH + INTEGER_TYPE +
+					SeatHistory.COLUMN_NAME_DATE + INTEGER_TYPE +
 			" )";
 
 	public static final String SQL_DELETE_TABLE_STUDENTINFO =

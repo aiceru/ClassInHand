@@ -5,7 +5,9 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -46,10 +48,11 @@ public class SeatFragment extends Fragment {
 	private GridView    gv_segment3;
 
 	private TextView    tv_curDate;
-	private Menu        mMenu;
 	private Button      btn_shuffle;
 
 	private int         mTotalSeats, mBoysSeats, mGirlsSeats;
+
+	private static final String PREF_RECENT_SAVED_DATE = "recent_saved_date";
 
 	private class segAdapter extends BaseAdapter {
 		private LayoutInflater mInflater;
@@ -368,25 +371,42 @@ public class SeatFragment extends Fragment {
 
     private void saveCurrentPlan() {
         // TODO : check if all students have his/her own seat
-        // TODO : save seat plan to DataBase
+
+	    /* get current date */
         int year, month, day;
-        GregorianCalendar cal = new GregorianCalendar();
+        final GregorianCalendar cal = new GregorianCalendar();
         year = cal.get(Calendar.YEAR);
         month = cal.get(Calendar.MONTH);
         day = cal.get(Calendar.DAY_OF_MONTH);
 
+		/* dialog : select date */
         DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 tv_curDate.setText(String.format("%d. %d. %d", year, monthOfYear+1, dayOfMonth));
+	            cal.set(year, monthOfYear, dayOfMonth);
+
+	            /* save to DB */
+	            long curDateInMills = cal.getTimeInMillis();
+	            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mainActivity);
+	            sp.edit().putLong(PREF_RECENT_SAVED_DATE, curDateInMills).apply();
+
+	            ClassDBHelper dbHelper = mainActivity.getDbHelper();
+	            Student st;
+	            Iterator<Student> i = mStudents.iterator();
+	            while(i.hasNext()) {
+		            st = i.next();
+		            dbHelper.insert(st.getItsCurrentSeat(), curDateInMills);
+	            }
+
+	            /* mode change, deal with views */
+	            mEditMode = false;
+	            getActivity().invalidateOptionsMenu();
+	            tv_curDate.setVisibility(View.VISIBLE);
+
+	            btn_shuffle.setVisibility(View.INVISIBLE);
             }
         };
         new DatePickerDialog(mainActivity, dateSetListener, year, month, day).show();
-
-        mEditMode = false;
-        getActivity().invalidateOptionsMenu();
-        tv_curDate.setVisibility(View.VISIBLE);
-
-        btn_shuffle.setVisibility(View.INVISIBLE);
     }
 }
