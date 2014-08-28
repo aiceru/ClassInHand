@@ -201,7 +201,6 @@ public class NavigationDrawerFragment extends Fragment {
     }
 
     private void selectItem(int position) {
-        int lastPosition = mCurrentSelectedPosition;
         mCurrentSelectedPosition = position;
         if (mDrawerListView != null) {
             mDrawerListView.setItemChecked(position, false);
@@ -209,7 +208,7 @@ public class NavigationDrawerFragment extends Fragment {
         if (mDrawerLayout != null) {
             mDrawerLayout.closeDrawer(mFragmentContainerView);
         }
-        if (mCallbacks != null && lastPosition != mCurrentSelectedPosition) {
+        if (mCallbacks != null) {
             mCallbacks.onNavigationDrawerItemSelected(position);
         }
     }

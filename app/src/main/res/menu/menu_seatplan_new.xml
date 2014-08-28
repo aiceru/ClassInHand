@@ -11,8 +11,12 @@
 
     <item
         android:id="@+id/seatplan_cancel"
-        android:showAsAction="always"
-        android:title="@string/action_cancel"
-        android:icon="@drawable/ic_action_cancel"/>
+        android:showAsAction="never"
+        android:title="@string/action_cancel"/>
+
+    <item
+        android:id="@+id/seatplan_delete_all"
+        android:showAsAction="never"
+        android:title="@string/action_delete_all"/>
 
 </menu>

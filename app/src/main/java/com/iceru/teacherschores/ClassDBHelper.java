@@ -74,7 +74,7 @@ public class ClassDBHelper extends SQLiteOpenHelper {
 	}
 
 	public Cursor getRecentSeats() {
-		String[] projection = {
+		/*String[] projection = {
 				ClassDBContract.SeatHistory.COLUMN_NAME_SEAT_ID,
 				ClassDBContract.SeatHistory.COLUMN_NAME_STUDENT_ID,
 				ClassDBContract.SeatHistory.COLUMN_NAME_DATE
@@ -87,7 +87,12 @@ public class ClassDBHelper extends SQLiteOpenHelper {
 				projection,
 				null, null, null, null,
 				sortOrder
-		);
+		);*/
+		String query = "SELECT * FROM " + ClassDBContract.SeatHistory.TABLE_NAME
+				+ " WHERE " + ClassDBContract.SeatHistory.COLUMN_NAME_DATE
+				+ " = ALL(SELECT MAX(" + ClassDBContract.SeatHistory.COLUMN_NAME_DATE
+				+ ") FROM " + ClassDBContract.SeatHistory.TABLE_NAME + ");";
+		return rDB.rawQuery(query, null);
 	}
 
 	public int delete(Student student) {
@@ -113,6 +118,22 @@ public class ClassDBHelper extends SQLiteOpenHelper {
 				ClassDBContract.SeatHistory.TABLE_NAME,
 				selection,
 				selectionArgs
+		);
+	}
+
+	public int deleteAllStudents() {
+		return wDB.delete(
+				ClassDBContract.StudentInfo.TABLE_NAME,
+				null,
+				null
+		);
+	}
+
+	public int deleteAllSeats() {
+		return wDB.delete(
+				ClassDBContract.SeatHistory.TABLE_NAME,
+				null,
+				null
 		);
 	}
 }

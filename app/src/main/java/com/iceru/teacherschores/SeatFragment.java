@@ -6,6 +6,7 @@ import android.app.DatePickerDialog;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -167,12 +168,20 @@ public class SeatFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_seat, container, false);
 
 	    tv_curDate = (TextView) rootView.findViewById(R.id.textview_current_month);
-	    /*SimpleDateFormat sdf = new SimpleDateFormat("yyyy. MM. dd");
-	    tv_curDate.setText(sdf.format(new Date()));*/
 
         gv_segment1 = (GridView) rootView.findViewById(R.id.gridview_segment1);
         gv_segment2 = (GridView) rootView.findViewById(R.id.gridview_segment2);
         gv_segment3 = (GridView) rootView.findViewById(R.id.gridview_segment3);
+
+	    /* apply current seat map read from database */
+	    ClassDBHelper dbHelper = mainActivity.getDbHelper();
+	    Cursor cursor = dbHelper.getRecentSeats();
+	    cursor.moveToFirst();
+	    while(!cursor.isAfterLast()) {
+
+		    cursor.moveToNext();
+	    }
+	    cursor.close();
 
 	    mSegAdpt1 = new segAdapter(mainActivity, mSegment1);
 	    mSegAdpt2 = new segAdapter(mainActivity, mSegment2);
@@ -274,6 +283,11 @@ public class SeatFragment extends Fragment {
             getActivity().invalidateOptionsMenu();
             return true;
         }
+		else if(id == R.id.seatplan_delete_all) {
+			ClassDBHelper dbHelper = mainActivity.getDbHelper();
+			dbHelper.deleteAllSeats();
+			return true;
+		}
 		return super.onOptionsItemSelected(item);
 	}
 
@@ -383,28 +397,30 @@ public class SeatFragment extends Fragment {
         DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                tv_curDate.setText(String.format("%d. %d. %d", year, monthOfYear+1, dayOfMonth));
-	            cal.set(year, monthOfYear, dayOfMonth);
+	            if(view.isShown()) {
+		            tv_curDate.setText(String.format("%d. %d. %d", year, monthOfYear + 1, dayOfMonth));
+		            cal.set(year, monthOfYear, dayOfMonth);
 
-	            /* save to DB */
-	            long curDateInMills = cal.getTimeInMillis();
-	            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mainActivity);
-	            sp.edit().putLong(PREF_RECENT_SAVED_DATE, curDateInMills).apply();
+	                /* save to DB */
+		            long curDateInMills = cal.getTimeInMillis();
+		            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mainActivity);
+		            sp.edit().putLong(PREF_RECENT_SAVED_DATE, curDateInMills).apply();
 
-	            ClassDBHelper dbHelper = mainActivity.getDbHelper();
-	            Student st;
-	            Iterator<Student> i = mStudents.iterator();
-	            while(i.hasNext()) {
-		            st = i.next();
-		            dbHelper.insert(st.getItsCurrentSeat(), curDateInMills);
+		            ClassDBHelper dbHelper = mainActivity.getDbHelper();
+		            Student st;
+		            Iterator<Student> i = mStudents.iterator();
+		            while (i.hasNext()) {
+			            st = i.next();
+			            dbHelper.insert(st.getItsCurrentSeat(), curDateInMills);
+		            }
+
+	                /* mode change, deal with views */
+		            mEditMode = false;
+		            getActivity().invalidateOptionsMenu();
+		            tv_curDate.setVisibility(View.VISIBLE);
+
+		            btn_shuffle.setVisibility(View.INVISIBLE);
 	            }
-
-	            /* mode change, deal with views */
-	            mEditMode = false;
-	            getActivity().invalidateOptionsMenu();
-	            tv_curDate.setVisibility(View.VISIBLE);
-
-	            btn_shuffle.setVisibility(View.INVISIBLE);
             }
         };
         new DatePickerDialog(mainActivity, dateSetListener, year, month, day).show();

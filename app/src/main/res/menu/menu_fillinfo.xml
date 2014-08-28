@@ -20,7 +20,7 @@
         android:id="@+id/action_deleteAll"
         android:showAsAction="never"
         android:orderInCategory="200"
-        android:title="@string/action_deleteAll"/>
+        android:title="@string/action_delete_all"/>
 
 </menu>
 
