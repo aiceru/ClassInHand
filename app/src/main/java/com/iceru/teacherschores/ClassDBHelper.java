@@ -90,7 +90,7 @@ public class ClassDBHelper extends SQLiteOpenHelper {
 		);*/
 		String query = "SELECT * FROM " + ClassDBContract.SeatHistory.TABLE_NAME
 				+ " WHERE " + ClassDBContract.SeatHistory.COLUMN_NAME_DATE
-				+ " = ALL(SELECT MAX(" + ClassDBContract.SeatHistory.COLUMN_NAME_DATE
+				+ " = (SELECT MAX(" + ClassDBContract.SeatHistory.COLUMN_NAME_DATE
 				+ ") FROM " + ClassDBContract.SeatHistory.TABLE_NAME + ");";
 		return rDB.rawQuery(query, null);
 	}

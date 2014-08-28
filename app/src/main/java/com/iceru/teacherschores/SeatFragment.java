@@ -177,7 +177,9 @@ public class SeatFragment extends Fragment {
 	    ClassDBHelper dbHelper = mainActivity.getDbHelper();
 	    Cursor cursor = dbHelper.getRecentSeats();
 	    cursor.moveToFirst();
-	    while(!cursor.isAfterLast()) {
+        while(!cursor.isAfterLast()) {
+            int seat_id = cursor.getInt(cursor.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_SEAT_ID));
+            int student_id = cursor.getInt(cursor.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_STUDENT_ID));
 
 		    cursor.moveToNext();
 	    }
