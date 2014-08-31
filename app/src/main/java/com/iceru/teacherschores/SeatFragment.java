@@ -165,17 +165,17 @@ public class SeatFragment extends Fragment {
 	    Cursor c = dbHelper.getRecentSeats();
 	    c.moveToFirst();
 	    while(!c.isAfterLast()) {
-		    int id = c.getInt(c.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_STUDENT_ID));
-		    String name = c.getString(c.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_STUDENT_NAME));
-		    boolean isBoy = (c.getInt(c.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_STUDENT_GENDER)) == 1)?
-				    true : false;
-		    mStudents.put(id, new Student(id, name, isBoy));
-		    if(isBoy) num_boys++;
-		    else num_girls++;
-		    Student st = mStudents.get
-		    cursor.moveToNext();
+		    int stduent_id = c.getInt(c.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_STUDENT_ID));
+		    int seat_id = c.getInt(c.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_SEAT_ID));
+		    Student student = mStudents.get(stduent_id);
+		    if(student != null) {
+			    Seat seat = getSeatByAbsolutePosition(seat_id);
+			    student.setItsCurrentSeat(seat);
+		    }
+		    Log.e(this.getClass().getSimpleName(), "No Student Object matching with DB");
+		    c.moveToNext();
 	    }
-	    cursor.close();
+	    c.close();
 		//assignRandom();
 	}
 
@@ -358,9 +358,9 @@ public class SeatFragment extends Fragment {
         int seatId;
         boolean boys_are_more = (mBoysSeats > mGirlsSeats);
         int diff_seats = Math.abs(mBoysSeats - mGirlsSeats);
-        Iterator<Student> i = mStudents.iterator();
-        while(i.hasNext()) {
-            st = i.next();
+
+	    for(TreeMap.Entry<Integer, Student> entry : mStudents.entrySet()) {
+            st = entry.getValue();
             do {
                 //seatId = (int)(Math.random() * mTotalSeats);
                 if(boys_are_more == st.isBoy()) {   // 많은쪽
@@ -415,9 +415,10 @@ public class SeatFragment extends Fragment {
 
 		            ClassDBHelper dbHelper = mainActivity.getDbHelper();
 		            Student st;
-		            Iterator<Student> i = mStudents.iterator();
-		            while (i.hasNext()) {
-			            st = i.next();
+		            //Iterator<Student> i = mStudents.iterator();
+		            //while (i.hasNext()) {
+		            for(TreeMap.Entry<Integer, Student> entry : mStudents.entrySet()) {
+			            st = entry.getValue();
 			            dbHelper.insert(st.getItsCurrentSeat(), curDateInMills);
 		            }
 
