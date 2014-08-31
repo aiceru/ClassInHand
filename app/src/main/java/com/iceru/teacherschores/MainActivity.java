@@ -14,11 +14,12 @@ import android.support.v4.widget.DrawerLayout;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 public class MainActivity extends Activity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
-	private TreeSet<Student> mStudents;
+	private TreeMap<Integer, Student> mStudents;
 	private ArrayList<Role> mRoles;
 	private int num_boys, num_girls, num_roleConsume;
     private ClassDBHelper dbHelper;
@@ -46,12 +47,7 @@ public class MainActivity extends Activity
 	    num_girls = 0;
 	    num_roleConsume = 0;
 
-	    mStudents = new TreeSet<Student>(new Comparator<Student>() {
-		    @Override
-		    public int compare(Student lhs, Student rhs) {
-			    return lhs.getNum() - rhs.getNum();
-		    }
-	    });
+	    mStudents = new TreeMap<Integer, Student>();
 	    mRoles = new ArrayList<Role>();
 
         dbHelper = new ClassDBHelper(this);
@@ -61,7 +57,7 @@ public class MainActivity extends Activity
             String name = c.getString(c.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_STUDENT_NAME));
             boolean isBoy = (c.getInt(c.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_STUDENT_GENDER)) == 1)?
                     true : false;
-            mStudents.add(new Student(id, name, isBoy));
+            mStudents.put(id, new Student(id, name, isBoy));
             if(isBoy) num_boys++;
             else num_girls++;
         }
@@ -139,7 +135,7 @@ public class MainActivity extends Activity
 		return num_roleConsume;
 	}
 
-	public TreeSet<Student> getmStudents() {
+	public TreeMap<Integer, Student> getmStudents() {
 		return mStudents;
 	}
 
@@ -148,24 +144,18 @@ public class MainActivity extends Activity
 	}
 
 	public boolean addStudent(Student student) {
-		boolean success = mStudents.add(student);
-		if(success) {
+		boolean exist = null != mStudents.get(student.getNum());
+		if(!exist) {
+			mStudents.put(student.getNum(), student);
 			if(student.isBoy()) num_boys++;
 			else num_girls++;
             dbHelper.insert(student);
-
-			/*SharedPreferences.Editor editor = mShPrefStudentNameList.edit();
-			editor.putString(String.valueOf(student.getNum()), student.getName());
-			editor.apply();
-			editor = mShPrefStudentBoygirlList.edit();
-			editor.putBoolean(String.valueOf(student.getNum()), student.isBoy());
-			editor.apply();*/
 		}
-		return success;
+		return !exist;
 	}
 
 	public boolean removeStudent(Student student) {
-		boolean success = mStudents.remove(student);
+		boolean success = null != mStudents.remove(student.getNum());
 		if(success) {
 			if(student.isBoy()) num_boys--;
 			else num_girls--;

@@ -1,6 +1,7 @@
 package com.iceru.teacherschores;
 
 import java.util.Iterator;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 import android.app.Activity;
@@ -36,15 +37,15 @@ public class FillStudentInfoFragment extends Fragment {
 	private View				rootView;
 	private ListView			mStudentListView;
 	private TextView            mTotalTextView;
-	private TreeSet<Student>    mStudents;
+	private TreeMap<Integer, Student> mStudents;
 	private studentListAdapter	mStudentListAdapter;
 
 	private class studentListAdapter extends BaseAdapter {
 		private LayoutInflater mInflater;
 		private Context mContext;
-		private TreeSet<Student> mItems;
+		private TreeMap<Integer, Student> mItems;
 
-		public studentListAdapter(Context context, TreeSet<Student> object) {
+		public studentListAdapter(Context context, TreeMap<Integer, Student> object) {
 			mContext = context;
 			mItems = object;
 			mInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -56,12 +57,12 @@ public class FillStudentInfoFragment extends Fragment {
 
 		public Object getItem(int position) {
 			Student st = null;
-			Iterator<Student> i = mItems.iterator();
-			while(i.hasNext() && position >= 0) {
-				position--;
-				st = i.next();
+			Integer key = 0;
+			for(TreeMap.Entry<Integer, Student> entry : mItems.entrySet()) {
+				st = entry.getValue();
+				if(position-- < 0) return st;
 			}
-			return st;
+			return null;
 		}
 
 		public long getItemId(int position) {

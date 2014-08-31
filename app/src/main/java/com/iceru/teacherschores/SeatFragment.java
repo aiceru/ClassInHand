@@ -31,6 +31,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 /**
@@ -38,7 +39,7 @@ import java.util.TreeSet;
  */
 public class SeatFragment extends Fragment {
 	private MainActivity        mainActivity;
-	private TreeSet<Student>    mStudents;
+	private TreeMap<Integer, Student> mStudents;
 	private ArrayList<Seat>     mSegment1, mSegment2, mSegment3;
 	private segAdapter          mSegAdpt1, mSegAdpt2, mSegAdpt3;
     private boolean             mEditMode = false;
@@ -159,6 +160,22 @@ public class SeatFragment extends Fragment {
 			}
 		}
 
+	    /* apply current seat map read from database */
+	    ClassDBHelper dbHelper = mainActivity.getDbHelper();
+	    Cursor c = dbHelper.getRecentSeats();
+	    c.moveToFirst();
+	    while(!c.isAfterLast()) {
+		    int id = c.getInt(c.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_STUDENT_ID));
+		    String name = c.getString(c.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_STUDENT_NAME));
+		    boolean isBoy = (c.getInt(c.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_STUDENT_GENDER)) == 1)?
+				    true : false;
+		    mStudents.put(id, new Student(id, name, isBoy));
+		    if(isBoy) num_boys++;
+		    else num_girls++;
+		    Student st = mStudents.get
+		    cursor.moveToNext();
+	    }
+	    cursor.close();
 		//assignRandom();
 	}
 
@@ -172,16 +189,6 @@ public class SeatFragment extends Fragment {
         gv_segment1 = (GridView) rootView.findViewById(R.id.gridview_segment1);
         gv_segment2 = (GridView) rootView.findViewById(R.id.gridview_segment2);
         gv_segment3 = (GridView) rootView.findViewById(R.id.gridview_segment3);
-
-	    /* apply current seat map read from database */
-	    ClassDBHelper dbHelper = mainActivity.getDbHelper();
-	    Cursor cursor = dbHelper.getRecentSeats();
-	    cursor.moveToFirst();
-	    while(!cursor.isAfterLast()) {
-
-		    cursor.moveToNext();
-	    }
-	    cursor.close();
 
 	    mSegAdpt1 = new segAdapter(mainActivity, mSegment1);
 	    mSegAdpt2 = new segAdapter(mainActivity, mSegment2);
