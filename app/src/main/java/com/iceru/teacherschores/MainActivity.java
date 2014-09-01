@@ -57,7 +57,8 @@ public class MainActivity extends Activity
             String name = c.getString(c.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_STUDENT_NAME));
             boolean isBoy = (c.getInt(c.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_STUDENT_GENDER)) == 1)?
                     true : false;
-            mStudents.put(id, new Student(id, name, isBoy));
+	        Student temp = new Student(id, name, isBoy);
+            mStudents.put(id, temp);//new Student(id, name, isBoy));
             if(isBoy) num_boys++;
             else num_girls++;
         }

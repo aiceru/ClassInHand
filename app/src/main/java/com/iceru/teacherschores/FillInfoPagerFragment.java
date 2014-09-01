@@ -81,7 +81,7 @@ public class FillInfoPagerFragment extends Fragment {
         Log.d(this.getClass().getSimpleName(), "onActivityCreated()");
         super.onActivityCreated(savedInstanceState);
         // Indicate that this fragment would like to influence the set of actions in the action bar.
-        setHasOptionsMenu(true);
+        //setHasOptionsMenu(true);
     }
 
     @Override
@@ -136,24 +136,6 @@ public class FillInfoPagerFragment extends Fragment {
     public void onDetach() {
         Log.d(this.getClass().getSimpleName(), "onDetach()");
         super.onDetach();
-    }
-
-    private ActionBar getActionBar() {
-        return getActivity().getActionBar();
-    }
-
-    public void showActionBar() {
-        ActionBar actionBar = getActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        actionBar.setDisplayShowTitleEnabled(true);
-        actionBar.setTitle(R.string.title_fillinfo);
-    }
-
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        if (!((MainActivity)getActivity()).isDrawerOpen()) {
-            inflater.inflate(R.menu.menu_fillinfo, menu);
-            showActionBar();
-        }
     }
 
 	private class TabFactory implements TabHost.TabContentFactory {

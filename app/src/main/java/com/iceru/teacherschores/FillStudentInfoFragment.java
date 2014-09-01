@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.Fragment;
@@ -12,6 +13,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
@@ -56,11 +60,9 @@ public class FillStudentInfoFragment extends Fragment {
 		}
 
 		public Object getItem(int position) {
-			Student st = null;
-			Integer key = 0;
 			for(TreeMap.Entry<Integer, Student> entry : mItems.entrySet()) {
-				st = entry.getValue();
-				if(position-- < 0) return st;
+				position--;
+				if(position < 0) return entry.getValue();
 			}
 			return null;
 		}
@@ -250,6 +252,7 @@ public class FillStudentInfoFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         Log.d(this.getClass().getSimpleName(), "onActivityCreated()");
         super.onActivityCreated(savedInstanceState);
+	    setHasOptionsMenu(true);
     }
 
     @Override
@@ -294,7 +297,37 @@ public class FillStudentInfoFragment extends Fragment {
         super.onDetach();
     }
 
-    private void addStudent() {
+	private ActionBar getActionBar() {
+		return getActivity().getActionBar();
+	}
+
+	public void showActionBar() {
+		ActionBar actionBar = getActionBar();
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+		actionBar.setDisplayShowTitleEnabled(true);
+		actionBar.setTitle(R.string.title_fillinfo);
+	}
+
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		if (!((MainActivity)getActivity()).isDrawerOpen()) {
+			inflater.inflate(R.menu.menu_fillinfo, menu);
+			showActionBar();
+		}
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		int id = item.getItemId();
+		if(id == R.id.action_deleteAll) {
+			ClassDBHelper dbHelper = mainActivity.getDbHelper();
+			dbHelper.deleteAllStudents();
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+
+	private void addStudent() {
 		String curNumString = mEditTextNum.getText().toString();
 		String curName = mEditTextName.getText().toString();
 
