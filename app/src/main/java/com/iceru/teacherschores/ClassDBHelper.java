@@ -56,6 +56,12 @@ public class ClassDBHelper extends SQLiteOpenHelper {
 		);
 	}
 
+    /*public void insert(Seat seat, String dateStr) {
+        wDB.execSQL("INSERT into " + ClassDBContract.SeatHistory.TABLE_NAME
+                + " VALUES (" + seat.getId() + ", " + seat.getItsStudent().getNum()
+                + ", julianday('" + dateStr + "')-" + CONSTANT_MJD + ");");
+    }*/
+
 	public Cursor getStudents() {
 		String[] projection = {
 				ClassDBContract.StudentInfo.COLUMN_NAME_STUDENT_ID,
@@ -74,20 +80,6 @@ public class ClassDBHelper extends SQLiteOpenHelper {
 	}
 
 	public Cursor getRecentSeats() {
-		/*String[] projection = {
-				ClassDBContract.SeatHistory.COLUMN_NAME_SEAT_ID,
-				ClassDBContract.SeatHistory.COLUMN_NAME_STUDENT_ID,
-				ClassDBContract.SeatHistory.COLUMN_NAME_DATE
-		};
-		String sortOrder =
-				ClassDBContract.SeatHistory.COLUMN_NAME_SEAT_ID + " DESC";
-
-		return rDB.query(
-				ClassDBContract.SeatHistory.TABLE_NAME,
-				projection,
-				null, null, null, null,
-				sortOrder
-		);*/
 		String query = "SELECT * FROM " + ClassDBContract.SeatHistory.TABLE_NAME
 				+ " WHERE " + ClassDBContract.SeatHistory.COLUMN_NAME_DATE
 				+ " = (SELECT MAX(" + ClassDBContract.SeatHistory.COLUMN_NAME_DATE

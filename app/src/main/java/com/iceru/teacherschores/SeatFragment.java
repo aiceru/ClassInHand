@@ -21,6 +21,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.lang.reflect.Array;
@@ -100,13 +101,20 @@ public class SeatFragment extends Fragment {
 
 			final Seat seat = (Seat)this.getItem(position);
 
-			if(seat != null && seat.getItsStudent() != null) {
-				TextView tvNum = (TextView)view.findViewById(R.id.textview_seated_num);
-				TextView tvName = (TextView)view.findViewById(R.id.textview_seated_name);
-				ImageView ivBoygirl = (ImageView)view.findViewById(R.id.imageview_seated_boygirl);
-				tvNum.setText(String.valueOf(seat.getItsStudent().getNum()));
-				tvName.setText(seat.getItsStudent().getName());
-				ivBoygirl.setImageResource(seat.getItsStudent().isBoy()? R.drawable.ic_toggle_boy : R.drawable.ic_toggle_girl);
+			if(seat != null) {
+                TextView tvNum = (TextView) view.findViewById(R.id.textview_seated_num);
+                TextView tvName = (TextView) view.findViewById(R.id.textview_seated_name);
+                ImageView ivBoygirl = (ImageView) view.findViewById(R.id.imageview_seated_boygirl);
+                if(seat.getItsStudent() != null) {
+                    tvNum.setText(String.valueOf(seat.getItsStudent().getNum()));
+                    tvName.setText(seat.getItsStudent().getName());
+                    ivBoygirl.setImageResource(seat.getItsStudent().isBoy() ? R.drawable.ic_toggle_boy : R.drawable.ic_toggle_girl);
+                }
+                else {
+                    tvNum.setText(null);
+                    tvName.setText(null);
+                    ivBoygirl.setImageResource(0);
+                }
 			}
 
 			return view;
@@ -171,6 +179,7 @@ public class SeatFragment extends Fragment {
 		    if(student != null) {
 			    Seat seat = getSeatByAbsolutePosition(seat_id);
 			    student.setItsCurrentSeat(seat);
+                seat.setItsStudent(student);
 		    }
 		    Log.e(this.getClass().getSimpleName(), "No Student Object matching with DB");
 		    c.moveToNext();
@@ -205,6 +214,7 @@ public class SeatFragment extends Fragment {
             }
         });
 	    btn_shuffle.setVisibility(View.INVISIBLE);
+
         return rootView;
     }
 
@@ -293,6 +303,22 @@ public class SeatFragment extends Fragment {
 		else if(id == R.id.seatplan_delete_all) {
 			ClassDBHelper dbHelper = mainActivity.getDbHelper();
 			dbHelper.deleteAllSeats();
+            for(Seat seat : mSegment1) {
+                seat.setItsStudent(null);
+            }
+            for(Seat seat : mSegment2) {
+                seat.setItsStudent(null);
+            }
+            for(Seat seat : mSegment3) {
+                seat.setItsStudent(null);
+            }
+            for(TreeMap.Entry<Integer, Student> entry : mStudents.entrySet()) {
+                entry.getValue().setItsCurrentSeat(null);
+            }
+            tv_curDate.setText(null);
+            mSegAdpt1.notifyDataSetChanged();
+            mSegAdpt2.notifyDataSetChanged();
+            mSegAdpt3.notifyDataSetChanged();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -374,7 +400,9 @@ public class SeatFragment extends Fragment {
                     seatId = st.isBoy()? seatId - (seatId % 2) : seatId - (seatId % 2) + 1;
                 }
             } while(seatIsFull[seatId] == true);
-            st.setItsCurrentSeat(getSeatByAbsolutePosition(seatId));
+            Seat seat = getSeatByAbsolutePosition(seatId);
+            seat.setItsStudent(st);
+            st.setItsCurrentSeat(seat);
             seatIsFull[seatId] = true;
         }
 	    mSegAdpt1.notifyDataSetChanged();
@@ -388,6 +416,11 @@ public class SeatFragment extends Fragment {
 		tv_curDate.setVisibility(View.INVISIBLE);
 
 		btn_shuffle.setVisibility(View.VISIBLE);
+
+        TreeMap<Integer, Student>   newStudents = (TreeMap<Integer, Student>)mStudents.clone();
+        ArrayList<Seat>             newSegment1 = (ArrayList<Seat>)mSegment1.clone();
+        ArrayList<Seat>             newSegment2 = (ArrayList<Seat>)mSegment1.clone();
+        ArrayList<Seat>             newSegment3 = (ArrayList<Seat>)mSegment1.clone();
 	}
 
     private void saveCurrentPlan() {
@@ -406,6 +439,7 @@ public class SeatFragment extends Fragment {
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
 	            if(view.isShown()) {
 		            tv_curDate.setText(String.format("%d. %d. %d", year, monthOfYear + 1, dayOfMonth));
+                    cal.clear();
 		            cal.set(year, monthOfYear, dayOfMonth);
 
 	                /* save to DB */
@@ -415,8 +449,6 @@ public class SeatFragment extends Fragment {
 
 		            ClassDBHelper dbHelper = mainActivity.getDbHelper();
 		            Student st;
-		            //Iterator<Student> i = mStudents.iterator();
-		            //while (i.hasNext()) {
 		            for(TreeMap.Entry<Integer, Student> entry : mStudents.entrySet()) {
 			            st = entry.getValue();
 			            dbHelper.insert(st.getItsCurrentSeat(), curDateInMills);

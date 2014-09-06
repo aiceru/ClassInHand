@@ -140,6 +140,10 @@ public class MainActivity extends Activity
 		return mStudents;
 	}
 
+    public void setmStudents(TreeMap<Integer, Student> newStudents) {
+        this.mStudents = newStudents;
+    }
+
 	public ArrayList<Role> getmRoles() {
 		return mRoles;
 	}

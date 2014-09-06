@@ -40,6 +40,5 @@ public class Student {
 
 	public void setItsCurrentSeat(Seat itsCurrentSeat) {
 		this.itsCurrentSeat = itsCurrentSeat;
-		itsCurrentSeat.setItsStudent(this);
 	}
 }
