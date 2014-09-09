@@ -3,7 +3,7 @@ package com.iceru.teacherschores;
 /**
  * Created by iceru on 14. 8. 14.
  */
-public class Seat {
+public class Seat implements Cloneable {
 	private int id;
 	private Student itsStudent;
 
@@ -27,4 +27,9 @@ public class Seat {
 	public void setItsStudent(Student itsStudent) {
 		this.itsStudent = itsStudent;
 	}
+
+    @Override
+    public Seat clone() throws CloneNotSupportedException {
+        return (Seat) super.clone();
+    }
 }

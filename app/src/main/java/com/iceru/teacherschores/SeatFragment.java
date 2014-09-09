@@ -45,6 +45,11 @@ public class SeatFragment extends Fragment {
 	private segAdapter          mSegAdpt1, mSegAdpt2, mSegAdpt3;
     private boolean             mEditMode = false;
 
+    /* 새 자리 배치, 배치 수정 등에 쓰일 임시 리스트들 (원본 복제해서 작업 후 save or discard) */
+    private TreeMap<Integer, Student>   mNewStudents = null;
+    private ArrayList<Seat>             mNewSegment1 = null, mNewSegment2 = null, mNewSegment3 = null;
+    private segAdapter                  mNewSegAdpt1 = null, mNewSegAdpt2 = null, mNewSegAdpt3 = null;
+
 	/* View variables */
 	private GridView    gv_segment1;
 	private GridView    gv_segment2;
@@ -54,8 +59,7 @@ public class SeatFragment extends Fragment {
 	private Button      btn_shuffle;
 
 	private int         mTotalSeats, mBoysSeats, mGirlsSeats;
-
-	private static final String PREF_RECENT_SAVED_DATE = "recent_saved_date";
+    private GregorianCalendar recentSavedCal;
 
 	private class segAdapter extends BaseAdapter {
 		private LayoutInflater mInflater;
@@ -171,22 +175,48 @@ public class SeatFragment extends Fragment {
 	    /* apply current seat map read from database */
 	    ClassDBHelper dbHelper = mainActivity.getDbHelper();
 	    Cursor c = dbHelper.getRecentSeats();
+
 	    c.moveToFirst();
+
+        long date = c.getLong(c.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_DATE));
+        recentSavedCal = new GregorianCalendar();
+        recentSavedCal.setTimeInMillis(date);
+
 	    while(!c.isAfterLast()) {
 		    int stduent_id = c.getInt(c.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_STUDENT_ID));
 		    int seat_id = c.getInt(c.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_SEAT_ID));
+            long saved_date = c.getLong(c.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_DATE));
 		    Student student = mStudents.get(stduent_id);
 		    if(student != null) {
 			    Seat seat = getSeatByAbsolutePosition(seat_id);
 			    student.setItsCurrentSeat(seat);
                 seat.setItsStudent(student);
 		    }
-		    Log.e(this.getClass().getSimpleName(), "No Student Object matching with DB");
+		    else Log.e(this.getClass().getSimpleName(), "No Student Object matching with DB");
 		    c.moveToNext();
 	    }
 	    c.close();
 		//assignRandom();
 	}
+
+    public void addToClonedSegment(Seat seat) {
+        switch(seat.getId() % 6) {
+            case 0:
+            case 1:
+                mNewSegment1.add(seat);
+                break;
+            case 2:
+            case 3:
+                mNewSegment2.add(seat);
+                break;
+            case 4:
+            case 5:
+                mNewSegment3.add(seat);
+                break;
+            default:
+                break;
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -194,6 +224,10 @@ public class SeatFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_seat, container, false);
 
 	    tv_curDate = (TextView) rootView.findViewById(R.id.textview_current_month);
+        tv_curDate.setText(String.format("%d. %d. %d",
+                recentSavedCal.get(Calendar.YEAR),
+                recentSavedCal.get(Calendar.MONTH)+1,
+                recentSavedCal.get(Calendar.DAY_OF_MONTH)));
 
         gv_segment1 = (GridView) rootView.findViewById(R.id.gridview_segment1);
         gv_segment2 = (GridView) rootView.findViewById(R.id.gridview_segment2);
@@ -216,6 +250,147 @@ public class SeatFragment extends Fragment {
 	    btn_shuffle.setVisibility(View.INVISIBLE);
 
         return rootView;
+    }
+
+    private void createNewPlan() {
+        tv_curDate.setVisibility(View.INVISIBLE);
+        btn_shuffle.setVisibility(View.VISIBLE);
+
+        /* Cloning all lists and Treemaps... */
+        mNewStudents = new TreeMap<Integer, Student>();
+        mNewSegment1 = new ArrayList<Seat>();
+        mNewSegment2 = new ArrayList<Seat>();
+        mNewSegment3 = new ArrayList<Seat>();
+
+        Student st = null;
+        for(TreeMap.Entry<Integer, Student> entry : mStudents.entrySet()) {
+            try {
+                st = entry.getValue().clone();
+                mNewStudents.put(st.getNum(), st);
+            } catch (CloneNotSupportedException e) {
+                e.printStackTrace();
+            }
+        }
+        for(Seat seat : mSegment1) {
+            try {
+                Seat newSeat = seat.clone();
+                addToClonedSegment(newSeat);
+            } catch (CloneNotSupportedException e) {
+                e.printStackTrace();
+            }
+        }
+        for(Seat seat : mSegment2) {
+            try {
+                Seat newSeat = seat.clone();
+                addToClonedSegment(newSeat);
+            } catch (CloneNotSupportedException e) {
+                e.printStackTrace();
+            }
+        }
+        for(Seat seat : mSegment3) {
+            try {
+                Seat newSeat = seat.clone();
+                addToClonedSegment(newSeat);
+            } catch (CloneNotSupportedException e) {
+                e.printStackTrace();
+            }
+        }
+        /* Cloning End : link is twisted orz */
+
+        /* Remove all links of the cloned lists and treemap (because this is a NEW plan) */
+        removeAssignments(mNewStudents);
+        removeAssignments(mNewSegment1);
+        removeAssignments(mNewSegment2);
+        removeAssignments(mNewSegment3);
+
+        mNewSegAdpt1 = new segAdapter(mainActivity, mNewSegment1);
+        mNewSegAdpt2 = new segAdapter(mainActivity, mNewSegment2);
+        mNewSegAdpt3 = new segAdapter(mainActivity, mNewSegment3);
+
+        gv_segment1.setAdapter(mNewSegAdpt1);
+        gv_segment2.setAdapter(mNewSegAdpt2);
+        gv_segment3.setAdapter(mNewSegAdpt3);
+    }
+
+    private void discardAndRemoveClones() {
+        gv_segment1.setAdapter(mSegAdpt1);
+        gv_segment2.setAdapter(mSegAdpt2);
+        gv_segment3.setAdapter(mSegAdpt3);
+
+        mNewStudents = null;
+        mNewSegment1 = null;
+        mNewSegment2 = null;
+        mNewSegment3 = null;
+        mNewSegAdpt1 = null;
+        mNewSegAdpt2 = null;
+        mNewSegAdpt3 = null;
+    }
+
+    private void discardCurrentPlan() {
+        discardAndRemoveClones();
+
+        tv_curDate.setVisibility(View.VISIBLE);
+        btn_shuffle.setVisibility(View.INVISIBLE);
+    }
+
+    private void saveCurrentPlan() {
+        assert(mNewStudents != null && mNewSegment1 != null
+                && mNewSegment2 != null && mNewSegment3 != null);
+
+        // TODO : check if all students have his/her own seat
+
+        mStudents = mNewStudents;
+        mSegment1 = mNewSegment1;
+        mSegment2 = mNewSegment2;
+        mSegment3 = mNewSegment3;
+        mSegAdpt1 = mNewSegAdpt1;
+        mSegAdpt2 = mNewSegAdpt2;
+        mSegAdpt3 = mNewSegAdpt3;
+
+        gv_segment1.setAdapter(mSegAdpt1);
+        gv_segment2.setAdapter(mSegAdpt2);
+        gv_segment3.setAdapter(mSegAdpt3);
+
+        mNewStudents = null;
+        mNewSegment1 = null;
+        mNewSegment2 = null;
+        mNewSegment3 = null;
+        mNewSegAdpt1 = null;
+        mNewSegAdpt2 = null;
+        mNewSegAdpt3 = null;
+
+	    /* get current date */
+        int year, month, day;
+        final GregorianCalendar cal = new GregorianCalendar();
+        year = cal.get(Calendar.YEAR);
+        month = cal.get(Calendar.MONTH);
+        day = cal.get(Calendar.DAY_OF_MONTH);
+
+		/* dialog : select date */
+        DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                if(view.isShown()) {
+                    tv_curDate.setText(String.format("%d. %d. %d", year, monthOfYear + 1, dayOfMonth));
+                    cal.clear();
+                    cal.set(year, monthOfYear, dayOfMonth);
+
+	                /* save to DB */
+                    long curDateInMills = cal.getTimeInMillis();
+                    ClassDBHelper dbHelper = mainActivity.getDbHelper();
+                    Student st;
+                    for(TreeMap.Entry<Integer, Student> entry : mStudents.entrySet()) {
+                        st = entry.getValue();
+                        dbHelper.insert(st.getItsCurrentSeat(), curDateInMills);
+                    }
+
+	                /* deal with views */
+                    tv_curDate.setVisibility(View.VISIBLE);
+                    btn_shuffle.setVisibility(View.INVISIBLE);
+                }
+            }
+        };
+        new DatePickerDialog(mainActivity, dateSetListener, year, month, day).show();
     }
 
 	@Override
@@ -269,6 +444,7 @@ public class SeatFragment extends Fragment {
     @Override
     public void onDestroyView() {
         Log.d(this.getClass().getSimpleName(), "onDestroyView()");
+        discardAndRemoveClones();
         super.onDestroyView();
     }
 
@@ -288,41 +464,58 @@ public class SeatFragment extends Fragment {
 	public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 		if(id == R.id.seatplan_new) {
+            mEditMode = true;
+            mainActivity.invalidateOptionsMenu();
+
             createNewPlan();
             return true;
         }
         else if(id == R.id.seatplan_done) {
             saveCurrentPlan();
+
+            mEditMode = false;
+            mainActivity.invalidateOptionsMenu();
             return true;
 		}
         else if(id == R.id.seatplan_cancel) {
+            discardCurrentPlan();
+
             mEditMode = false;
-            getActivity().invalidateOptionsMenu();
+            refreshSegView();
+
+            mainActivity.invalidateOptionsMenu();
             return true;
         }
 		else if(id == R.id.seatplan_delete_all) {
 			ClassDBHelper dbHelper = mainActivity.getDbHelper();
 			dbHelper.deleteAllSeats();
-            for(Seat seat : mSegment1) {
-                seat.setItsStudent(null);
-            }
-            for(Seat seat : mSegment2) {
-                seat.setItsStudent(null);
-            }
-            for(Seat seat : mSegment3) {
-                seat.setItsStudent(null);
-            }
-            for(TreeMap.Entry<Integer, Student> entry : mStudents.entrySet()) {
-                entry.getValue().setItsCurrentSeat(null);
-            }
+
+            removeAssignments(mSegment1);
+            removeAssignments(mSegment2);
+            removeAssignments(mSegment3);
+            removeAssignments(mStudents);
+
             tv_curDate.setText(null);
-            mSegAdpt1.notifyDataSetChanged();
-            mSegAdpt2.notifyDataSetChanged();
-            mSegAdpt3.notifyDataSetChanged();
-			return true;
+            mEditMode = false;
+            refreshSegView();
+
+            mainActivity.invalidateOptionsMenu();
+            return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
+
+    private void removeAssignments(TreeMap<Integer, Student> studentList) {
+        for(TreeMap.Entry<Integer, Student> entry : studentList.entrySet()) {
+            entry.getValue().setItsCurrentSeat(null);
+        }
+    }
+
+    private void removeAssignments(ArrayList<Seat> seatList) {
+        for(Seat seat : seatList) {
+            seat.setItsStudent(null);
+        }
+    }
 
 	private ActionBar getActionBar() {
         return getActivity().getActionBar();
@@ -339,23 +532,44 @@ public class SeatFragment extends Fragment {
 		int mod = seatId % 6;
 		int mod2 = mod % 2;
 		int div = seatId / 6;
-		ArrayList<Seat> seg = mSegment1;
-		switch(mod) {
-			case 0:
-			case 1:
-				seg = mSegment1;
-				break;
-			case 2:
-			case 3:
-				seg = mSegment2;
-				break;
-			case 4:
-			case 5:
-				seg = mSegment3;
-				break;
-			default:
-				break;
-		}
+        ArrayList<Seat> seg = null;
+
+        if(mEditMode) {
+            switch (mod) {
+                case 0:
+                case 1:
+                    seg = mNewSegment1;
+                    break;
+                case 2:
+                case 3:
+                    seg = mNewSegment2;
+                    break;
+                case 4:
+                case 5:
+                    seg = mNewSegment3;
+                    break;
+                default:
+                    break;
+            }
+        }
+        else {
+            switch (mod) {
+                case 0:
+                case 1:
+                    seg = mSegment1;
+                    break;
+                case 2:
+                case 3:
+                    seg = mSegment2;
+                    break;
+                case 4:
+                case 5:
+                    seg = mSegment3;
+                    break;
+                default:
+                    break;
+            }
+        }
 		return seg.get((div * 2) + (mod2));
 	}
 
@@ -385,7 +599,7 @@ public class SeatFragment extends Fragment {
         boolean boys_are_more = (mBoysSeats > mGirlsSeats);
         int diff_seats = Math.abs(mBoysSeats - mGirlsSeats);
 
-	    for(TreeMap.Entry<Integer, Student> entry : mStudents.entrySet()) {
+	    for(TreeMap.Entry<Integer, Student> entry : mNewStudents.entrySet()) {
             st = entry.getValue();
             do {
                 //seatId = (int)(Math.random() * mTotalSeats);
@@ -405,64 +619,19 @@ public class SeatFragment extends Fragment {
             st.setItsCurrentSeat(seat);
             seatIsFull[seatId] = true;
         }
-	    mSegAdpt1.notifyDataSetChanged();
-	    mSegAdpt2.notifyDataSetChanged();
-	    mSegAdpt3.notifyDataSetChanged();
+	    refreshSegView();
     }
 
-	private void createNewPlan() {
-        mEditMode = true;
-        getActivity().invalidateOptionsMenu();
-		tv_curDate.setVisibility(View.INVISIBLE);
-
-		btn_shuffle.setVisibility(View.VISIBLE);
-
-        TreeMap<Integer, Student>   newStudents = (TreeMap<Integer, Student>)mStudents.clone();
-        ArrayList<Seat>             newSegment1 = (ArrayList<Seat>)mSegment1.clone();
-        ArrayList<Seat>             newSegment2 = (ArrayList<Seat>)mSegment1.clone();
-        ArrayList<Seat>             newSegment3 = (ArrayList<Seat>)mSegment1.clone();
-	}
-
-    private void saveCurrentPlan() {
-        // TODO : check if all students have his/her own seat
-
-	    /* get current date */
-        int year, month, day;
-        final GregorianCalendar cal = new GregorianCalendar();
-        year = cal.get(Calendar.YEAR);
-        month = cal.get(Calendar.MONTH);
-        day = cal.get(Calendar.DAY_OF_MONTH);
-
-		/* dialog : select date */
-        DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-	            if(view.isShown()) {
-		            tv_curDate.setText(String.format("%d. %d. %d", year, monthOfYear + 1, dayOfMonth));
-                    cal.clear();
-		            cal.set(year, monthOfYear, dayOfMonth);
-
-	                /* save to DB */
-		            long curDateInMills = cal.getTimeInMillis();
-		            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mainActivity);
-		            sp.edit().putLong(PREF_RECENT_SAVED_DATE, curDateInMills).apply();
-
-		            ClassDBHelper dbHelper = mainActivity.getDbHelper();
-		            Student st;
-		            for(TreeMap.Entry<Integer, Student> entry : mStudents.entrySet()) {
-			            st = entry.getValue();
-			            dbHelper.insert(st.getItsCurrentSeat(), curDateInMills);
-		            }
-
-	                /* mode change, deal with views */
-		            mEditMode = false;
-		            getActivity().invalidateOptionsMenu();
-		            tv_curDate.setVisibility(View.VISIBLE);
-
-		            btn_shuffle.setVisibility(View.INVISIBLE);
-	            }
-            }
-        };
-        new DatePickerDialog(mainActivity, dateSetListener, year, month, day).show();
+    private void refreshSegView() {
+        if(mEditMode) {
+            mNewSegAdpt1.notifyDataSetChanged();
+            mNewSegAdpt2.notifyDataSetChanged();
+            mNewSegAdpt3.notifyDataSetChanged();
+        }
+        else {
+            mSegAdpt1.notifyDataSetChanged();
+            mSegAdpt2.notifyDataSetChanged();
+            mSegAdpt3.notifyDataSetChanged();
+        }
     }
 }

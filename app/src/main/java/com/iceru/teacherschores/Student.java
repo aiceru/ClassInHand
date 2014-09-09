@@ -3,7 +3,7 @@ package com.iceru.teacherschores;
 /**
  * Created by iceru on 14. 8. 13.
  */
-public class Student {
+public class Student implements Cloneable {
 	private int		num;
 	private String	name;
 	private boolean boy;		// true -> boy, false -> girl... T/F has no meaning. :)
@@ -41,4 +41,9 @@ public class Student {
 	public void setItsCurrentSeat(Seat itsCurrentSeat) {
 		this.itsCurrentSeat = itsCurrentSeat;
 	}
+
+    @Override
+    public Student clone() throws CloneNotSupportedException {
+        return (Student) super.clone();
+    }
 }
