@@ -2,13 +2,13 @@ package com.iceru.teacherschores;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Fragment;
 import android.content.Context;
-import android.content.SharedPreferences;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -21,19 +21,12 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import java.lang.reflect.Array;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Comparator;
-import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.Iterator;
 import java.util.TreeMap;
-import java.util.TreeSet;
 
 /**
  * Created by iceru on 14. 8. 14.
@@ -176,28 +169,28 @@ public class SeatFragment extends Fragment {
 	    ClassDBHelper dbHelper = mainActivity.getDbHelper();
 	    Cursor c = dbHelper.getRecentSeats();
 
-	    c.moveToFirst();
+	    if(c.moveToFirst()) {
+            long date = c.getLong(c.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_DATE));
+            recentSavedCal = new GregorianCalendar();
+            recentSavedCal.setTimeInMillis(date);
 
-        long date = c.getLong(c.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_DATE));
-        recentSavedCal = new GregorianCalendar();
-        recentSavedCal.setTimeInMillis(date);
-
-	    while(!c.isAfterLast()) {
-		    int stduent_id = c.getInt(c.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_STUDENT_ID));
-		    int seat_id = c.getInt(c.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_SEAT_ID));
-            long saved_date = c.getLong(c.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_DATE));
-		    Student student = mStudents.get(stduent_id);
-		    if(student != null) {
-			    Seat seat = getSeatByAbsolutePosition(seat_id);
-			    student.setItsCurrentSeat(seat);
-                seat.setItsStudent(student);
-		    }
-		    else Log.e(this.getClass().getSimpleName(), "No Student Object matching with DB");
-		    c.moveToNext();
-	    }
-	    c.close();
-		//assignRandom();
-	}
+            while(!c.isAfterLast()) {
+                int stduent_id = c.getInt(c.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_STUDENT_ID));
+                int seat_id = c.getInt(c.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_SEAT_ID));
+                long saved_date = c.getLong(c.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_DATE));
+                Student student = mStudents.get(stduent_id);
+                if(student != null) {
+                    Seat seat = getSeatByAbsolutePosition(seat_id);
+                    student.setItsCurrentSeat(seat);
+                    seat.setItsStudent(student);
+                }
+                else Log.e(this.getClass().getSimpleName(), "No Student Object matching with DB");
+                c.moveToNext();
+            }
+        }
+        c.close();
+        //assignRandom();
+    }
 
     public void addToClonedSegment(Seat seat) {
         switch(seat.getId() % 6) {
@@ -224,10 +217,12 @@ public class SeatFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_seat, container, false);
 
 	    tv_curDate = (TextView) rootView.findViewById(R.id.textview_current_month);
-        tv_curDate.setText(String.format("%d. %d. %d",
-                recentSavedCal.get(Calendar.YEAR),
-                recentSavedCal.get(Calendar.MONTH)+1,
-                recentSavedCal.get(Calendar.DAY_OF_MONTH)));
+        if(recentSavedCal != null) {
+            tv_curDate.setText(String.format("%d. %d. %d",
+                    recentSavedCal.get(Calendar.YEAR),
+                    recentSavedCal.get(Calendar.MONTH) + 1,
+                    recentSavedCal.get(Calendar.DAY_OF_MONTH)));
+        }
 
         gv_segment1 = (GridView) rootView.findViewById(R.id.gridview_segment1);
         gv_segment2 = (GridView) rootView.findViewById(R.id.gridview_segment2);
@@ -339,6 +334,82 @@ public class SeatFragment extends Fragment {
 
         // TODO : check if all students have his/her own seat
 
+	    /* get current date */
+        int year, month, day;
+        final GregorianCalendar cal = new GregorianCalendar();
+        year = cal.get(Calendar.YEAR);
+        month = cal.get(Calendar.MONTH);
+        day = cal.get(Calendar.DAY_OF_MONTH);
+
+		/* dialog : select date */
+        DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                if(view.isShown()) {
+                    tv_curDate.setText(String.format("%d. %d. %d", year, monthOfYear + 1, dayOfMonth));
+                    cal.clear();
+                    cal.set(year, monthOfYear, dayOfMonth);
+
+                    final long curDateInMills = cal.getTimeInMillis();
+                    final ClassDBHelper dbHelper = mainActivity.getDbHelper();
+                    Cursor c = dbHelper.getSeatsForDate(curDateInMills);
+                    if(!c.moveToFirst()) {
+                        swapWithClones();
+
+                        /* save to DB */
+                        Student st;
+                        for (TreeMap.Entry<Integer, Student> entry : mStudents.entrySet()) {
+                            st = entry.getValue();
+                            dbHelper.insert(st.getItsCurrentSeat(), curDateInMills);
+                        }
+
+                        /* deal with views */
+                        tv_curDate.setVisibility(View.VISIBLE);
+                        btn_shuffle.setVisibility(View.INVISIBLE);
+
+                        mEditMode = false;
+                        mainActivity.invalidateOptionsMenu();
+                    }
+                    else {      // seat assignment for this date already exists. so, UPDATE. not INSERT.
+                        AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
+                        builder.setTitle(R.string.title_dialog_warning);
+                        builder.setMessage(R.string.contents_dialog_seat_assign_already_exists);
+                        builder.setPositiveButton(R.string.action_overwrite, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // User clicked OK button
+                                swapWithClones();
+
+                                /* update DB */
+                                Student st;
+                                for(TreeMap.Entry<Integer, Student> entry : mStudents.entrySet()) {
+                                    st = entry.getValue();
+                                    dbHelper.update(st.getItsCurrentSeat(), curDateInMills);
+                                }
+
+                                /* deal with views */
+                                tv_curDate.setVisibility(View.VISIBLE);
+                                btn_shuffle.setVisibility(View.INVISIBLE);
+
+                                mEditMode = false;
+                                mainActivity.invalidateOptionsMenu();
+                            }
+                        });
+                        builder.setNegativeButton(R.string.action_cancel, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // User cancelled the dialog
+                            }
+                        });
+                        AlertDialog dialog = builder.create();
+                        dialog.show();
+                    }
+                    c.close();
+                }
+            }
+        };
+        new DatePickerDialog(mainActivity, dateSetListener, year, month, day).show();
+    }
+
+    private void swapWithClones() {
         mStudents = mNewStudents;
         mSegment1 = mNewSegment1;
         mSegment2 = mNewSegment2;
@@ -358,39 +429,6 @@ public class SeatFragment extends Fragment {
         mNewSegAdpt1 = null;
         mNewSegAdpt2 = null;
         mNewSegAdpt3 = null;
-
-	    /* get current date */
-        int year, month, day;
-        final GregorianCalendar cal = new GregorianCalendar();
-        year = cal.get(Calendar.YEAR);
-        month = cal.get(Calendar.MONTH);
-        day = cal.get(Calendar.DAY_OF_MONTH);
-
-		/* dialog : select date */
-        DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                if(view.isShown()) {
-                    tv_curDate.setText(String.format("%d. %d. %d", year, monthOfYear + 1, dayOfMonth));
-                    cal.clear();
-                    cal.set(year, monthOfYear, dayOfMonth);
-
-	                /* save to DB */
-                    long curDateInMills = cal.getTimeInMillis();
-                    ClassDBHelper dbHelper = mainActivity.getDbHelper();
-                    Student st;
-                    for(TreeMap.Entry<Integer, Student> entry : mStudents.entrySet()) {
-                        st = entry.getValue();
-                        dbHelper.insert(st.getItsCurrentSeat(), curDateInMills);
-                    }
-
-	                /* deal with views */
-                    tv_curDate.setVisibility(View.VISIBLE);
-                    btn_shuffle.setVisibility(View.INVISIBLE);
-                }
-            }
-        };
-        new DatePickerDialog(mainActivity, dateSetListener, year, month, day).show();
     }
 
 	@Override
@@ -472,9 +510,6 @@ public class SeatFragment extends Fragment {
         }
         else if(id == R.id.seatplan_done) {
             saveCurrentPlan();
-
-            mEditMode = false;
-            mainActivity.invalidateOptionsMenu();
             return true;
 		}
         else if(id == R.id.seatplan_cancel) {

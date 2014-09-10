@@ -56,6 +56,33 @@ public class ClassDBHelper extends SQLiteOpenHelper {
 		);
 	}
 
+    public int update(Seat seat, long date) {
+        int seatid = seat.getId();
+        ContentValues values = new ContentValues();
+
+        String whereClause =
+                ClassDBContract.SeatHistory.COLUMN_NAME_SEAT_ID + " = ? AND " +
+                ClassDBContract.SeatHistory.COLUMN_NAME_DATE + " = ?";
+        String[] whereArgs = {
+                String.valueOf(seatid),
+                String.valueOf(date)
+        };
+
+        if(seat.getItsStudent() != null) {
+            values.put(ClassDBContract.SeatHistory.COLUMN_NAME_STUDENT_ID, seat.getItsStudent().getNum());
+        }
+        else {
+            values.putNull(ClassDBContract.SeatHistory.COLUMN_NAME_STUDENT_ID);
+        }
+
+        return wDB.update(
+                ClassDBContract.SeatHistory.TABLE_NAME,
+                values,
+                whereClause,
+                whereArgs
+        );
+    }
+
     /*public void insert(Seat seat, String dateStr) {
         wDB.execSQL("INSERT into " + ClassDBContract.SeatHistory.TABLE_NAME
                 + " VALUES (" + seat.getId() + ", " + seat.getItsStudent().getNum()
@@ -86,6 +113,13 @@ public class ClassDBHelper extends SQLiteOpenHelper {
 				+ ") FROM " + ClassDBContract.SeatHistory.TABLE_NAME + ");";
 		return rDB.rawQuery(query, null);
 	}
+
+    public Cursor getSeatsForDate(long date) {
+        String query = "SELECT * FROM " + ClassDBContract.SeatHistory.TABLE_NAME
+                + " WHERE " + ClassDBContract.SeatHistory.COLUMN_NAME_DATE
+                + " = " + String.valueOf(date) + ";";
+        return rDB.rawQuery(query, null);
+    }
 
 	public int delete(Student student) {
 		String selection = ClassDBContract.StudentInfo.COLUMN_NAME_STUDENT_ID + " LIKE ?";
