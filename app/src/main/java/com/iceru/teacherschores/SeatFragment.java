@@ -37,6 +37,7 @@ public class SeatFragment extends Fragment {
 	private ArrayList<Seat>     mSegment1, mSegment2, mSegment3;
 	private segAdapter          mSegAdpt1, mSegAdpt2, mSegAdpt3;
     private boolean             mEditMode = false;
+    private ArrayList<Long>     mSavedDateList;
 
     /* 새 자리 배치, 배치 수정 등에 쓰일 임시 리스트들 (원본 복제해서 작업 후 save or discard) */
     private TreeMap<Integer, Student>   mNewStudents = null;
@@ -165,19 +166,29 @@ public class SeatFragment extends Fragment {
 			}
 		}
 
-	    /* apply current seat map read from database */
-	    ClassDBHelper dbHelper = mainActivity.getDbHelper();
-	    Cursor c = dbHelper.getRecentSeats();
+        ClassDBHelper dbHelper = mainActivity.getDbHelper();
 
-	    if(c.moveToFirst()) {
-            long date = c.getLong(c.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_DATE));
+        Cursor dateListCursor = dbHelper.getSavedDateList();
+        mSavedDateList = new ArrayList<Long>();
+        if(dateListCursor.moveToFirst()) {
+            while(!dateListCursor.isAfterLast()) {
+                mSavedDateList.add(dateListCursor.getLong(dateListCursor.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_DATE)));
+                dateListCursor.moveToNext();
+            }
+        }
+        dateListCursor.close();
+
+	    /* apply current seat map read from database */
+        Cursor recentSeatCursor = dbHelper.getRecentSeats();
+
+	    if(recentSeatCursor.moveToFirst()) {
+            long date = recentSeatCursor.getLong(recentSeatCursor.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_DATE));
             recentSavedCal = new GregorianCalendar();
             recentSavedCal.setTimeInMillis(date);
 
-            while(!c.isAfterLast()) {
-                int stduent_id = c.getInt(c.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_STUDENT_ID));
-                int seat_id = c.getInt(c.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_SEAT_ID));
-                long saved_date = c.getLong(c.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_DATE));
+            while(!recentSeatCursor.isAfterLast()) {
+                int stduent_id = recentSeatCursor.getInt(recentSeatCursor.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_STUDENT_ID));
+                int seat_id = recentSeatCursor.getInt(recentSeatCursor.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_SEAT_ID));
                 Student student = mStudents.get(stduent_id);
                 if(student != null) {
                     Seat seat = getSeatByAbsolutePosition(seat_id);
@@ -185,10 +196,10 @@ public class SeatFragment extends Fragment {
                     seat.setItsStudent(student);
                 }
                 else Log.e(this.getClass().getSimpleName(), "No Student Object matching with DB");
-                c.moveToNext();
+                recentSeatCursor.moveToNext();
             }
         }
-        c.close();
+        recentSeatCursor.close();
         //assignRandom();
     }
 
@@ -223,6 +234,33 @@ public class SeatFragment extends Fragment {
                     recentSavedCal.get(Calendar.MONTH) + 1,
                     recentSavedCal.get(Calendar.DAY_OF_MONTH)));
         }
+        final ArrayList<String> savedDateStringList = new ArrayList<String>();
+        GregorianCalendar tempcal = new GregorianCalendar();
+        for(Long milDate : mSavedDateList) {
+            tempcal.setTimeInMillis(milDate);
+            savedDateStringList.add(String.format("%d. %d. %d",
+                    tempcal.get(Calendar.YEAR),
+                    tempcal.get(Calendar.MONTH)+1,
+                    tempcal.get(Calendar.DAY_OF_MONTH)));
+        }
+        tv_curDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
+                builder
+                        .setTitle(R.string.title_dialog_select_date)
+                        .setItems(savedDateStringList.toArray(
+                                        new CharSequence[savedDateStringList.size()]),
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+
+                                    }
+                                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }
+        });
 
         gv_segment1 = (GridView) rootView.findViewById(R.id.gridview_segment1);
         gv_segment2 = (GridView) rootView.findViewById(R.id.gridview_segment2);

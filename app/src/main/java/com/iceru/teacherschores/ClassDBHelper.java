@@ -106,6 +106,21 @@ public class ClassDBHelper extends SQLiteOpenHelper {
 		);
 	}
 
+    public Cursor getSavedDateList() {
+        String[] projection = {
+                ClassDBContract.SeatHistory.COLUMN_NAME_DATE
+        };
+        return rDB.query(
+        /* TABLE        */  ClassDBContract.SeatHistory.TABLE_NAME,
+        /* COLUMNS      */  projection,
+        /* SELECTION    */  null,
+        /* SELECTARGS   */  null,
+        /* GROUP BY     */  ClassDBContract.SeatHistory.COLUMN_NAME_DATE,
+        /* HAVING       */  null,
+        /* ORDER BY     */  ClassDBContract.SeatHistory.COLUMN_NAME_DATE + " DESC"
+        );
+    }
+
 	public Cursor getRecentSeats() {
 		String query = "SELECT * FROM " + ClassDBContract.SeatHistory.TABLE_NAME
 				+ " WHERE " + ClassDBContract.SeatHistory.COLUMN_NAME_DATE
