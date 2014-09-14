@@ -25,6 +25,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.GregorianCalendar;
 import java.util.TreeMap;
 
@@ -38,6 +40,7 @@ public class SeatFragment extends Fragment {
 	private segAdapter          mSegAdpt1, mSegAdpt2, mSegAdpt3;
     private boolean             mEditMode = false;
     private ArrayList<Long>     mSavedDateList;
+    private ArrayList<String>   mSavedDateStringList;
 
     /* 새 자리 배치, 배치 수정 등에 쓰일 임시 리스트들 (원본 복제해서 작업 후 save or discard) */
     private TreeMap<Integer, Student>   mNewStudents = null;
@@ -65,6 +68,10 @@ public class SeatFragment extends Fragment {
 			mItems = object;
 			mInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		}
+
+        public void setItems(ArrayList<Seat> object) {
+            this.mItems = object;
+        }
 		@Override
 		public int getCount() {
 			return mItems.size();
@@ -148,31 +155,25 @@ public class SeatFragment extends Fragment {
 
 		for(int i = 0; i < mTotalSeats; i++) {
 			Seat seat = new Seat(i);
-			switch(seat.getId() % 6) {
-				case 0:
-				case 1:
-					mSegment1.add(seat);
-					break;
-				case 2:
-				case 3:
-					mSegment2.add(seat);
-					break;
-				case 4:
-				case 5:
-					mSegment3.add(seat);
-					break;
-				default:
-					break;
-			}
+			addToSegment(seat);
 		}
 
         ClassDBHelper dbHelper = mainActivity.getDbHelper();
 
         Cursor dateListCursor = dbHelper.getSavedDateList();
         mSavedDateList = new ArrayList<Long>();
+        mSavedDateStringList = new ArrayList<String>();
+        GregorianCalendar tempcal = new GregorianCalendar();
+
         if(dateListCursor.moveToFirst()) {
             while(!dateListCursor.isAfterLast()) {
-                mSavedDateList.add(dateListCursor.getLong(dateListCursor.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_DATE)));
+                long date = dateListCursor.getLong(dateListCursor.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_DATE));
+                mSavedDateList.add(date);
+                tempcal.setTimeInMillis(date);
+                mSavedDateStringList.add(String.format("%04d. %02d. %02d",
+                        tempcal.get(Calendar.YEAR),
+                        tempcal.get(Calendar.MONTH)+1,
+                        tempcal.get(Calendar.DAY_OF_MONTH)));
                 dateListCursor.moveToNext();
             }
         }
@@ -203,6 +204,25 @@ public class SeatFragment extends Fragment {
         //assignRandom();
     }
 
+    private void addToSegment(Seat seat) {
+        switch(seat.getId() % 6) {
+            case 0:
+            case 1:
+                mSegment1.add(seat);
+                break;
+            case 2:
+            case 3:
+                mSegment2.add(seat);
+                break;
+            case 4:
+            case 5:
+                mSegment3.add(seat);
+                break;
+            default:
+                break;
+        }
+    }
+
     public void addToClonedSegment(Seat seat) {
         switch(seat.getId() % 6) {
             case 0:
@@ -229,32 +249,24 @@ public class SeatFragment extends Fragment {
 
 	    tv_curDate = (TextView) rootView.findViewById(R.id.textview_current_month);
         if(recentSavedCal != null) {
-            tv_curDate.setText(String.format("%d. %d. %d",
+            tv_curDate.setText(String.format("%04d. %02d. %02d",
                     recentSavedCal.get(Calendar.YEAR),
                     recentSavedCal.get(Calendar.MONTH) + 1,
                     recentSavedCal.get(Calendar.DAY_OF_MONTH)));
         }
-        final ArrayList<String> savedDateStringList = new ArrayList<String>();
-        GregorianCalendar tempcal = new GregorianCalendar();
-        for(Long milDate : mSavedDateList) {
-            tempcal.setTimeInMillis(milDate);
-            savedDateStringList.add(String.format("%d. %d. %d",
-                    tempcal.get(Calendar.YEAR),
-                    tempcal.get(Calendar.MONTH)+1,
-                    tempcal.get(Calendar.DAY_OF_MONTH)));
-        }
+
         tv_curDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
                 builder
                         .setTitle(R.string.title_dialog_select_date)
-                        .setItems(savedDateStringList.toArray(
-                                        new CharSequence[savedDateStringList.size()]),
+                        .setItems(mSavedDateStringList.toArray(
+                                        new CharSequence[mSavedDateStringList.size()]),
                                 new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-
+                                        showPlan(mSavedDateList.get(which));
                                     }
                                 });
                 AlertDialog dialog = builder.create();
@@ -283,6 +295,62 @@ public class SeatFragment extends Fragment {
 	    btn_shuffle.setVisibility(View.INVISIBLE);
 
         return rootView;
+    }
+
+    private void showPlan(long plannedDate) {
+        ClassDBHelper dbHelper = mainActivity.getDbHelper();
+        Cursor studentCursor;
+        Cursor seatsForDateCursor = dbHelper.getSeatsForDate(plannedDate);
+
+        if(seatsForDateCursor.moveToFirst()) {
+            mStudents = new TreeMap<Integer, Student>();
+            mTotalSeats = seatsForDateCursor.getCount();
+
+            mSegment1 = new ArrayList<Seat>();
+            mSegment2 = new ArrayList<Seat>();
+            mSegment3 = new ArrayList<Seat>();
+
+            while(!seatsForDateCursor.isAfterLast()) {
+                int studentId = seatsForDateCursor.getInt(seatsForDateCursor.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_STUDENT_ID));
+                int seatId = seatsForDateCursor.getInt(seatsForDateCursor.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_SEAT_ID));
+                studentCursor = dbHelper.getStudent(studentId);
+
+                if(!studentCursor.moveToFirst()) Log.e(this.getClass().getSimpleName(), "ERROR : no student with studentId");
+                Student st = new Student(studentId,
+                        studentCursor.getString(studentCursor.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_STUDENT_NAME)),
+                        studentCursor.getInt(studentCursor.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_STUDENT_GENDER)) == 1? true : false);
+                Seat seat = new Seat(seatId, st);
+                st.setItsCurrentSeat(seat);
+                mStudents.put(studentId, st);
+                addToSegment(seat);
+
+                studentCursor.close();
+                seatsForDateCursor.moveToNext();
+            }
+            Comparator<Seat> comp = new Comparator<Seat>() {
+                @Override
+                public int compare(Seat lhs, Seat rhs) {
+                    return lhs.getId() - rhs.getId();
+                }
+            };
+            Collections.sort(mSegment1, comp);
+            Collections.sort(mSegment2, comp);
+            Collections.sort(mSegment3, comp);
+
+            mSegAdpt1.setItems(mSegment1);
+            mSegAdpt2.setItems(mSegment2);
+            mSegAdpt3.setItems(mSegment3);
+        }
+        seatsForDateCursor.close();
+
+        GregorianCalendar tempcal = new GregorianCalendar();
+        tempcal.setTimeInMillis(plannedDate);
+        tv_curDate.setText(String.format("%04d. %02d. %02d",
+                tempcal.get(Calendar.YEAR),
+                tempcal.get(Calendar.MONTH)+1,
+                tempcal.get(Calendar.DAY_OF_MONTH)));
+
+        refreshSegView();
     }
 
     private void createNewPlan() {
@@ -384,7 +452,7 @@ public class SeatFragment extends Fragment {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 if(view.isShown()) {
-                    tv_curDate.setText(String.format("%d. %d. %d", year, monthOfYear + 1, dayOfMonth));
+                    tv_curDate.setText(String.format("%04d. %02d. %02d", year, monthOfYear + 1, dayOfMonth));
                     cal.clear();
                     cal.set(year, monthOfYear, dayOfMonth);
 
@@ -400,6 +468,17 @@ public class SeatFragment extends Fragment {
                             st = entry.getValue();
                             dbHelper.insert(st.getItsCurrentSeat(), curDateInMills);
                         }
+
+                        /* add to Saved Date List (Long, String both) */
+                        mSavedDateList.add(curDateInMills);
+                        GregorianCalendar tempcal = new GregorianCalendar();
+                        tempcal.setTimeInMillis(curDateInMills);
+                        mSavedDateStringList.add(String.format("%04d. %02d. %02d",
+                                tempcal.get(Calendar.YEAR),
+                                tempcal.get(Calendar.MONTH)+1,
+                                tempcal.get(Calendar.DAY_OF_MONTH)));
+                        Collections.sort(mSavedDateList, Collections.reverseOrder());
+                        Collections.sort(mSavedDateStringList, Collections.reverseOrder());
 
                         /* deal with views */
                         tv_curDate.setVisibility(View.VISIBLE);
@@ -423,6 +502,8 @@ public class SeatFragment extends Fragment {
                                     st = entry.getValue();
                                     dbHelper.update(st.getItsCurrentSeat(), curDateInMills);
                                 }
+
+                                /* No need to add Saved Date List (already exist because this is UPDATE, not INSERT */
 
                                 /* deal with views */
                                 tv_curDate.setVisibility(View.VISIBLE);
@@ -449,6 +530,7 @@ public class SeatFragment extends Fragment {
 
     private void swapWithClones() {
         mStudents = mNewStudents;
+        mainActivity.setmStudents(mNewStudents);
         mSegment1 = mNewSegment1;
         mSegment2 = mNewSegment2;
         mSegment3 = mNewSegment3;

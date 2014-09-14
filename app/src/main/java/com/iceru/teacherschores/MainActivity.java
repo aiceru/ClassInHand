@@ -1,10 +1,7 @@
 package com.iceru.teacherschores;
 
-import android.app.ActionBar;
 import android.app.Activity;
-import android.app.Fragment;
 import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -12,10 +9,8 @@ import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.TreeSet;
 
 public class MainActivity extends Activity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -51,7 +46,7 @@ public class MainActivity extends Activity
 	    mRoles = new ArrayList<Role>();
 
         dbHelper = new ClassDBHelper(this);
-        Cursor c = dbHelper.getStudents();
+        Cursor c = dbHelper.getStudentsList();
         while(c.moveToNext()) {
             int id = c.getInt(c.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_STUDENT_ID));
             String name = c.getString(c.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_STUDENT_NAME));

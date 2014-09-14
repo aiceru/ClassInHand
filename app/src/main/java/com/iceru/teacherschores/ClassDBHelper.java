@@ -89,7 +89,7 @@ public class ClassDBHelper extends SQLiteOpenHelper {
                 + ", julianday('" + dateStr + "')-" + CONSTANT_MJD + ");");
     }*/
 
-	public Cursor getStudents() {
+	public Cursor getStudentsList() {
 		String[] projection = {
 				ClassDBContract.StudentInfo.COLUMN_NAME_STUDENT_ID,
 				ClassDBContract.StudentInfo.COLUMN_NAME_STUDENT_NAME,
@@ -105,6 +105,25 @@ public class ClassDBHelper extends SQLiteOpenHelper {
 				sortOrder
 		);
 	}
+
+    public Cursor getStudent(int id) {
+        String[] projection = {
+                ClassDBContract.StudentInfo.COLUMN_NAME_STUDENT_NAME,
+                ClassDBContract.StudentInfo.COLUMN_NAME_STUDENT_GENDER
+        };
+        String[] selectArg = {
+                String.valueOf(id)
+        };
+        return rDB.query(
+        /* TABLE        */  ClassDBContract.StudentInfo.TABLE_NAME,
+        /* COLUMNS      */  projection,
+        /* SELECTION    */  ClassDBContract.StudentInfo.COLUMN_NAME_STUDENT_ID + " = ?",
+        /* SELECTARGS   */  selectArg,
+        /* GROUP BY     */  null,
+        /* HAVING       */  null,
+        /* ORDER BY     */  null
+        );
+    }
 
     public Cursor getSavedDateList() {
         String[] projection = {
