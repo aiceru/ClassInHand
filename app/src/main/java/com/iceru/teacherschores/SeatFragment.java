@@ -41,11 +41,12 @@ public class SeatFragment extends Fragment {
     private boolean             mEditMode = false;
     private ArrayList<Long>     mSavedDateList;
     private ArrayList<String>   mSavedDateStringList;
+    private long                mCurrentShowingDate = 0;
+    private GregorianCalendar   mCurrentShowingCal = null;
 
     /* 새 자리 배치, 배치 수정 등에 쓰일 임시 리스트들 (원본 복제해서 작업 후 save or discard) */
     private TreeMap<Integer, Student>   mNewStudents = null;
     private ArrayList<Seat>             mNewSegment1 = null, mNewSegment2 = null, mNewSegment3 = null;
-    private segAdapter                  mNewSegAdpt1 = null, mNewSegAdpt2 = null, mNewSegAdpt3 = null;
 
 	/* View variables */
 	private GridView    gv_segment1;
@@ -56,7 +57,6 @@ public class SeatFragment extends Fragment {
 	private Button      btn_shuffle;
 
 	private int         mTotalSeats, mBoysSeats, mGirlsSeats;
-    private GregorianCalendar recentSavedCal;
 
 	private class segAdapter extends BaseAdapter {
 		private LayoutInflater mInflater;
@@ -144,64 +144,73 @@ public class SeatFragment extends Fragment {
 
 		mainActivity = (MainActivity)getActivity();
 
-		mStudents = mainActivity.getmStudents();
-		mBoysSeats = mainActivity.getNum_boys();
-		mGirlsSeats = mainActivity.getNum_girls();
-		mTotalSeats = mBoysSeats + mGirlsSeats;
-
-		mSegment1 = new ArrayList<Seat>();
-		mSegment2 = new ArrayList<Seat>();
-		mSegment3 = new ArrayList<Seat>();
-
-		for(int i = 0; i < mTotalSeats; i++) {
-			Seat seat = new Seat(i);
-			addToSegment(seat);
-		}
-
         ClassDBHelper dbHelper = mainActivity.getDbHelper();
 
+        /* Loading Saved Date List from DB... */
         Cursor dateListCursor = dbHelper.getSavedDateList();
         mSavedDateList = new ArrayList<Long>();
         mSavedDateStringList = new ArrayList<String>();
-        GregorianCalendar tempcal = new GregorianCalendar();
+        mCurrentShowingCal = new GregorianCalendar();
 
         if(dateListCursor.moveToFirst()) {
             while(!dateListCursor.isAfterLast()) {
                 long date = dateListCursor.getLong(dateListCursor.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_DATE));
                 mSavedDateList.add(date);
-                tempcal.setTimeInMillis(date);
+                mCurrentShowingCal.setTimeInMillis(date);
                 mSavedDateStringList.add(String.format("%04d. %02d. %02d",
-                        tempcal.get(Calendar.YEAR),
-                        tempcal.get(Calendar.MONTH)+1,
-                        tempcal.get(Calendar.DAY_OF_MONTH)));
+                        mCurrentShowingCal.get(Calendar.YEAR),
+                        mCurrentShowingCal.get(Calendar.MONTH)+1,
+                        mCurrentShowingCal.get(Calendar.DAY_OF_MONTH)));
                 dateListCursor.moveToNext();
             }
+            mCurrentShowingDate = mSavedDateList.get(0);        // Latest saved date
+            mCurrentShowingCal.setTimeInMillis(mCurrentShowingDate);
         }
+        // If there is no saved plan (ex. first run), mCurrentShowingDate is 0
         dateListCursor.close();
+        /* End */
 
-	    /* apply current seat map read from database */
-        Cursor recentSeatCursor = dbHelper.getRecentSeats();
+        /* Getting (latest) Students list from main Activity... */
+		mStudents = mainActivity.getmStudents();
+		mBoysSeats = mainActivity.getNum_boys();
+		mGirlsSeats = mainActivity.getNum_girls();
+		mTotalSeats = mBoysSeats + mGirlsSeats;
+        /* End */
 
-	    if(recentSeatCursor.moveToFirst()) {
-            long date = recentSeatCursor.getLong(recentSeatCursor.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_DATE));
-            recentSavedCal = new GregorianCalendar();
-            recentSavedCal.setTimeInMillis(date);
+        if(!mStudents.isEmpty()) {
 
-            while(!recentSeatCursor.isAfterLast()) {
-                int stduent_id = recentSeatCursor.getInt(recentSeatCursor.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_STUDENT_ID));
-                int seat_id = recentSeatCursor.getInt(recentSeatCursor.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_SEAT_ID));
-                Student student = mStudents.get(stduent_id);
-                if(student != null) {
-                    Seat seat = getSeatByAbsolutePosition(seat_id);
-                    student.setItsCurrentSeat(seat);
-                    seat.setItsStudent(student);
-                }
-                else Log.e(this.getClass().getSimpleName(), "No Student Object matching with DB");
-                recentSeatCursor.moveToNext();
+            /* Creating segments and Seats... */
+            mSegment1 = new ArrayList<Seat>();
+            mSegment2 = new ArrayList<Seat>();
+            mSegment3 = new ArrayList<Seat>();
+
+            for (int i = 0; i < mTotalSeats; i++) {
+                Seat seat = new Seat(i);
+                addToSegment(seat);
             }
+            /* End */
+
+	        /* apply current seat map read from database */
+            Cursor seatCursor = dbHelper.getSeatPlan(mCurrentShowingDate);
+
+            if (seatCursor.moveToFirst()) {
+                while (!seatCursor.isAfterLast()) {
+                    int stduent_id = seatCursor.getInt(seatCursor.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_STUDENT_ID));
+                    int seat_id = seatCursor.getInt(seatCursor.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_SEAT_ID));
+                    Student student = mStudents.get(stduent_id);
+                    if (student != null) {
+                        Seat seat = getSeatByAbsolutePosition(seat_id);
+                        student.setItsCurrentSeat(seat);
+                        seat.setItsStudent(student);
+                    } else
+                        Log.e(this.getClass().getSimpleName(), "No Student Object matching with DB");
+                    seatCursor.moveToNext();
+                }
+            }
+            seatCursor.close();
+            /* End */
         }
-        recentSeatCursor.close();
-        //assignRandom();
+
     }
 
     private void addToSegment(Seat seat) {
@@ -248,11 +257,11 @@ public class SeatFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_seat, container, false);
 
 	    tv_curDate = (TextView) rootView.findViewById(R.id.textview_current_month);
-        if(recentSavedCal != null) {
+        if(mCurrentShowingDate != 0) {
             tv_curDate.setText(String.format("%04d. %02d. %02d",
-                    recentSavedCal.get(Calendar.YEAR),
-                    recentSavedCal.get(Calendar.MONTH) + 1,
-                    recentSavedCal.get(Calendar.DAY_OF_MONTH)));
+                    mCurrentShowingCal.get(Calendar.YEAR),
+                    mCurrentShowingCal.get(Calendar.MONTH) + 1,
+                    mCurrentShowingCal.get(Calendar.DAY_OF_MONTH)));
         }
 
         tv_curDate.setOnClickListener(new View.OnClickListener() {
@@ -300,11 +309,13 @@ public class SeatFragment extends Fragment {
     private void showPlan(long plannedDate) {
         ClassDBHelper dbHelper = mainActivity.getDbHelper();
         Cursor studentCursor;
-        Cursor seatsForDateCursor = dbHelper.getSeatsForDate(plannedDate);
+        Cursor seatsForDateCursor = dbHelper.getSeatPlan(plannedDate);
 
         if(seatsForDateCursor.moveToFirst()) {
+            mCurrentShowingDate = plannedDate;
+            mCurrentShowingCal.setTimeInMillis(mCurrentShowingDate);
+
             mStudents = new TreeMap<Integer, Student>();
-            mTotalSeats = seatsForDateCursor.getCount();
 
             mSegment1 = new ArrayList<Seat>();
             mSegment2 = new ArrayList<Seat>();
@@ -318,7 +329,7 @@ public class SeatFragment extends Fragment {
                 if(!studentCursor.moveToFirst()) Log.e(this.getClass().getSimpleName(), "ERROR : no student with studentId");
                 Student st = new Student(studentId,
                         studentCursor.getString(studentCursor.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_STUDENT_NAME)),
-                        studentCursor.getInt(studentCursor.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_STUDENT_GENDER)) == 1? true : false);
+                        studentCursor.getInt(studentCursor.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_STUDENT_GENDER)) == 1);
                 Seat seat = new Seat(seatId, st);
                 st.setItsCurrentSeat(seat);
                 mStudents.put(studentId, st);
@@ -327,6 +338,7 @@ public class SeatFragment extends Fragment {
                 studentCursor.close();
                 seatsForDateCursor.moveToNext();
             }
+
             Comparator<Seat> comp = new Comparator<Seat>() {
                 @Override
                 public int compare(Seat lhs, Seat rhs) {
@@ -340,17 +352,34 @@ public class SeatFragment extends Fragment {
             mSegAdpt1.setItems(mSegment1);
             mSegAdpt2.setItems(mSegment2);
             mSegAdpt3.setItems(mSegment3);
+
+            tv_curDate.setText(String.format("%04d. %02d. %02d",
+                    mCurrentShowingCal.get(Calendar.YEAR),
+                    mCurrentShowingCal.get(Calendar.MONTH)+1,
+                    mCurrentShowingCal.get(Calendar.DAY_OF_MONTH)));
+
+            refreshSegView();
+        }
+        else {
+            /* There is no saved plans, so Creating segments and Seats... */
+            mSegment1 = new ArrayList<Seat>();
+            mSegment2 = new ArrayList<Seat>();
+            mSegment3 = new ArrayList<Seat>();
+
+            for (int i = 0; i < mTotalSeats; i++) {
+                Seat seat = new Seat(i);
+                addToSegment(seat);
+            }
+
+            mSegAdpt1.setItems(mSegment1);
+            mSegAdpt2.setItems(mSegment2);
+            mSegAdpt3.setItems(mSegment3);
+
+            refreshSegView();
+
+            tv_curDate.setText(null);
         }
         seatsForDateCursor.close();
-
-        GregorianCalendar tempcal = new GregorianCalendar();
-        tempcal.setTimeInMillis(plannedDate);
-        tv_curDate.setText(String.format("%04d. %02d. %02d",
-                tempcal.get(Calendar.YEAR),
-                tempcal.get(Calendar.MONTH)+1,
-                tempcal.get(Calendar.DAY_OF_MONTH)));
-
-        refreshSegView();
     }
 
     private void createNewPlan() {
@@ -404,27 +433,22 @@ public class SeatFragment extends Fragment {
         removeAssignments(mNewSegment2);
         removeAssignments(mNewSegment3);
 
-        mNewSegAdpt1 = new segAdapter(mainActivity, mNewSegment1);
-        mNewSegAdpt2 = new segAdapter(mainActivity, mNewSegment2);
-        mNewSegAdpt3 = new segAdapter(mainActivity, mNewSegment3);
+        mSegAdpt1.setItems(mNewSegment1);
+        mSegAdpt2.setItems(mNewSegment2);
+        mSegAdpt3.setItems(mNewSegment3);
 
-        gv_segment1.setAdapter(mNewSegAdpt1);
-        gv_segment2.setAdapter(mNewSegAdpt2);
-        gv_segment3.setAdapter(mNewSegAdpt3);
+        refreshSegView();
     }
 
     private void discardAndRemoveClones() {
-        gv_segment1.setAdapter(mSegAdpt1);
-        gv_segment2.setAdapter(mSegAdpt2);
-        gv_segment3.setAdapter(mSegAdpt3);
+        mSegAdpt1.setItems(mSegment1);
+        mSegAdpt2.setItems(mSegment2);
+        mSegAdpt3.setItems(mSegment3);
 
         mNewStudents = null;
         mNewSegment1 = null;
         mNewSegment2 = null;
         mNewSegment3 = null;
-        mNewSegAdpt1 = null;
-        mNewSegAdpt2 = null;
-        mNewSegAdpt3 = null;
     }
 
     private void discardCurrentPlan() {
@@ -452,13 +476,12 @@ public class SeatFragment extends Fragment {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 if(view.isShown()) {
-                    tv_curDate.setText(String.format("%04d. %02d. %02d", year, monthOfYear + 1, dayOfMonth));
                     cal.clear();
                     cal.set(year, monthOfYear, dayOfMonth);
 
                     final long curDateInMills = cal.getTimeInMillis();
                     final ClassDBHelper dbHelper = mainActivity.getDbHelper();
-                    Cursor c = dbHelper.getSeatsForDate(curDateInMills);
+                    Cursor c = dbHelper.getSeatPlan(curDateInMills);
                     if(!c.moveToFirst()) {
                         swapWithClones();
 
@@ -470,17 +493,21 @@ public class SeatFragment extends Fragment {
                         }
 
                         /* add to Saved Date List (Long, String both) */
-                        mSavedDateList.add(curDateInMills);
-                        GregorianCalendar tempcal = new GregorianCalendar();
-                        tempcal.setTimeInMillis(curDateInMills);
+                        mCurrentShowingDate = curDateInMills;
+                        mCurrentShowingCal.setTimeInMillis(mCurrentShowingDate);
+                        mSavedDateList.add(mCurrentShowingDate);
                         mSavedDateStringList.add(String.format("%04d. %02d. %02d",
-                                tempcal.get(Calendar.YEAR),
-                                tempcal.get(Calendar.MONTH)+1,
-                                tempcal.get(Calendar.DAY_OF_MONTH)));
+                                mCurrentShowingCal.get(Calendar.YEAR),
+                                mCurrentShowingCal.get(Calendar.MONTH)+1,
+                                mCurrentShowingCal.get(Calendar.DAY_OF_MONTH)));
                         Collections.sort(mSavedDateList, Collections.reverseOrder());
                         Collections.sort(mSavedDateStringList, Collections.reverseOrder());
 
                         /* deal with views */
+                        tv_curDate.setText(String.format("%04d. %02d. %02d",
+                                mCurrentShowingCal.get(Calendar.YEAR),
+                                mCurrentShowingCal.get(Calendar.MONTH)+1,
+                                mCurrentShowingCal.get(Calendar.DAY_OF_MONTH)));
                         tv_curDate.setVisibility(View.VISIBLE);
                         btn_shuffle.setVisibility(View.INVISIBLE);
 
@@ -503,9 +530,16 @@ public class SeatFragment extends Fragment {
                                     dbHelper.update(st.getItsCurrentSeat(), curDateInMills);
                                 }
 
-                                /* No need to add Saved Date List (already exist because this is UPDATE, not INSERT */
+                                /* No need to add Saved Date List (already exist because this is UPDATE, not INSERT
+                                 * only set current showing date */
+                                mCurrentShowingDate = curDateInMills;
+                                mCurrentShowingCal.setTimeInMillis(mCurrentShowingDate);
 
                                 /* deal with views */
+                                tv_curDate.setText(String.format("%04d. %02d. %02d",
+                                        mCurrentShowingCal.get(Calendar.YEAR),
+                                        mCurrentShowingCal.get(Calendar.MONTH)+1,
+                                        mCurrentShowingCal.get(Calendar.DAY_OF_MONTH)));
                                 tv_curDate.setVisibility(View.VISIBLE);
                                 btn_shuffle.setVisibility(View.INVISIBLE);
 
@@ -534,21 +568,23 @@ public class SeatFragment extends Fragment {
         mSegment1 = mNewSegment1;
         mSegment2 = mNewSegment2;
         mSegment3 = mNewSegment3;
-        mSegAdpt1 = mNewSegAdpt1;
-        mSegAdpt2 = mNewSegAdpt2;
-        mSegAdpt3 = mNewSegAdpt3;
-
-        gv_segment1.setAdapter(mSegAdpt1);
-        gv_segment2.setAdapter(mSegAdpt2);
-        gv_segment3.setAdapter(mSegAdpt3);
 
         mNewStudents = null;
         mNewSegment1 = null;
         mNewSegment2 = null;
         mNewSegment3 = null;
-        mNewSegAdpt1 = null;
-        mNewSegAdpt2 = null;
-        mNewSegAdpt3 = null;
+    }
+
+    private void deleteShowingPlan() {
+        if(mCurrentShowingDate != 0) {
+            mainActivity.getDbHelper().deleteSeatPlan(mCurrentShowingDate);
+            int idx = mSavedDateList.indexOf(mCurrentShowingDate);
+            mSavedDateList.remove(idx);
+            mSavedDateStringList.remove(idx);
+            mCurrentShowingDate = mSavedDateList.isEmpty() ? 0 : mSavedDateList.get(0);
+            mCurrentShowingCal.setTimeInMillis(mCurrentShowingDate);
+            showPlan(mCurrentShowingDate);
+        }
     }
 
 	@Override
@@ -639,6 +675,14 @@ public class SeatFragment extends Fragment {
             refreshSegView();
 
             mainActivity.invalidateOptionsMenu();
+            return true;
+        }
+        else if(id == R.id.seatplan_delete) {
+            deleteShowingPlan();
+
+            mEditMode = false;
+            mainActivity.invalidateOptionsMenu();
+
             return true;
         }
 		else if(id == R.id.seatplan_delete_all) {
@@ -778,15 +822,8 @@ public class SeatFragment extends Fragment {
     }
 
     private void refreshSegView() {
-        if(mEditMode) {
-            mNewSegAdpt1.notifyDataSetChanged();
-            mNewSegAdpt2.notifyDataSetChanged();
-            mNewSegAdpt3.notifyDataSetChanged();
-        }
-        else {
-            mSegAdpt1.notifyDataSetChanged();
-            mSegAdpt2.notifyDataSetChanged();
-            mSegAdpt3.notifyDataSetChanged();
-        }
+        mSegAdpt1.notifyDataSetChanged();
+        mSegAdpt2.notifyDataSetChanged();
+        mSegAdpt3.notifyDataSetChanged();
     }
 }

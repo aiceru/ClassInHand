@@ -57,6 +57,7 @@ public class MainActivity extends Activity
             if(isBoy) num_boys++;
             else num_girls++;
         }
+        c.close();
 
 	    mShPrefStudentNameList = getSharedPreferences(getString(
 			    R.string.sharedpref_student_name_list), Context.MODE_PRIVATE);
@@ -160,16 +161,15 @@ public class MainActivity extends Activity
 			if(student.isBoy()) num_boys--;
 			else num_girls--;
 			dbHelper.delete(student);
-
-			/*SharedPreferences.Editor editor = mShPrefStudentNameList.edit();
-			editor.remove(String.valueOf(student.getNum()));
-			editor.apply();
-			editor = mShPrefStudentBoygirlList.edit();
-			editor.remove(String.valueOf(student.getNum()));
-			editor.apply();*/
 		}
 		return success;
 	}
+
+    public void removeAllStudents() {
+        mStudents.clear();
+        num_boys = 0;
+        num_girls = 0;
+    }
 
 	public boolean addRole(Role role) {
 		boolean success = mRoles.add(role);

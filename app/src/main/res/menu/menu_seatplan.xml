@@ -16,9 +16,9 @@
         android:icon="@drawable/ic_action_new"/>
 
     <item
-        android:id="@+id/seatplan_history"
+        android:id="@+id/seatplan_delete"
         android:showAsAction="never"
-        android:title="@string/action_history"/>
+        android:title="@string/action_delete"/>
 
     <item
         android:id="@+id/seatplan_delete_all"

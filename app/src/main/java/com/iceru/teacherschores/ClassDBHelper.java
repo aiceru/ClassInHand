@@ -83,12 +83,6 @@ public class ClassDBHelper extends SQLiteOpenHelper {
         );
     }
 
-    /*public void insert(Seat seat, String dateStr) {
-        wDB.execSQL("INSERT into " + ClassDBContract.SeatHistory.TABLE_NAME
-                + " VALUES (" + seat.getId() + ", " + seat.getItsStudent().getNum()
-                + ", julianday('" + dateStr + "')-" + CONSTANT_MJD + ");");
-    }*/
-
 	public Cursor getStudentsList() {
 		String[] projection = {
 				ClassDBContract.StudentInfo.COLUMN_NAME_STUDENT_ID,
@@ -140,7 +134,7 @@ public class ClassDBHelper extends SQLiteOpenHelper {
         );
     }
 
-	public Cursor getRecentSeats() {
+	public Cursor getRecentSeatPlan() {
 		String query = "SELECT * FROM " + ClassDBContract.SeatHistory.TABLE_NAME
 				+ " WHERE " + ClassDBContract.SeatHistory.COLUMN_NAME_DATE
 				+ " = (SELECT MAX(" + ClassDBContract.SeatHistory.COLUMN_NAME_DATE
@@ -148,7 +142,7 @@ public class ClassDBHelper extends SQLiteOpenHelper {
 		return rDB.rawQuery(query, null);
 	}
 
-    public Cursor getSeatsForDate(long date) {
+    public Cursor getSeatPlan(long date) {
         String query = "SELECT * FROM " + ClassDBContract.SeatHistory.TABLE_NAME
                 + " WHERE " + ClassDBContract.SeatHistory.COLUMN_NAME_DATE
                 + " = " + String.valueOf(date) + ";";
@@ -180,6 +174,18 @@ public class ClassDBHelper extends SQLiteOpenHelper {
 				selectionArgs
 		);
 	}
+
+    public int deleteSeatPlan(long date) {
+        String selection = ClassDBContract.SeatHistory.COLUMN_NAME_DATE + " LIKE ?";
+        String[] selectionArgs = {
+                String.valueOf(date)
+        };
+        return wDB.delete(
+                ClassDBContract.SeatHistory.TABLE_NAME,
+                selection,
+                selectionArgs
+        );
+    }
 
 	public int deleteAllStudents() {
 		return wDB.delete(
