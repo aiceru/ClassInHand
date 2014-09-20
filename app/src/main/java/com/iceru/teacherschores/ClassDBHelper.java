@@ -41,22 +41,23 @@ public class ClassDBHelper extends SQLiteOpenHelper {
 		return wDB.insert(ClassDBContract.StudentInfo.TABLE_NAME, null, values);
 	}
 
-	public long insert(Seat seat, long date) {
+	public long insert(Seat seat, int pairedStudentId, long date) {
 		ContentValues values = new ContentValues();
 		values.put(ClassDBContract.SeatHistory.COLUMN_NAME_SEAT_ID, seat.getId());
-		values.put(ClassDBContract.SeatHistory.COLUMN_NAME_DATE, date);
-		if(seat.getItsStudent() != null) {
-			values.put(ClassDBContract.SeatHistory.COLUMN_NAME_STUDENT_ID, seat.getItsStudent().getNum());
-		}
+        values.put(ClassDBContract.SeatHistory.COLUMN_NAME_DATE, date);
+        if(seat.getItsStudent() != null) {
+            values.put(ClassDBContract.SeatHistory.COLUMN_NAME_STUDENT_ID, seat.getItsStudent().getNum());
+            values.put(ClassDBContract.SeatHistory.COLUMN_NAME_PAIR_STUDENT, pairedStudentId);
+        }
 
 		return wDB.insert(
 				ClassDBContract.SeatHistory.TABLE_NAME,
-				ClassDBContract.SeatHistory.COLUMN_NAME_NULLABLE,
+				null,
 				values
 		);
 	}
 
-    public int update(Seat seat, long date) {
+    public int update(Seat seat, int pairStudentId, long date) {
         int seatid = seat.getId();
         ContentValues values = new ContentValues();
 
@@ -70,9 +71,11 @@ public class ClassDBHelper extends SQLiteOpenHelper {
 
         if(seat.getItsStudent() != null) {
             values.put(ClassDBContract.SeatHistory.COLUMN_NAME_STUDENT_ID, seat.getItsStudent().getNum());
+            values.put(ClassDBContract.SeatHistory.COLUMN_NAME_PAIR_STUDENT, pairStudentId);
         }
         else {
             values.putNull(ClassDBContract.SeatHistory.COLUMN_NAME_STUDENT_ID);
+            values.putNull(ClassDBContract.SeatHistory.COLUMN_NAME_PAIR_STUDENT);
         }
 
         return wDB.update(
@@ -147,6 +150,28 @@ public class ClassDBHelper extends SQLiteOpenHelper {
                 + " WHERE " + ClassDBContract.SeatHistory.COLUMN_NAME_DATE
                 + " = " + String.valueOf(date) + ";";
         return rDB.rawQuery(query, null);
+    }
+
+    public Cursor getHistory(int studentId, long date) {
+        String[] projection = {
+                ClassDBContract.SeatHistory.COLUMN_NAME_SEAT_ID,
+                ClassDBContract.SeatHistory.COLUMN_NAME_PAIR_STUDENT
+        };
+        String selection = ClassDBContract.SeatHistory.COLUMN_NAME_STUDENT_ID + " = ? AND " +
+                           ClassDBContract.SeatHistory.COLUMN_NAME_DATE + " = ?";
+        String[] selectionArgs = {
+                String.valueOf(studentId),
+                String.valueOf(date)
+        };
+        return rDB.query(
+        /* TABLE        */  ClassDBContract.SeatHistory.TABLE_NAME,
+        /* COLUMNS      */  projection,
+        /* SELECTION    */  selection,
+        /* SELECTARGS   */  selectionArgs,
+        /* GROUP BY     */  null,
+        /* HAVING       */  null,
+        /* ORDER BY     */  null
+        );
     }
 
 	public int delete(Student student) {

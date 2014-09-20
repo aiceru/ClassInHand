@@ -17,10 +17,8 @@ public final class ClassDBContract {
 		public static final String TABLE_NAME = "seat_history";
 		public static final String COLUMN_NAME_SEAT_ID = "seat_id";
 		public static final String COLUMN_NAME_STUDENT_ID = "student_id";
+        public static final String COLUMN_NAME_PAIR_STUDENT = "pair";
 		public static final String COLUMN_NAME_DATE = "date";
-
-		public static final String COLUMN_NAME_NULLABLE =
-				SeatHistory.COLUMN_NAME_STUDENT_ID;
 	}
 
 	private static final String TEXT_TYPE = " TEXT";
@@ -39,6 +37,7 @@ public final class ClassDBContract {
 			"CREATE TABLE " + SeatHistory.TABLE_NAME + " (" +
 					SeatHistory.COLUMN_NAME_SEAT_ID + INTEGER_TYPE + COMMA_SEP +
 					SeatHistory.COLUMN_NAME_STUDENT_ID + INTEGER_TYPE + COMMA_SEP +
+                    SeatHistory.COLUMN_NAME_PAIR_STUDENT + INTEGER_TYPE + COMMA_SEP +
 					SeatHistory.COLUMN_NAME_DATE + INTEGER_TYPE +
 			" )";
 

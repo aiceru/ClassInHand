@@ -16,11 +16,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -44,14 +46,18 @@ public class SeatFragment extends Fragment {
     private long                mCurrentShowingDate = 0;
     private GregorianCalendar   mCurrentShowingCal = null;
 
+    private Seat                mLeftSelectedSeat = null;
+    private Seat                mRightSelectedSeat = null;
+
     /* 새 자리 배치, 배치 수정 등에 쓰일 임시 리스트들 (원본 복제해서 작업 후 save or discard) */
     private TreeMap<Integer, Student>   mNewStudents = null;
     private ArrayList<Seat>             mNewSegment1 = null, mNewSegment2 = null, mNewSegment3 = null;
 
 	/* View variables */
-	private GridView    gv_segment1;
-	private GridView    gv_segment2;
-	private GridView    gv_segment3;
+    private LinearLayout    layout_onseatclick_inflated;
+	private GridView        gv_segment1;
+	private GridView        gv_segment2;
+	private GridView        gv_segment3;
 
 	private TextView    tv_curDate;
 	private Button      btn_shuffle;
@@ -72,7 +78,8 @@ public class SeatFragment extends Fragment {
         public void setItems(ArrayList<Seat> object) {
             this.mItems = object;
         }
-		@Override
+
+        @Override
 		public int getCount() {
 			return mItems.size();
 		}
@@ -177,13 +184,13 @@ public class SeatFragment extends Fragment {
 		mTotalSeats = mBoysSeats + mGirlsSeats;
         /* End */
 
+        mSegment1 = new ArrayList<Seat>();
+        mSegment2 = new ArrayList<Seat>();
+        mSegment3 = new ArrayList<Seat>();
+
         if(!mStudents.isEmpty()) {
 
             /* Creating segments and Seats... */
-            mSegment1 = new ArrayList<Seat>();
-            mSegment2 = new ArrayList<Seat>();
-            mSegment3 = new ArrayList<Seat>();
-
             for (int i = 0; i < mTotalSeats; i++) {
                 Seat seat = new Seat(i);
                 addToSegment(seat);
@@ -256,6 +263,8 @@ public class SeatFragment extends Fragment {
         Log.d(this.getClass().getSimpleName(), "onCreateView()");
         View rootView = inflater.inflate(R.layout.fragment_seat, container, false);
 
+        layout_onseatclick_inflated = (LinearLayout)rootView.findViewById(R.id.linearlayout_onseatclick_inflated);
+
 	    tv_curDate = (TextView) rootView.findViewById(R.id.textview_current_month);
         if(mCurrentShowingDate != 0) {
             tv_curDate.setText(String.format("%04d. %02d. %02d",
@@ -287,6 +296,25 @@ public class SeatFragment extends Fragment {
         gv_segment2 = (GridView) rootView.findViewById(R.id.gridview_segment2);
         gv_segment3 = (GridView) rootView.findViewById(R.id.gridview_segment3);
 
+        gv_segment1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                onSeatClick(mEditMode ? mNewSegment1 : mSegment1, position, view);
+            }
+        });
+        gv_segment2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                onSeatClick(mEditMode? mNewSegment2 : mSegment2, position, view);
+            }
+        });
+        gv_segment3.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                onSeatClick(mEditMode? mNewSegment3 : mSegment3, position, view);
+            }
+        });
+
 	    mSegAdpt1 = new segAdapter(mainActivity, mSegment1);
 	    mSegAdpt2 = new segAdapter(mainActivity, mSegment2);
 	    mSegAdpt3 = new segAdapter(mainActivity, mSegment3);
@@ -304,6 +332,56 @@ public class SeatFragment extends Fragment {
 	    btn_shuffle.setVisibility(View.INVISIBLE);
 
         return rootView;
+    }
+
+    private void onSeatClick(ArrayList<Seat> seg, int position, View view) {
+        LayoutInflater inflater =  (LayoutInflater)mainActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inflater.inflate(R.layout.onseatclick_inflated, layout_onseatclick_inflated);
+
+        TextView tv_left_name = (TextView)layout_onseatclick_inflated.findViewById(R.id.textview_onseatclick_left_name);
+        TextView tv_left_history1 = (TextView)layout_onseatclick_inflated.findViewById(R.id.textview_onseatclick_left_history1);
+        TextView tv_left_history2 = (TextView)layout_onseatclick_inflated.findViewById(R.id.textview_onseatclick_left_history2);
+        TextView tv_left_history3 = (TextView)layout_onseatclick_inflated.findViewById(R.id.textview_onseatclick_left_history3);
+        TextView tv_right_name = (TextView)layout_onseatclick_inflated.findViewById(R.id.textview_onseatclick_right_name);
+
+        Button  btn_change_seat = (Button)layout_onseatclick_inflated.findViewById(R.id.btn_change_seat);
+
+        ClassDBHelper dbHelper = mainActivity.getDbHelper();
+        long[] prevSavedDate = new long[3];
+        for(int i = 0; i < 3; i++) {
+            int index = mSavedDateList.indexOf(mCurrentShowingDate);
+            if (index + 1 + i < mSavedDateList.size()) {
+                prevSavedDate[i] = mSavedDateList.get(index + 1 + i);
+            }
+        }
+
+        String seatHistory, pairHistory;
+        int seated, paired;
+        Cursor historyCursor;
+
+        if(mLeftSelectedSeat == null) {
+            mLeftSelectedSeat = seg.get(position);
+            Student selectedStudent = mLeftSelectedSeat.getItsStudent();
+            tv_left_name.setText(selectedStudent.getName());
+            if(prevSavedDate[0] != 0) {
+                historyCursor = dbHelper.getHistory(selectedStudent.getNum(), prevSavedDate[0]);
+                if(historyCursor.moveToFirst()) {
+                    seated = historyCursor.getInt(historyCursor.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_SEAT_ID));
+                    paired = historyCursor.getInt(historyCursor.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_PAIR_STUDENT));
+                    tv_left_history1.setText(
+                            "1. " + String.valueOf(seated) + " / " + mStudents.get(paired).getName()
+                    );
+                }
+            }
+        }
+        else {
+            mRightSelectedSeat = seg.get(position);
+            tv_right_name.setText(mRightSelectedSeat.getItsStudent().getName());
+        }
+
+        if(mLeftSelectedSeat != null && mRightSelectedSeat != null) {
+            btn_change_seat.setVisibility(View.VISIBLE);
+        }
     }
 
     private void showPlan(long plannedDate) {
@@ -484,12 +562,19 @@ public class SeatFragment extends Fragment {
                     Cursor c = dbHelper.getSeatPlan(curDateInMills);
                     if(!c.moveToFirst()) {
                         swapWithClones();
+                        mEditMode = false;
 
                         /* save to DB */
                         Student st;
+                        Seat seat, pairSeat;
                         for (TreeMap.Entry<Integer, Student> entry : mStudents.entrySet()) {
                             st = entry.getValue();
-                            dbHelper.insert(st.getItsCurrentSeat(), curDateInMills);
+                            seat = st.getItsCurrentSeat();
+                            pairSeat = getSeatByAbsolutePosition(seat.getPairId());
+                            dbHelper.insert(
+                                    seat,                                                                   // seat ID
+                                    pairSeat == null? -1 : pairSeat.getItsStudent().getNum(),               // paired Student's ID
+                                    curDateInMills);                                                        // date
                         }
 
                         /* add to Saved Date List (Long, String both) */
@@ -511,7 +596,6 @@ public class SeatFragment extends Fragment {
                         tv_curDate.setVisibility(View.VISIBLE);
                         btn_shuffle.setVisibility(View.INVISIBLE);
 
-                        mEditMode = false;
                         mainActivity.invalidateOptionsMenu();
                     }
                     else {      // seat assignment for this date already exists. so, UPDATE. not INSERT.
@@ -522,12 +606,19 @@ public class SeatFragment extends Fragment {
                             public void onClick(DialogInterface dialog, int id) {
                                 // User clicked OK button
                                 swapWithClones();
+                                mEditMode = false;
 
                                 /* update DB */
                                 Student st;
+                                Seat seat, pairSeat;
                                 for(TreeMap.Entry<Integer, Student> entry : mStudents.entrySet()) {
                                     st = entry.getValue();
-                                    dbHelper.update(st.getItsCurrentSeat(), curDateInMills);
+                                    seat = st.getItsCurrentSeat();
+                                    pairSeat = getSeatByAbsolutePosition(seat.getPairId());
+                                    dbHelper.update(
+                                            seat,
+                                            pairSeat == null? -1 : pairSeat.getItsStudent().getNum(),
+                                            curDateInMills);
                                 }
 
                                 /* No need to add Saved Date List (already exist because this is UPDATE, not INSERT
@@ -543,7 +634,6 @@ public class SeatFragment extends Fragment {
                                 tv_curDate.setVisibility(View.VISIBLE);
                                 btn_shuffle.setVisibility(View.INVISIBLE);
 
-                                mEditMode = false;
                                 mainActivity.invalidateOptionsMenu();
                             }
                         });
@@ -732,6 +822,7 @@ public class SeatFragment extends Fragment {
 		int mod2 = mod % 2;
 		int div = seatId / 6;
         ArrayList<Seat> seg = null;
+        if(seatId > mStudents.size() - 1) return null;
 
         if(mEditMode) {
             switch (mod) {
