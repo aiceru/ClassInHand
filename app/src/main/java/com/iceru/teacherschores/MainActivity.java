@@ -33,6 +33,8 @@ public class MainActivity extends Activity
 	private SharedPreferences mShPrefStudentBoygirlList;
 	private SharedPreferences mShPrefRoleList;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

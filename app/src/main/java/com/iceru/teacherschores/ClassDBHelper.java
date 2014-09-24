@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.util.ArrayList;
+
 /**
  * Created by iceru on 14. 8. 23.
  */
@@ -152,17 +154,43 @@ public class ClassDBHelper extends SQLiteOpenHelper {
         return rDB.rawQuery(query, null);
     }
 
+    public Cursor getHistory(int studentId) {
+        String[] projection = {
+                ClassDBContract.SeatHistory.COLUMN_NAME_SEAT_ID,
+                ClassDBContract.SeatHistory.COLUMN_NAME_PAIR_STUDENT,
+                ClassDBContract.SeatHistory.COLUMN_NAME_DATE
+        };
+        String selection =
+                ClassDBContract.SeatHistory.COLUMN_NAME_STUDENT_ID + " = ?";
+        String[] selectionArgs = {
+                String.valueOf(studentId)
+        };
+
+        return rDB.query(
+        /* TABLE        */  ClassDBContract.SeatHistory.TABLE_NAME,
+        /* COLUMNS      */  projection,
+        /* SELECTION    */  selection,
+        /* SELECTARGS   */  selectionArgs,
+        /* GROUP BY     */  null,
+        /* HAVING       */  null,
+        /* ORDER BY     */  ClassDBContract.SeatHistory.COLUMN_NAME_DATE + " DESC"
+        );
+    }
+
     public Cursor getHistory(int studentId, long date) {
         String[] projection = {
                 ClassDBContract.SeatHistory.COLUMN_NAME_SEAT_ID,
-                ClassDBContract.SeatHistory.COLUMN_NAME_PAIR_STUDENT
+                ClassDBContract.SeatHistory.COLUMN_NAME_PAIR_STUDENT,
+                ClassDBContract.SeatHistory.COLUMN_NAME_DATE
         };
-        String selection = ClassDBContract.SeatHistory.COLUMN_NAME_STUDENT_ID + " = ? AND " +
-                           ClassDBContract.SeatHistory.COLUMN_NAME_DATE + " = ?";
+        String selection =
+                ClassDBContract.SeatHistory.COLUMN_NAME_STUDENT_ID + " = ? AND " +
+                ClassDBContract.SeatHistory.COLUMN_NAME_DATE + " = ?";
         String[] selectionArgs = {
                 String.valueOf(studentId),
                 String.valueOf(date)
         };
+
         return rDB.query(
         /* TABLE        */  ClassDBContract.SeatHistory.TABLE_NAME,
         /* COLUMNS      */  projection,

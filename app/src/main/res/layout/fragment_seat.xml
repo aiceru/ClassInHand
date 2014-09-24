@@ -65,7 +65,9 @@
             android:numColumns="2"
             android:horizontalSpacing="1dp"
             android:verticalSpacing="1dp"
-            tools:listitem="@layout/seat"/>
+            tools:listitem="@layout/seat"
+            android:scrollbars="none"
+            android:choiceMode="multipleChoice" />
 
         <Space
             android:layout_width="wrap_content"

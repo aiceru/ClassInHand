@@ -7,7 +7,7 @@ public class Seat implements Cloneable {
 	private int id;
 	private Student itsStudent;
     private int pairId;
-    //private boolean selected = false;
+    private boolean selected = false;
 
 	public Seat(int id, Student st) {
 		this.id = id;
@@ -38,5 +38,13 @@ public class Seat implements Cloneable {
     @Override
     public Seat clone() throws CloneNotSupportedException {
         return (Seat) super.clone();
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean _selected) {
+        this.selected = _selected;
     }
 }

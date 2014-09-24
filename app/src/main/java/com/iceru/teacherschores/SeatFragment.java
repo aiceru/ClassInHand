@@ -8,6 +8,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,6 +17,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -104,6 +106,8 @@ public class SeatFragment extends Fragment {
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			View view;
+            final Seat seat = (Seat)this.getItem(position);
+
 			if(convertView == null) {
 				view = mInflater.inflate(R.layout.seat, null);
 			}
@@ -111,9 +115,8 @@ public class SeatFragment extends Fragment {
 				view = convertView;
 			}
 
-			final Seat seat = (Seat)this.getItem(position);
-
 			if(seat != null) {
+                if(seat.isSelected()) view.setBackground(getResources().getDrawable(R.drawable.desk_selected));
                 TextView tvNum = (TextView) view.findViewById(R.id.textview_seated_num);
                 TextView tvName = (TextView) view.findViewById(R.id.textview_seated_name);
                 ImageView ivBoygirl = (ImageView) view.findViewById(R.id.imageview_seated_boygirl);
@@ -335,53 +338,121 @@ public class SeatFragment extends Fragment {
     }
 
     private void onSeatClick(ArrayList<Seat> seg, int position, View view) {
-        LayoutInflater inflater =  (LayoutInflater)mainActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final LayoutInflater inflater =  (LayoutInflater)mainActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        layout_onseatclick_inflated.setVisibility(View.VISIBLE);
         inflater.inflate(R.layout.onseatclick_inflated, layout_onseatclick_inflated);
 
-        TextView tv_left_name = (TextView)layout_onseatclick_inflated.findViewById(R.id.textview_onseatclick_left_name);
-        TextView tv_left_history1 = (TextView)layout_onseatclick_inflated.findViewById(R.id.textview_onseatclick_left_history1);
-        TextView tv_left_history2 = (TextView)layout_onseatclick_inflated.findViewById(R.id.textview_onseatclick_left_history2);
-        TextView tv_left_history3 = (TextView)layout_onseatclick_inflated.findViewById(R.id.textview_onseatclick_left_history3);
-        TextView tv_right_name = (TextView)layout_onseatclick_inflated.findViewById(R.id.textview_onseatclick_right_name);
+        final LinearLayout layout_onseatclick_left =
+                (LinearLayout)layout_onseatclick_inflated.findViewById(R.id.linearlayout_onseatclick_left);
+        final LinearLayout layout_onseatclick_right =
+                (LinearLayout)layout_onseatclick_inflated.findViewById(R.id.linearlayout_onseatclick_right);
 
         Button  btn_change_seat = (Button)layout_onseatclick_inflated.findViewById(R.id.btn_change_seat);
 
         ClassDBHelper dbHelper = mainActivity.getDbHelper();
-        long[] prevSavedDate = new long[3];
-        for(int i = 0; i < 3; i++) {
-            int index = mSavedDateList.indexOf(mCurrentShowingDate);
-            if (index + 1 + i < mSavedDateList.size()) {
-                prevSavedDate[i] = mSavedDateList.get(index + 1 + i);
-            }
-        }
 
-        String seatHistory, pairHistory;
-        int seated, paired;
+        int where, pair;
+        long when;
+        GregorianCalendar cal = new GregorianCalendar();
         Cursor historyCursor;
+        Student selectedStudent;
+        TextView tv;
 
         if(mLeftSelectedSeat == null) {
             mLeftSelectedSeat = seg.get(position);
-            Student selectedStudent = mLeftSelectedSeat.getItsStudent();
-            tv_left_name.setText(selectedStudent.getName());
-            if(prevSavedDate[0] != 0) {
-                historyCursor = dbHelper.getHistory(selectedStudent.getNum(), prevSavedDate[0]);
-                if(historyCursor.moveToFirst()) {
-                    seated = historyCursor.getInt(historyCursor.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_SEAT_ID));
-                    paired = historyCursor.getInt(historyCursor.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_PAIR_STUDENT));
-                    tv_left_history1.setText(
-                            "1. " + String.valueOf(seated) + " / " + mStudents.get(paired).getName()
-                    );
+            mLeftSelectedSeat.setSelected(true);
+            selectedStudent = mLeftSelectedSeat.getItsStudent();
+            tv = new TextView(mainActivity);
+            tv.setText(selectedStudent.getName());
+            tv.setTextSize(18);
+            layout_onseatclick_left.addView(tv);
+            historyCursor = dbHelper.getHistory(selectedStudent.getNum());
+            if(historyCursor.moveToFirst()) {
+                int historyCount = 0;
+                historyCursor.moveToNext();
+                while(!historyCursor.isAfterLast() && historyCount < 3) {
+                    where = historyCursor.getInt(historyCursor.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_SEAT_ID));
+                    pair = historyCursor.getInt(historyCursor.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_PAIR_STUDENT));
+                    when = historyCursor.getLong(historyCursor.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_DATE));
+                    cal.setTimeInMillis(when);
+                    String whenStr = String.format("%02d.%02d ~\n", cal.get(Calendar.MONTH)+1, cal.get(Calendar.DAY_OF_MONTH));
+                    String whereStr = ConvertAbsSeatToSegAndRow(where) + ", ";
+                    String pariStr = mStudents.get(pair).getName();
+                    tv = new TextView(mainActivity);
+                    tv.setText(whenStr + whereStr + pariStr);
+                    tv.setTextSize(14);
+                    layout_onseatclick_left.addView(tv);
+                    historyCursor.moveToNext();
+                    historyCount++;
                 }
             }
         }
-        else {
+        else if(mRightSelectedSeat == null) {
             mRightSelectedSeat = seg.get(position);
-            tv_right_name.setText(mRightSelectedSeat.getItsStudent().getName());
+            mRightSelectedSeat.setSelected(true);
+            selectedStudent = mRightSelectedSeat.getItsStudent();
+            tv = new TextView(mainActivity);
+            tv.setText(selectedStudent.getName());
+            tv.setTextSize(18);
+            layout_onseatclick_right.addView(tv);
+            historyCursor = dbHelper.getHistory(selectedStudent.getNum());
+            if(historyCursor.moveToFirst()) {
+                int historyCount = 0;
+                historyCursor.moveToNext();
+                while(!historyCursor.isAfterLast() && historyCount < 3) {
+                    where = historyCursor.getInt(historyCursor.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_SEAT_ID));
+                    pair = historyCursor.getInt(historyCursor.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_PAIR_STUDENT));
+                    when = historyCursor.getLong(historyCursor.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_DATE));
+                    cal.setTimeInMillis(when);
+                    String whenStr = String.format("%02d.%02d ~\n", cal.get(Calendar.MONTH)+1, cal.get(Calendar.DAY_OF_MONTH));
+                    String whereStr = ConvertAbsSeatToSegAndRow(where) + ", ";
+                    String pariStr = mStudents.get(pair).getName();
+                    tv = new TextView(mainActivity);
+                    tv.setText(whenStr + whereStr + pariStr);
+                    tv.setTextSize(14);
+                    layout_onseatclick_right.addView(tv);
+                    historyCursor.moveToNext();
+                    historyCount++;
+                }
+            }
         }
 
         if(mLeftSelectedSeat != null && mRightSelectedSeat != null) {
             btn_change_seat.setVisibility(View.VISIBLE);
+            btn_change_seat.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Student tempStd = mLeftSelectedSeat.getItsStudent();
+                    mLeftSelectedSeat.setItsStudent(mRightSelectedSeat.getItsStudent());
+                    mRightSelectedSeat.setItsStudent(tempStd);
+
+                    mLeftSelectedSeat.getItsStudent().setItsCurrentSeat(mLeftSelectedSeat);
+                    mRightSelectedSeat.getItsStudent().setItsCurrentSeat(mRightSelectedSeat);
+
+                    mLeftSelectedSeat = null;
+                    mRightSelectedSeat = null;
+
+                    layout_onseatclick_left.removeAllViews();
+                    layout_onseatclick_right.removeAllViews();
+                    layout_onseatclick_inflated.setVisibility(View.GONE);
+                    refreshSegView();
+                }
+            });
         }
+        refreshSegView();
+    }
+
+    private String ConvertAbsSeatToSegAndRow(int seatId) {
+        int row = seatId / 6 + 1;
+        int seg = ((seatId % 6) / 2) + 1;
+        String segAndRow =
+                String.valueOf(seg) +
+                getString(R.string.string_segment) + " " +
+                String.valueOf(row) +
+                getString(R.string.string_row) + " ";
+        if(seatId % 2 == 0) segAndRow += getString(R.string.string_left);
+        else segAndRow += getString(R.string.string_right);
+        return segAndRow;
     }
 
     private void showPlan(long plannedDate) {

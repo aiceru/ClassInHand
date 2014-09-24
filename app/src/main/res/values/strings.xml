@@ -45,6 +45,11 @@
 
     <string name="tabtitle_studentinfo">학생정보</string>
     <string name="tabtitle_roleinfo">역할정보</string>
+
+    <string name="string_segment">분단</string>
+    <string name="string_row">줄</string>
+    <string name="string_left">왼쪽</string>
+    <string name="string_right">오른쪽</string>
 	
 	<string-array name="roleconsume_array">
 	    <item>1</item>
