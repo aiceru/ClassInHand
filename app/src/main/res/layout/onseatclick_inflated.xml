@@ -5,14 +5,25 @@
     android:layout_height="match_parent"
     android:layout_gravity="center"
     android:weightSum="1">
-    <LinearLayout
-        android:id="@+id/linearlayout_onseatclick_left"
-        android:orientation="vertical"
-        android:layout_height="match_parent"
+    <RelativeLayout
         android:layout_width="0dp"
         android:layout_weight="0.45"
+        android:layout_height="wrap_content"
         android:layout_marginRight="@dimen/activity_horizontal_margin">
-    </LinearLayout>
+        <Button
+            android:id="@+id/btn_left_cancel"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/ic_action_cancel"
+            android:visibility="invisible"/>
+        <LinearLayout
+            android:id="@+id/linearlayout_onseatclick_left"
+            android:orientation="vertical"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent">
+        </LinearLayout>
+    </RelativeLayout>
     <LinearLayout
         android:layout_height="match_parent"
         android:layout_width="0dp"
@@ -27,13 +38,23 @@
             android:visibility="invisible"
             />
     </LinearLayout>
-    <LinearLayout
-        android:id="@+id/linearlayout_onseatclick_right"
-        android:orientation="vertical"
-        android:layout_height="match_parent"
+    <RelativeLayout
         android:layout_width="0dp"
         android:layout_weight="0.45"
-        android:gravity="end"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/activity_horizontal_margin">
-    </LinearLayout>
+        <Button
+            android:id="@+id/btn_right_cancel"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/ic_action_cancel"
+            android:visibility="invisible"/>
+        <LinearLayout
+            android:id="@+id/linearlayout_onseatclick_right"
+            android:orientation="vertical"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent">
+        </LinearLayout>
+    </RelativeLayout>
 </LinearLayout>

@@ -3,11 +3,11 @@
       xmlns:tools="http://schemas.android.com/tools"
       tools:context="com.iceru.teacherschores.MainActivity" >
 
-    <item
+    <!--<item
         android:id="@+id/seatplan_edit"
         android:showAsAction="always"
         android:title="@string/action_edit"
-        android:icon="@drawable/ic_action_edit"/>
+        android:icon="@drawable/ic_action_edit"/>-->
 
     <item
         android:id="@+id/seatplan_new"
