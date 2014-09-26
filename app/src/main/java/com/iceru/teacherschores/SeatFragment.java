@@ -337,6 +337,8 @@ public class SeatFragment extends Fragment {
     }
 
     private void onSeatClick(ArrayList<Seat> seg, int position) {
+        if(seg.get(position).getItsStudent() == null) return;
+
         final LayoutInflater inflater =  (LayoutInflater)mainActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         layout_onseatclick_inflated.setVisibility(View.VISIBLE);
         inflater.inflate(R.layout.onseatclick_inflated, layout_onseatclick_inflated);
@@ -345,8 +347,6 @@ public class SeatFragment extends Fragment {
                 (LinearLayout)layout_onseatclick_inflated.findViewById(R.id.linearlayout_onseatclick_left);
         final LinearLayout layout_onseatclick_right =
                 (LinearLayout)layout_onseatclick_inflated.findViewById(R.id.linearlayout_onseatclick_right);
-
-        Button  btn_change_seat = (Button)layout_onseatclick_inflated.findViewById(R.id.btn_change_seat);
 
         ClassDBHelper dbHelper = mainActivity.getDbHelper();
 
@@ -357,6 +357,39 @@ public class SeatFragment extends Fragment {
         Student selectedStudent;
         TextView tv;
 
+        final Button btn_change_seat = (Button)layout_onseatclick_inflated.findViewById(R.id.btn_change_seat);
+        btn_change_seat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Student tempStd = mLeftSelectedSeat.getItsStudent();
+                mLeftSelectedSeat.setItsStudent(mRightSelectedSeat.getItsStudent());
+                mRightSelectedSeat.setItsStudent(tempStd);
+
+                mLeftSelectedSeat.getItsStudent().setItsCurrentSeat(mLeftSelectedSeat);
+                mRightSelectedSeat.getItsStudent().setItsCurrentSeat(mRightSelectedSeat);
+
+                ClassDBHelper dbHelper = mainActivity.getDbHelper();
+                Seat pairSeat = getSeatByAbsolutePosition(mLeftSelectedSeat.getPairSeatId());
+                dbHelper.update(mLeftSelectedSeat,
+                        pairSeat == null? -1 : pairSeat.getItsStudent().getNum(),
+                        mCurrentShowingDate);
+                pairSeat = getSeatByAbsolutePosition(mRightSelectedSeat.getPairSeatId());
+                dbHelper.update(mRightSelectedSeat,
+                        pairSeat == null? -1 : pairSeat.getItsStudent().getNum(),
+                        mCurrentShowingDate);
+
+                mLeftSelectedSeat.setSelected(false);
+                mRightSelectedSeat.setSelected(false);
+
+                mLeftSelectedSeat = null;
+                mRightSelectedSeat = null;
+
+                layout_onseatclick_left.removeAllViews();
+                layout_onseatclick_right.removeAllViews();
+                layout_onseatclick_inflated.setVisibility(View.GONE);
+                refreshSegView();
+            }
+        });
         final Button btn_left_cancel = (Button)layout_onseatclick_inflated.findViewById(R.id.btn_left_cancel);
         btn_left_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -365,6 +398,8 @@ public class SeatFragment extends Fragment {
                 mLeftSelectedSeat = null;
                 layout_onseatclick_left.removeAllViews();
                 btn_left_cancel.setVisibility(View.INVISIBLE);
+                btn_change_seat.setVisibility(View.INVISIBLE);
+                if(mRightSelectedSeat == null) layout_onseatclick_inflated.setVisibility(View.GONE);
                 refreshSegView();
             }
         });
@@ -376,28 +411,30 @@ public class SeatFragment extends Fragment {
                 mRightSelectedSeat = null;
                 layout_onseatclick_right.removeAllViews();
                 btn_right_cancel.setVisibility(View.INVISIBLE);
+                btn_change_seat.setVisibility(View.INVISIBLE);
+                if(mLeftSelectedSeat == null) layout_onseatclick_inflated.setVisibility(View.GONE);
                 refreshSegView();
             }
         });
 
         if(mLeftSelectedSeat == null) {
             mLeftSelectedSeat = seg.get(position);
-            mLeftSelectedSeat.setSelected(true);
             selectedStudent = mLeftSelectedSeat.getItsStudent();
+            mLeftSelectedSeat.setSelected(true);
             tv = new TextView(mainActivity);
             tv.setText(selectedStudent.getName());
             tv.setTextSize(18);
             layout_onseatclick_left.addView(tv);
             historyCursor = dbHelper.getHistory(selectedStudent.getNum());
-            if(historyCursor.moveToFirst()) {
+            if (historyCursor.moveToFirst()) {
                 int historyCount = 0;
                 historyCursor.moveToNext();
-                while(!historyCursor.isAfterLast() && historyCount < 3) {
+                while (!historyCursor.isAfterLast() && historyCount < 3) {
                     where = historyCursor.getInt(historyCursor.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_SEAT_ID));
                     pair = historyCursor.getInt(historyCursor.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_PAIR_STUDENT));
                     when = historyCursor.getLong(historyCursor.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_DATE));
                     cal.setTimeInMillis(when);
-                    String whenStr = String.format("%02d.%02d ~\n", cal.get(Calendar.MONTH)+1, cal.get(Calendar.DAY_OF_MONTH));
+                    String whenStr = String.format("%02d.%02d ~\n", cal.get(Calendar.MONTH) + 1, cal.get(Calendar.DAY_OF_MONTH));
                     String whereStr = ConvertAbsSeatToSegAndRow(where) + ", ";
                     String pariStr = mStudents.get(pair).getName();
                     tv = new TextView(mainActivity);
@@ -412,8 +449,8 @@ public class SeatFragment extends Fragment {
         }
         else if(mRightSelectedSeat == null) {
             mRightSelectedSeat = seg.get(position);
-            mRightSelectedSeat.setSelected(true);
             selectedStudent = mRightSelectedSeat.getItsStudent();
+            mRightSelectedSeat.setSelected(true);
             tv = new TextView(mainActivity);
             tv.setText(selectedStudent.getName());
             tv.setTextSize(18);
@@ -443,38 +480,6 @@ public class SeatFragment extends Fragment {
 
         if(mLeftSelectedSeat != null && mRightSelectedSeat != null) {
             btn_change_seat.setVisibility(View.VISIBLE);
-            btn_change_seat.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Student tempStd = mLeftSelectedSeat.getItsStudent();
-                    mLeftSelectedSeat.setItsStudent(mRightSelectedSeat.getItsStudent());
-                    mRightSelectedSeat.setItsStudent(tempStd);
-
-                    mLeftSelectedSeat.getItsStudent().setItsCurrentSeat(mLeftSelectedSeat);
-                    mRightSelectedSeat.getItsStudent().setItsCurrentSeat(mRightSelectedSeat);
-
-                    ClassDBHelper dbHelper = mainActivity.getDbHelper();
-                    Seat pairSeat = getSeatByAbsolutePosition(mLeftSelectedSeat.getPairSeatId());
-                    dbHelper.update(mLeftSelectedSeat,
-                            pairSeat == null? -1 : pairSeat.getItsStudent().getNum(),
-                            mCurrentShowingDate);
-                    pairSeat = getSeatByAbsolutePosition(mRightSelectedSeat.getPairSeatId());
-                    dbHelper.update(mRightSelectedSeat,
-                            pairSeat == null? -1 : pairSeat.getItsStudent().getNum(),
-                            mCurrentShowingDate);
-
-                    mLeftSelectedSeat.setSelected(false);
-                    mRightSelectedSeat.setSelected(false);
-
-                    mLeftSelectedSeat = null;
-                    mRightSelectedSeat = null;
-
-                    layout_onseatclick_left.removeAllViews();
-                    layout_onseatclick_right.removeAllViews();
-                    layout_onseatclick_inflated.setVisibility(View.GONE);
-                    refreshSegView();
-                }
-            });
         }
         refreshSegView();
     }
