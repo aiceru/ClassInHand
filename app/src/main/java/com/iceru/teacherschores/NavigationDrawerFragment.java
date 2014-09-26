@@ -114,11 +114,11 @@ public class NavigationDrawerFragment extends Fragment {
                 }));*/
         drawerContentList = new ArrayList<DrawerContent>();
         drawerContentList.add(DrawerItem.create(101, getString(R.string.title_seatplan), "ic_action_3d_cube", true, this.getActivity()));
-        drawerContentList.add(DrawerItem.create(102, getString(R.string.title_eachrole), "ic_action_user", true, this.getActivity()));
-        drawerContentList.add(DrawerItem.create(103, getString(R.string.title_classtime), "ic_action_alarm_clock", true, this.getActivity()));
+        //drawerContentList.add(DrawerItem.create(102, getString(R.string.title_eachrole), "ic_action_user", true, this.getActivity()));
+        //drawerContentList.add(DrawerItem.create(103, getString(R.string.title_classtime), "ic_action_alarm_clock", true, this.getActivity()));
         drawerContentList.add(DrawerSection.create(200, "Settings"));
         drawerContentList.add(DrawerSubItem.create(201, getString(R.string.title_fillinfo), "ic_action_edit", true, this.getActivity()));
-        drawerContentList.add(DrawerSubItem.create(202, getString(R.string.title_setting), "ic_action_settings", true, this.getActivity()));
+        //drawerContentList.add(DrawerSubItem.create(202, getString(R.string.title_setting), "ic_action_settings", true, this.getActivity()));
         mDrawerListView.setAdapter(new DrawerContentAdapter(getActionBar().getThemedContext(), R.layout.drawer_item, drawerContentList));
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, false);
         return mDrawerListView;

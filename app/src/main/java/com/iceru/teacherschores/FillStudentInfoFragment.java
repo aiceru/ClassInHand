@@ -320,9 +320,8 @@ public class FillStudentInfoFragment extends Fragment {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		int id = item.getItemId();
 		if(id == R.id.action_deleteAll) {
-			ClassDBHelper dbHelper = mainActivity.getDbHelper();
-			dbHelper.deleteAllStudents();
-			return true;
+			mainActivity.removeAllStudents();
+            mStudentListAdapter.notifyDataSetChanged();
 		}
 		return super.onOptionsItemSelected(item);
 	}

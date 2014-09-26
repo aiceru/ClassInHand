@@ -8,7 +8,6 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,7 +16,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -117,6 +115,7 @@ public class SeatFragment extends Fragment {
 
 			if(seat != null) {
                 if(seat.isSelected()) view.setBackground(getResources().getDrawable(R.drawable.desk_selected));
+                else view.setBackground(getResources().getDrawable(R.drawable.desk));
                 TextView tvNum = (TextView) view.findViewById(R.id.textview_seated_num);
                 TextView tvName = (TextView) view.findViewById(R.id.textview_seated_name);
                 ImageView ivBoygirl = (ImageView) view.findViewById(R.id.imageview_seated_boygirl);
@@ -302,19 +301,19 @@ public class SeatFragment extends Fragment {
         gv_segment1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                onSeatClick(mEditMode ? mNewSegment1 : mSegment1, position, view);
+                onSeatClick(mEditMode ? mNewSegment1 : mSegment1, position);
             }
         });
         gv_segment2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                onSeatClick(mEditMode? mNewSegment2 : mSegment2, position, view);
+                onSeatClick(mEditMode? mNewSegment2 : mSegment2, position);
             }
         });
         gv_segment3.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                onSeatClick(mEditMode? mNewSegment3 : mSegment3, position, view);
+                onSeatClick(mEditMode? mNewSegment3 : mSegment3, position);
             }
         });
 
@@ -337,7 +336,7 @@ public class SeatFragment extends Fragment {
         return rootView;
     }
 
-    private void onSeatClick(ArrayList<Seat> seg, int position, View view) {
+    private void onSeatClick(ArrayList<Seat> seg, int position) {
         final LayoutInflater inflater =  (LayoutInflater)mainActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         layout_onseatclick_inflated.setVisibility(View.VISIBLE);
         inflater.inflate(R.layout.onseatclick_inflated, layout_onseatclick_inflated);
@@ -357,6 +356,29 @@ public class SeatFragment extends Fragment {
         Cursor historyCursor;
         Student selectedStudent;
         TextView tv;
+
+        final Button btn_left_cancel = (Button)layout_onseatclick_inflated.findViewById(R.id.btn_left_cancel);
+        btn_left_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mLeftSelectedSeat.setSelected(false);
+                mLeftSelectedSeat = null;
+                layout_onseatclick_left.removeAllViews();
+                btn_left_cancel.setVisibility(View.INVISIBLE);
+                refreshSegView();
+            }
+        });
+        final Button btn_right_cancel = (Button)layout_onseatclick_inflated.findViewById(R.id.btn_right_cancel);
+        btn_right_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mRightSelectedSeat.setSelected(false);
+                mRightSelectedSeat = null;
+                layout_onseatclick_right.removeAllViews();
+                btn_right_cancel.setVisibility(View.INVISIBLE);
+                refreshSegView();
+            }
+        });
 
         if(mLeftSelectedSeat == null) {
             mLeftSelectedSeat = seg.get(position);
@@ -386,6 +408,7 @@ public class SeatFragment extends Fragment {
                     historyCount++;
                 }
             }
+            btn_left_cancel.setVisibility(View.VISIBLE);
         }
         else if(mRightSelectedSeat == null) {
             mRightSelectedSeat = seg.get(position);
@@ -415,6 +438,7 @@ public class SeatFragment extends Fragment {
                     historyCount++;
                 }
             }
+            btn_right_cancel.setVisibility(View.VISIBLE);
         }
 
         if(mLeftSelectedSeat != null && mRightSelectedSeat != null) {
@@ -428,6 +452,19 @@ public class SeatFragment extends Fragment {
 
                     mLeftSelectedSeat.getItsStudent().setItsCurrentSeat(mLeftSelectedSeat);
                     mRightSelectedSeat.getItsStudent().setItsCurrentSeat(mRightSelectedSeat);
+
+                    ClassDBHelper dbHelper = mainActivity.getDbHelper();
+                    Seat pairSeat = getSeatByAbsolutePosition(mLeftSelectedSeat.getPairSeatId());
+                    dbHelper.update(mLeftSelectedSeat,
+                            pairSeat == null? -1 : pairSeat.getItsStudent().getNum(),
+                            mCurrentShowingDate);
+                    pairSeat = getSeatByAbsolutePosition(mRightSelectedSeat.getPairSeatId());
+                    dbHelper.update(mRightSelectedSeat,
+                            pairSeat == null? -1 : pairSeat.getItsStudent().getNum(),
+                            mCurrentShowingDate);
+
+                    mLeftSelectedSeat.setSelected(false);
+                    mRightSelectedSeat.setSelected(false);
 
                     mLeftSelectedSeat = null;
                     mRightSelectedSeat = null;
@@ -641,7 +678,7 @@ public class SeatFragment extends Fragment {
                         for (TreeMap.Entry<Integer, Student> entry : mStudents.entrySet()) {
                             st = entry.getValue();
                             seat = st.getItsCurrentSeat();
-                            pairSeat = getSeatByAbsolutePosition(seat.getPairId());
+                            pairSeat = getSeatByAbsolutePosition(seat.getPairSeatId());
                             dbHelper.insert(
                                     seat,                                                                   // seat ID
                                     pairSeat == null? -1 : pairSeat.getItsStudent().getNum(),               // paired Student's ID
@@ -685,7 +722,7 @@ public class SeatFragment extends Fragment {
                                 for(TreeMap.Entry<Integer, Student> entry : mStudents.entrySet()) {
                                     st = entry.getValue();
                                     seat = st.getItsCurrentSeat();
-                                    pairSeat = getSeatByAbsolutePosition(seat.getPairId());
+                                    pairSeat = getSeatByAbsolutePosition(seat.getPairSeatId());
                                     dbHelper.update(
                                             seat,
                                             pairSeat == null? -1 : pairSeat.getItsStudent().getNum(),

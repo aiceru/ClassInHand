@@ -106,7 +106,7 @@ public class MainActivity extends Activity
 	        case 1:
 		        fragmentManager.beginTransaction().replace(R.id.main_contents, SeatFragment.newInstance()).commit();
 		        break;
-	        case 5:
+	        case 3:
 	            fragmentManager.beginTransaction().replace(R.id.main_contents, FillInfoPagerFragment.newInstance()).commit();
 	            break;
 	        default:
@@ -171,6 +171,7 @@ public class MainActivity extends Activity
         mStudents.clear();
         num_boys = 0;
         num_girls = 0;
+        dbHelper.deleteAllStudents();
     }
 
 	public boolean addRole(Role role) {
