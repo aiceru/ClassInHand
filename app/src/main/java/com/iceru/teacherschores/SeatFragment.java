@@ -25,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -995,33 +996,178 @@ public class SeatFragment extends Fragment {
 	}
 
     private void assignRandom() {
-	    Log.d(this.getClass().getSimpleName(), "assignRandom()");
-        boolean seatIsFull[] = new boolean[mTotalSeats];
-        Student st = null;
-        int seatId;
-        boolean boys_are_more = (mBoysSeats > mGirlsSeats);
-        int diff_seats = Math.abs(mBoysSeats - mGirlsSeats);
+        Seat curSeat;
+        Student curStudent, candidate;
 
-	    for(TreeMap.Entry<Integer, Student> entry : mNewStudents.entrySet()) {
-            st = entry.getValue();
-            do {
-                //seatId = (int)(Math.random() * mTotalSeats);
-                if(boys_are_more == st.isBoy()) {   // 많은쪽
-                    seatId = (int)(Math.random() * mTotalSeats);
-                    if(seatId < mTotalSeats - diff_seats) {
-                        seatId = st.isBoy()? seatId - (seatId % 2) : seatId - (seatId % 2) + 1;
+        Cursor historyCursor;
+
+        ArrayList<Student> curArray;
+        ArrayList<Integer> leftSeatIdArray = new ArrayList<Integer>();
+        ArrayList<Integer> rightSeatIdArray = new ArrayList<Integer>();
+        ArrayList<Student> boysArray = new ArrayList<Student>();
+        ArrayList<Student> girlsArray = new ArrayList<Student>();
+
+        for(int i = 0; i < mTotalSeats; i += 2) leftSeatIdArray.add(i);
+        for(int i = 1; i < mTotalSeats; i += 2) rightSeatIdArray.add(i);
+        for(TreeMap.Entry<Integer, Student> entry : mNewStudents.entrySet()) {
+            Student st = entry.getValue();
+            if(st.isBoy()) boysArray.add(st);
+            else girlsArray.add(st);
+        }
+
+        int studentIdx, seatIdx;
+        int historyCount;
+        double seatPoint, pairPoint;
+
+
+        // 왼쪽 자리에 남학생 배치, 자리가 남으면 여학생 일부 배치
+        seatIdx = 0;
+        while(seatIdx < leftSeatIdArray.size()) {
+            curSeat = getSeatByAbsolutePosition(leftSeatIdArray.get(seatIdx));
+
+            if(!boysArray.isEmpty()) curArray = boysArray;
+            else curArray = girlsArray;
+
+            // curSeat에 대해, curArray의 학생들의 포인트 계산
+            studentIdx = 0;
+            while(studentIdx < curArray.size()) {
+                curStudent = curArray.get(studentIdx);
+                seatPoint = 0.0;
+                historyCursor = mainActivity.getDbHelper().getHistory(curStudent.getNum());
+                if(historyCursor.moveToFirst()) {
+                    historyCount = 3;
+                    while(!historyCursor.isAfterLast() && historyCount > 0) {
+                        int seatedLocation = historyCursor.getInt(historyCursor.getColumnIndexOrThrow(
+                                ClassDBContract.SeatHistory.COLUMN_NAME_SEAT_ID));
+                        // 예전에 앉았던 자리와 같은 분단 (same column)
+                        if(seatedLocation % 6 == curSeat.getId() % 6) {
+                            seatPoint += (5.0 * historyCount * 0.3);
+                        }
+                        // 예전에 앉았던 자리와 같은 줄 (same row)
+                        if(seatedLocation / 6 == curSeat.getId() / 6) {
+                            seatPoint += (7.0 * historyCount * 0.3);
+                        }
+                        // 여학생이 왼쪽 자리에 앉은 적이 있는 경우 포인트 크게 증가
+                        if(!curStudent.isBoy() && seatedLocation % 2 == 0) {
+                            seatPoint += (20.0 * historyCount * 0.3);
+                        }
+                        historyCursor.moveToNext();
+                        historyCount--;
                     }
                 }
-                else {                              // 적은쪽
-                    seatId = (int)(Math.random() * (mTotalSeats - diff_seats));
-                    seatId = st.isBoy()? seatId - (seatId % 2) : seatId - (seatId % 2) + 1;
+                curStudent.setSeatPoint(seatPoint);
+                studentIdx++;
+            }
+            // seatPoint 계산 끝
+
+            // seatPoint 순으로 정렬
+            Comparator<Student> compBySeatPoint = new Comparator<Student>() {
+                @Override
+                public int compare(Student lhs, Student rhs) {
+                    double diff = lhs.getSeatPoint() - rhs.getSeatPoint();
+                    // history 없을 때 앞에서부터 번호순으로 정렬되지 않게 하도록, 포인트가 같을 경우 random 배치
+                    return diff < 0 ? -1 : diff > 0 ? 1 : (int)(Math.random() * 3) - 1;
                 }
-            } while(seatIsFull[seatId] == true);
-            Seat seat = getSeatByAbsolutePosition(seatId);
-            seat.setItsStudent(st);
-            st.setItsCurrentSeat(seat);
-            seatIsFull[seatId] = true;
+            };
+            Collections.sort(curArray, compBySeatPoint);
+
+            // seatPoint 가 가장 작은놈!
+            curStudent = curArray.get(0);
+
+            curSeat.setItsStudent(curStudent);
+            curStudent.setItsCurrentSeat(curSeat);
+
+            curArray.remove(curStudent);
+            seatIdx++;
         }
+
+        while(!leftSeatIdArray.isEmpty()) {
+            curSeat = getSeatByAbsolutePosition(leftSeatIdArray.get(0) + 1);
+            curStudent = getSeatByAbsolutePosition(leftSeatIdArray.get(0)).getItsStudent();
+            // curSeat == null 이면 마지막 혼자 앉는 자리임
+            if(curSeat != null) {
+                if(!girlsArray.isEmpty()) curArray = girlsArray;
+                else curArray = boysArray;
+
+                // 왼쪽 자리에 앉은 학생에 대하여 짝궁 포인트 계산, 현재 자리(오른쪽)에 대한 자리 포인트 계산
+                studentIdx = 0;
+                while(studentIdx < curArray.size()) {
+                    candidate = curArray.get(studentIdx);
+                    pairPoint = 0.0;
+                    seatPoint = 0.0;
+                    historyCursor = mainActivity.getDbHelper().getHistory(curStudent.getNum());
+                    if(historyCursor.moveToFirst()) {
+                        historyCount = 3;
+                        while(!historyCursor.isAfterLast() && historyCount > 0) {
+                            int seatedLocation = historyCursor.getInt(historyCursor.getColumnIndexOrThrow(
+                                    ClassDBContract.SeatHistory.COLUMN_NAME_SEAT_ID));
+                            int pairedStudent = historyCursor.getInt(historyCursor.getColumnIndexOrThrow(
+                                    ClassDBContract.SeatHistory.COLUMN_NAME_PAIR_STUDENT));
+                            // 한 번 앉았던 짝, 포인트 최대치로 설정
+                            if(pairedStudent == curStudent.getNum()) {
+                                pairPoint += (30.0 * historyCount * 0.3);
+                            }
+                            // 예전에 앉았던 자리와 같은 분단 (same column)
+                            if(seatedLocation % 6 == curSeat.getId() % 6) {
+                                seatPoint += (5.0 * historyCount * 0.3);
+                            }
+                            // 예전에 앉았던 자리와 같은 줄 (same row)
+                            if(seatedLocation / 6 == curSeat.getId() / 6) {
+                                seatPoint += (7.0 * historyCount * 0.3);
+                            }
+                            historyCursor.moveToNext();
+                            historyCount--;
+                        }
+                    }
+                    candidate.setPairPoint(pairPoint);
+                    candidate.setSeatPoint(seatPoint);
+                    studentIdx++;
+                }
+                // 포인트 계산 완료
+
+                // 짝궁 포인트 1순위, 자리포인트 2순위로 정렬
+                Comparator<Student> compByPairAndSeat = new Comparator<Student>() {
+                    @Override
+                    public int compare(Student lhs, Student rhs) {
+                        double diff = lhs.getPairPoint() - rhs.getPairPoint();
+                        if(diff != 0) {
+                            return diff < 0 ? -1 : 1;
+                        }
+                        else {
+                            diff = lhs.getSeatPoint() - rhs.getSeatPoint();
+                            return diff < 0 ? -1 : diff > 0 ? 1 : (int)(Math.random() * 3) - 1;
+                        }
+                    }
+                };
+
+                Collections.sort(curArray, compByPairAndSeat);
+
+                candidate = curArray.get(0);
+
+                candidate.setItsCurrentSeat(curSeat);
+                curSeat.setItsStudent(candidate);
+
+                curArray.remove(candidate);
+            }
+            leftSeatIdArray.remove(0);
+        }
+
+        /*
+        while(!rightSeatIdArray.isEmpty()) {                    // 나머지 오른쪽 자리 모두 배치
+            curSeat = getSeatByAbsolutePosition(rightSeatIdArray.get(0));
+
+            if(!girlsArray.isEmpty()) curArray = girlsArray;
+            else curArray = boysArray;
+
+            curStudent = curArray.get((int)(Math.random() * curArray.size()));
+
+            curSeat.setItsStudent(curStudent);
+            curStudent.setItsCurrentSeat(curSeat);
+
+            curArray.remove(curStudent);
+            rightSeatIdArray.remove(0);
+        }*/
+
 	    refreshSegView();
     }
 

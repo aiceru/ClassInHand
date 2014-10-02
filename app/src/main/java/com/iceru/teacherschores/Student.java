@@ -9,6 +9,9 @@ public class Student implements Cloneable {
 	private boolean boy;		// true -> boy, false -> girl... T/F has no meaning. :)
 	private Seat    itsCurrentSeat;
 
+    private double     seatPoint = 0;  // 자리 배치할 때 사용
+    private double     pairPoint = 0;  // 짝 배치할 때 사용
+
 	public Student(int num, String name, boolean boy) {
 		this.num = num;
 		this.name = name;
@@ -45,5 +48,21 @@ public class Student implements Cloneable {
     @Override
     public Student clone() throws CloneNotSupportedException {
         return (Student) super.clone();
+    }
+
+    public double getSeatPoint() {
+        return seatPoint;
+    }
+
+    public double getPairPoint() {
+        return pairPoint;
+    }
+
+    public void setSeatPoint(double seatPoint) {
+        this.seatPoint = seatPoint;
+    }
+
+    public void setPairPoint(double pairPoint) {
+        this.pairPoint = pairPoint;
     }
 }
