@@ -8,6 +8,7 @@ import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
 import android.content.Context;
+import android.graphics.Point;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -25,6 +26,13 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.ActionItemTarget;
+import com.github.amlcurran.showcaseview.targets.ActionViewTarget;
+import com.github.amlcurran.showcaseview.targets.PointTarget;
+import com.github.amlcurran.showcaseview.targets.Target;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
@@ -121,6 +129,7 @@ public class NavigationDrawerFragment extends Fragment {
         //drawerContentList.add(DrawerSubItem.create(202, getString(R.string.title_setting), "ic_action_settings", true, this.getActivity()));
         mDrawerListView.setAdapter(new DrawerContentAdapter(getActionBar().getThemedContext(), R.layout.drawer_item, drawerContentList));
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, false);
+
         return mDrawerListView;
     }
 
@@ -184,6 +193,19 @@ public class NavigationDrawerFragment extends Fragment {
                     SharedPreferences sp = PreferenceManager
                             .getDefaultSharedPreferences(getActivity());
                     sp.edit().putBoolean(PREF_USER_LEARNED_DRAWER, true).apply();
+
+                    View target = mDrawerListView.getChildAt(2);
+                    int[] location = new int[2];
+                    target.getLocationInWindow(location);
+                    int x = location[0] + target.getWidth() / 2;
+                    int y = location[1] + target.getHeight() / 2;
+                    new ShowcaseView.Builder(getActivity())
+                            .setTarget(new PointTarget(new Point(x,y)))
+                                    //.setTarget(new ActionViewTarget(getActivity(), ActionViewTarget.Type.OVERFLOW))
+                            .setContentTitle("ShowcaseView")
+                            .setContentText("This is highlighting the Home button")
+                            .hideOnTouchOutside()
+                            .build();
                 }
 
                 getActivity().invalidateOptionsMenu(); // calls onPrepareOptionsMenu()
