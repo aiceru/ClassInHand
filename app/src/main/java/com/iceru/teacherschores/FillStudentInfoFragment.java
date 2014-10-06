@@ -9,7 +9,9 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -47,6 +49,9 @@ public class FillStudentInfoFragment extends Fragment {
 	private TextView            mTotalTextView;
 	private TreeMap<Integer, Student> mStudents;
 	private studentListAdapter	mStudentListAdapter;
+    private boolean             mUserLearnedFillStudentInfo;
+
+    private static final String PREF_USER_LEARNED_FILL_STUDENT_INFO = "fill_student_info_learned";
 
 	private class studentListAdapter extends BaseAdapter {
 		private LayoutInflater mInflater;
@@ -118,6 +123,9 @@ public class FillStudentInfoFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         Log.d(this.getClass().getSimpleName(), "onCreate()");
         super.onCreate(savedInstanceState);
+
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        mUserLearnedFillStudentInfo = sp.getBoolean(PREF_USER_LEARNED_FILL_STUDENT_INFO, false);
 
         mainActivity = (MainActivity)getActivity();
         mStudents = mainActivity.getmStudents();
@@ -255,8 +263,24 @@ public class FillStudentInfoFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         Log.d(this.getClass().getSimpleName(), "onActivityCreated()");
+        if(!mUserLearnedFillStudentInfo) displayShowcase();
         super.onActivityCreated(savedInstanceState);
 	    setHasOptionsMenu(true);
+    }
+
+    private void displayShowcase() {
+        mUserLearnedFillStudentInfo = true;
+        SharedPreferences sp = PreferenceManager
+                .getDefaultSharedPreferences(getActivity());
+        sp.edit().putBoolean(PREF_USER_LEARNED_FILL_STUDENT_INFO, true).apply();
+
+        new ShowcaseView.Builder(mainActivity)
+                .setTarget(new ViewTarget(R.id.linearlayout_studentinputform, mainActivity))
+                .setContentTitle(getString(R.string.showcase_title_student_input_form))
+                .setContentText(R.string.showcase_detail_student_input_form)
+                .hideOnTouchOutside()
+                .setScaleMultiplier(1F)
+                .build();
     }
 
     @Override

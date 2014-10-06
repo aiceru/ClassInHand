@@ -9,6 +9,7 @@ import android.app.ActionBar;
 import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Point;
+import android.os.Handler;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -46,7 +47,7 @@ public class NavigationDrawerFragment extends Fragment {
      * Per the design guidelines, you should show the drawer on launch until the user manually
      * expands it. This shared preference tracks this.
      */
-    //private static final String PREF_DRAWER_SHOWCASE_DISPLAYED = "navigation_drawer_showcase_viewed";
+    private static final String PREF_USER_LEARNED_DRAWER = "navigation_drawer_learned";
 
     /**
      * A pointer to the current callbacks instance (the Activity).
@@ -63,8 +64,9 @@ public class NavigationDrawerFragment extends Fragment {
     private View mFragmentContainerView;
 
     private int mCurrentSelectedPosition = 0;
+    private boolean mFromSavedInstanceState;
 
-//    private boolean mShowCaseDisplayed;
+    private boolean mUserLearnedDrawer;
     
     List<DrawerContent> drawerContentList;
 
@@ -77,11 +79,12 @@ public class NavigationDrawerFragment extends Fragment {
 
         // Read in the flag indicating whether or not the user has demonstrated awareness of the
         // drawer. See PREF_USER_LEARNED_DRAWER for details.
-//        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-  //      mShowCaseDisplayed = sp.getBoolean(PREF_DRAWER_SHOWCASE_DISPLAYED, false);
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        mUserLearnedDrawer = sp.getBoolean(PREF_USER_LEARNED_DRAWER, false);
 
         if (savedInstanceState != null) {
             mCurrentSelectedPosition = savedInstanceState.getInt(STATE_SELECTED_POSITION);
+            mFromSavedInstanceState = true;
         }
 
         // Select either the default item (0) or the last selected item.
@@ -106,15 +109,6 @@ public class NavigationDrawerFragment extends Fragment {
                 selectItem(position);
             }
         });
-        /*mDrawerListView.setAdapter(new ArrayAdapter<String>(
-                getActionBar().getThemedContext(),
-                android.R.layout.simple_list_item_activated_1,
-                android.R.id.text1,
-                new String[]{
-                        getString(R.string.title_section1),
-                        getString(R.string.title_section2),
-                        getString(R.string.title_section3),
-                }));*/
         drawerContentList = new ArrayList<DrawerContent>();
         drawerContentList.add(DrawerItem.create(101, getString(R.string.title_seatplan), "ic_action_3d_cube", true, this.getActivity()));
         //drawerContentList.add(DrawerItem.create(102, getString(R.string.title_eachrole), "ic_action_user", true, this.getActivity()));
@@ -124,6 +118,15 @@ public class NavigationDrawerFragment extends Fragment {
         //drawerContentList.add(DrawerSubItem.create(202, getString(R.string.title_setting), "ic_action_settings", true, this.getActivity()));
         mDrawerListView.setAdapter(new DrawerContentAdapter(getActionBar().getThemedContext(), R.layout.drawer_item, drawerContentList));
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, false);
+
+        if(!mUserLearnedDrawer) {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    displayShowcase();
+                }
+            }, 500);
+        }
 
         return mDrawerListView;
     }
@@ -181,7 +184,14 @@ public class NavigationDrawerFragment extends Fragment {
                 imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),
                         InputMethodManager.HIDE_NOT_ALWAYS);
 
-                if(((MainActivity)getActivity()).getmStudents().isEmpty()) displayShowcase();
+                if (!mUserLearnedDrawer) {
+                    // The user manually opened the drawer; store this flag to prevent auto-showing
+                    // the navigation drawer automatically in the future.
+                    mUserLearnedDrawer = true;
+                    SharedPreferences sp = PreferenceManager
+                            .getDefaultSharedPreferences(getActivity());
+                    sp.edit().putBoolean(PREF_USER_LEARNED_DRAWER, true).apply();
+                }
 
                 getActivity().invalidateOptionsMenu(); // calls onPrepareOptionsMenu()
             }
@@ -189,9 +199,9 @@ public class NavigationDrawerFragment extends Fragment {
 
         // If the user hasn't 'learned' about the drawer, open it to introduce them to the drawer,
         // per the navigation drawer design guidelines.
-        /*if (!mUserLearnedDrawer && !mFromSavedInstanceState) {
+        if (!mUserLearnedDrawer && !mFromSavedInstanceState) {
             mDrawerLayout.openDrawer(mFragmentContainerView);
-        }*/
+        }
 
         // Defer code dependent on restoration of previous instance state.
         mDrawerLayout.post(new Runnable() {
@@ -286,7 +296,7 @@ public class NavigationDrawerFragment extends Fragment {
         return getActivity().getActionBar();
     }
 
-    public void displayShowcase() {
+    private void displayShowcase() {
         View target = mDrawerListView.getChildAt(2);
         int[] location = new int[2];
         target.getLocationInWindow(location);

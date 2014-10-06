@@ -193,16 +193,7 @@ public class SeatFragment extends Fragment {
         mSegment2 = new ArrayList<Seat>();
         mSegment3 = new ArrayList<Seat>();
 
-        if(mStudents.isEmpty()) {
-            new ShowcaseView.Builder(mainActivity)
-                    .setTarget(new ActionViewTarget(mainActivity, ActionViewTarget.Type.HOME))
-                    .setContentTitle(getString(R.string.showcase_title_no_student_info))
-                    .setContentText(R.string.showcase_detail_no_student_info)
-                    .hideOnTouchOutside()
-                    .setScaleMultiplier(0.5F)
-                    .build();
-        }
-        else {
+        if(!mStudents.isEmpty()) {
             /* Creating segments and Seats... */
             for (int i = 0; i < mTotalSeats; i++) {
                 Seat seat = new Seat(i);
