@@ -8,6 +8,10 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.ActionViewTarget;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
+
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeMap;

@@ -18,6 +18,9 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TabHost;
 
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.ActionViewTarget;
+
 /**
  * Created by iceru on 14. 8. 9.
  */

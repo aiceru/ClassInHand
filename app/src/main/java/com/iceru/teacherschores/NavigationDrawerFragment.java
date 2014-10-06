@@ -28,11 +28,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.github.amlcurran.showcaseview.ShowcaseView;
-import com.github.amlcurran.showcaseview.targets.ActionItemTarget;
-import com.github.amlcurran.showcaseview.targets.ActionViewTarget;
 import com.github.amlcurran.showcaseview.targets.PointTarget;
-import com.github.amlcurran.showcaseview.targets.Target;
-import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
@@ -50,7 +46,7 @@ public class NavigationDrawerFragment extends Fragment {
      * Per the design guidelines, you should show the drawer on launch until the user manually
      * expands it. This shared preference tracks this.
      */
-    private static final String PREF_USER_LEARNED_DRAWER = "navigation_drawer_learned";
+    //private static final String PREF_DRAWER_SHOWCASE_DISPLAYED = "navigation_drawer_showcase_viewed";
 
     /**
      * A pointer to the current callbacks instance (the Activity).
@@ -67,8 +63,8 @@ public class NavigationDrawerFragment extends Fragment {
     private View mFragmentContainerView;
 
     private int mCurrentSelectedPosition = 0;
-    private boolean mFromSavedInstanceState;
-    private boolean mUserLearnedDrawer;
+
+//    private boolean mShowCaseDisplayed;
     
     List<DrawerContent> drawerContentList;
 
@@ -81,12 +77,11 @@ public class NavigationDrawerFragment extends Fragment {
 
         // Read in the flag indicating whether or not the user has demonstrated awareness of the
         // drawer. See PREF_USER_LEARNED_DRAWER for details.
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        mUserLearnedDrawer = sp.getBoolean(PREF_USER_LEARNED_DRAWER, false);
+//        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+  //      mShowCaseDisplayed = sp.getBoolean(PREF_DRAWER_SHOWCASE_DISPLAYED, false);
 
         if (savedInstanceState != null) {
             mCurrentSelectedPosition = savedInstanceState.getInt(STATE_SELECTED_POSITION);
-            mFromSavedInstanceState = true;
         }
 
         // Select either the default item (0) or the last selected item.
@@ -186,27 +181,7 @@ public class NavigationDrawerFragment extends Fragment {
                 imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),
                         InputMethodManager.HIDE_NOT_ALWAYS);
 
-                if (!mUserLearnedDrawer) {
-                    // The user manually opened the drawer; store this flag to prevent auto-showing
-                    // the navigation drawer automatically in the future.
-                    mUserLearnedDrawer = true;
-                    SharedPreferences sp = PreferenceManager
-                            .getDefaultSharedPreferences(getActivity());
-                    sp.edit().putBoolean(PREF_USER_LEARNED_DRAWER, true).apply();
-
-                    View target = mDrawerListView.getChildAt(2);
-                    int[] location = new int[2];
-                    target.getLocationInWindow(location);
-                    int x = location[0] + target.getWidth() / 2;
-                    int y = location[1] + target.getHeight() / 2;
-                    new ShowcaseView.Builder(getActivity())
-                            .setTarget(new PointTarget(new Point(x,y)))
-                                    //.setTarget(new ActionViewTarget(getActivity(), ActionViewTarget.Type.OVERFLOW))
-                            .setContentTitle("ShowcaseView")
-                            .setContentText("This is highlighting the Home button")
-                            .hideOnTouchOutside()
-                            .build();
-                }
+                if(((MainActivity)getActivity()).getmStudents().isEmpty()) displayShowcase();
 
                 getActivity().invalidateOptionsMenu(); // calls onPrepareOptionsMenu()
             }
@@ -214,9 +189,9 @@ public class NavigationDrawerFragment extends Fragment {
 
         // If the user hasn't 'learned' about the drawer, open it to introduce them to the drawer,
         // per the navigation drawer design guidelines.
-        if (!mUserLearnedDrawer && !mFromSavedInstanceState) {
+        /*if (!mUserLearnedDrawer && !mFromSavedInstanceState) {
             mDrawerLayout.openDrawer(mFragmentContainerView);
-        }
+        }*/
 
         // Defer code dependent on restoration of previous instance state.
         mDrawerLayout.post(new Runnable() {
@@ -296,8 +271,6 @@ public class NavigationDrawerFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-
-
     /**
      * Per the navigation drawer design guidelines, updates the action bar to show the global app
      * 'context', rather than just what's in the current screen.
@@ -311,6 +284,20 @@ public class NavigationDrawerFragment extends Fragment {
 
     private ActionBar getActionBar() {
         return getActivity().getActionBar();
+    }
+
+    public void displayShowcase() {
+        View target = mDrawerListView.getChildAt(2);
+        int[] location = new int[2];
+        target.getLocationInWindow(location);
+        int x = location[0] + target.getWidth() / 3;
+        int y = location[1] + target.getHeight() / 2;
+        new ShowcaseView.Builder(getActivity())
+                .setTarget(new PointTarget(new Point(x,y)))
+                .setContentTitle(getString(R.string.showcase_title_input_students_info))
+                .setContentText(getString(R.string.showcase_detail_input_students_info))
+                .hideOnTouchOutside().setScaleMultiplier(0.4F)
+                .build();
     }
 
     /**
