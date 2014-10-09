@@ -21,6 +21,16 @@
         android:layout_marginLeft="4dp"
         android:layout_marginTop="4dp"
         android:layout_marginRight="4dp"
+        android:gravity="center"
+
+        android:visibility="invisible"/>
+
+    <TextView
+        android:id="@+id/textview_warning_no_student_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/sorry_developing"
+        android:textSize="18sp"
         android:gravity="center"/>
 
     <ListView
@@ -32,14 +42,18 @@
         android:divider="@null"
         android:dividerHeight="0dp"
         android:longClickable="false"
-        tools:listitem="@android:layout/simple_list_item_1" >
+        tools:listitem="@android:layout/simple_list_item_1"
+
+        android:visibility="invisible">
 
     </ListView>
 
     <LinearLayout
         android:id="@+id/linearlayout_roleinputform"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+
+        android:visibility="invisible">
 
         <EditText
             android:id="@+id/edittext_role"
@@ -64,6 +78,8 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_margin="4dp"
-        android:background="@drawable/btn_addrole_selector" />
+        android:background="@drawable/btn_addrole_selector"
+
+        android:visibility="invisible"/>
 
 </LinearLayout>

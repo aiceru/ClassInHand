@@ -38,6 +38,7 @@
     <string name="warning_edittext_num_is_null">번호를 입력하세요</string>
     <string name="warning_existing_num">이미 등록된 출석번호입니다</string>
     <string name="warning_existing_rolename">이미 등록된 역할입니다</string>
+    <string name="warning_no_student_info">등록된 학생정보가 없습니다</string>
 
     <string name="sharedpref_student_name_list">com.iceru.teacherschores.PREF_KEY_STUDENT_LIST</string>
     <string name="sharedpref_boygirl_list">com.iceru.teacherschores.PREF_KEY_BOYGIRL_LIST</string>
@@ -53,12 +54,18 @@
 
     <string name="showcase_title_input_students_info">학생정보를 입력하세요</string>
     <string name="showcase_detail_input_students_info">
-        입력된 학생정보가 없습니다. \"기본정보 입력\" 을 탭하여 학생정보를 입력하세요.
+        등록된 학생정보가 없습니다. \"기본정보 입력\" 을 탭하여 학생정보를 입력하세요.
     </string>
     <string name="showcase_title_student_input_form">학생정보 입력</string>
     <string name="showcase_detail_student_input_form">
         번호와 이름을 입력하고 성별을 선택하세요. 키보드의 \"확인\" 을 눌러도 입력이 가능합니다.
     </string>
+    <string name="showcase_title_new_plan">새로운 배치를 생성하세요</string>
+    <string name="showcase_detail_new_plan">메뉴를 열어 \"새로 생성\"을 선택하세요</string>
+    <string name="showcase_title_history">이전 자리배치를 조회할 수 있습니다</string>
+    <string name="showcase_detail_history">날짜를 탭하여 과거 자리배치도를 조회하세요</string>
+
+    <string name="sorry_developing">기능 추가 예정입니다</string>
 	
 	<string-array name="roleconsume_array">
 	    <item>1</item>

@@ -27,6 +27,7 @@ import android.widget.TextView;
 
 import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.targets.ActionViewTarget;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -52,6 +53,9 @@ public class SeatFragment extends Fragment {
     private Seat                mLeftSelectedSeat = null;
     private Seat                mRightSelectedSeat = null;
 
+    /*private boolean             mUserLearnedNewPlan;
+    private boolean             mUserLearnedSeeHistory;*/
+
     /* 새 자리 배치, 배치 수정 등에 쓰일 임시 리스트들 (원본 복제해서 작업 후 save or discard) */
     private TreeMap<Integer, Student>   mNewStudents = null;
     private ArrayList<Seat>             mNewSegment1 = null, mNewSegment2 = null, mNewSegment3 = null;
@@ -66,6 +70,14 @@ public class SeatFragment extends Fragment {
 	private Button      btn_shuffle;
 
 	private int         mTotalSeats, mBoysSeats, mGirlsSeats;
+
+    private ShowcaseView        mNewPlanShowcaseview = null;
+    private ShowcaseView        mHistoryShowcaseview = null;
+    private static final long   mNewPlanShowcaseviewShotId = 10L;
+    private static final long   mHistoryShowcaseviewShotId = 11L;
+
+    /*private static final String PREF_USER_LEARNED_NEW_PLAN = "new_plan_learned";
+    private static final String PREF_USER_LEARNED_SEE_HISTORY = "see_history_learned";*/
 
 	private class segAdapter extends BaseAdapter {
 		private LayoutInflater mInflater;
@@ -155,6 +167,10 @@ public class SeatFragment extends Fragment {
 		super.onCreate(savedInstanceState);
 
 		mainActivity = (MainActivity)getActivity();
+
+        /*SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        mUserLearnedNewPlan = sp.getBoolean(PREF_USER_LEARNED_NEW_PLAN, false);
+        mUserLearnedSeeHistory = sp.getBoolean(PREF_USER_LEARNED_SEE_HISTORY, false);*/
 
         ClassDBHelper dbHelper = mainActivity.getDbHelper();
 
@@ -280,6 +296,7 @@ public class SeatFragment extends Fragment {
         tv_curDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mHistoryShowcaseview.hide();
                 AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
                 builder
                         .setTitle(R.string.title_dialog_select_date)
@@ -335,7 +352,51 @@ public class SeatFragment extends Fragment {
         });
 	    btn_shuffle.setVisibility(View.INVISIBLE);
 
+        TextView tv_warning = (TextView)rootView.findViewById(R.id.textview_warning_no_student_info);
+        if(!mStudents.isEmpty()) {
+            tv_warning.setVisibility(View.GONE);
+        }
+
+        if(mSavedDateList.size() > 1)
+            displayHistoryShowcase();
+
         return rootView;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        Log.d(this.getClass().getSimpleName(), "onActivityCreated()");
+        super.onActivityCreated(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    private void displayNewPlanShowcase() {
+        //mUserLearnedNewPlan = true;
+        /*SharedPreferences sp = PreferenceManager
+                .getDefaultSharedPreferences(getActivity());
+        sp.edit().putBoolean(PREF_USER_LEARNED_NEW_PLAN, true).apply();*/
+
+        mNewPlanShowcaseview = new ShowcaseView.Builder(mainActivity)
+                .singleShot(mNewPlanShowcaseviewShotId)
+                .setTarget(new ActionViewTarget(mainActivity, ActionViewTarget.Type.OVERFLOW))
+                .setContentTitle(getString(R.string.showcase_title_new_plan))
+                .setContentText(R.string.showcase_detail_new_plan)
+                .hideOnTouchOutside()
+                .setStyle(R.style.ShowcaseView_Light)
+                .setScaleMultiplier(0.5F)
+                .build();
+    }
+
+    private void displayHistoryShowcase() {
+        mHistoryShowcaseview = new ShowcaseView.Builder(mainActivity)
+                .singleShot(mHistoryShowcaseviewShotId)
+                .setTarget(new ViewTarget((View)tv_curDate))
+                .setContentTitle(getString(R.string.showcase_title_history))
+                .setContentText(getString(R.string.showcase_detail_history))
+                .hideOnTouchOutside()
+                .setStyle(R.style.ShowcaseView_Light)
+                .setScaleMultiplier(0.3F)
+                .build();
     }
 
     private void onSeatClick(ArrayList<Seat> seg, int position) {
@@ -630,6 +691,9 @@ public class SeatFragment extends Fragment {
         mSegAdpt2.setItems(mNewSegment2);
         mSegAdpt3.setItems(mNewSegment3);
 
+        // Plan 생성시 자동으로 랜덤배치
+        assignRandom();
+
         refreshSegView();
     }
 
@@ -712,6 +776,9 @@ public class SeatFragment extends Fragment {
                         btn_shuffle.setVisibility(View.INVISIBLE);
 
                         mainActivity.invalidateOptionsMenu();
+
+                        if(mSavedDateList.size() > 1)
+                            displayHistoryShowcase();
                     }
                     else {      // seat assignment for this date already exists. so, UPDATE. not INSERT.
                         AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
@@ -792,13 +859,6 @@ public class SeatFragment extends Fragment {
         }
     }
 
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-        Log.d(this.getClass().getSimpleName(), "onActivityCreated()");
-		super.onActivityCreated(savedInstanceState);
-		setHasOptionsMenu(true);
-	}
-
     @Override
     public void onStart() {
         Log.d(this.getClass().getSimpleName(), "onStart()");
@@ -824,6 +884,9 @@ public class SeatFragment extends Fragment {
                 menu.clear();
                 inflater.inflate(R.menu.menu_seatplan, menu);
                 showActionBar();
+            }
+            if(!mStudents.isEmpty()) {//&& !mUserLearnedNewPlan) {
+                displayNewPlanShowcase();
             }
 		}
 	}
@@ -862,6 +925,8 @@ public class SeatFragment extends Fragment {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+        mNewPlanShowcaseview.hide();
+
 		if(id == R.id.seatplan_new) {
             mEditMode = true;
             mainActivity.invalidateOptionsMenu();

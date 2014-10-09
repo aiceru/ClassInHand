@@ -12,6 +12,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -20,6 +21,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
@@ -49,9 +51,9 @@ public class FillStudentInfoFragment extends Fragment {
 	private TextView            mTotalTextView;
 	private TreeMap<Integer, Student> mStudents;
 	private studentListAdapter	mStudentListAdapter;
-    private boolean             mUserLearnedFillStudentInfo;
 
-    private static final String PREF_USER_LEARNED_FILL_STUDENT_INFO = "fill_student_info_learned";
+    private ShowcaseView        mStudentInfoShowcaseview = null;
+    private static final long   mShowcaseviewShotId = 20L;
 
 	private class studentListAdapter extends BaseAdapter {
 		private LayoutInflater mInflater;
@@ -124,8 +126,8 @@ public class FillStudentInfoFragment extends Fragment {
         Log.d(this.getClass().getSimpleName(), "onCreate()");
         super.onCreate(savedInstanceState);
 
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        mUserLearnedFillStudentInfo = sp.getBoolean(PREF_USER_LEARNED_FILL_STUDENT_INFO, false);
+        /*SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        mUserLearnedFillStudentInfo = sp.getBoolean(PREF_USER_LEARNED_FILL_STUDENT_INFO, false);*/
 
         mainActivity = (MainActivity)getActivity();
         mStudents = mainActivity.getmStudents();
@@ -220,6 +222,12 @@ public class FillStudentInfoFragment extends Fragment {
 		});
 
 		mEditTextNum = (EditText)rootView.findViewById(R.id.edittext_num);
+        mEditTextNum.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                mStudentInfoShowcaseview.hide();
+            }
+        });
 		mEditTextNum.setOnEditorActionListener(new EditText.OnEditorActionListener() {
 			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
 				// TODO Auto-generated method stub
@@ -233,6 +241,12 @@ public class FillStudentInfoFragment extends Fragment {
 		});
 
 		mEditTextName = (EditText)rootView.findViewById(R.id.edittext_name);
+        mEditTextName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                mStudentInfoShowcaseview.hide();
+            }
+        });
 		mEditTextName.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 			@Override
 			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -263,23 +277,33 @@ public class FillStudentInfoFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         Log.d(this.getClass().getSimpleName(), "onActivityCreated()");
-        if(!mUserLearnedFillStudentInfo) displayShowcase();
+        displayShowcase();
+
         super.onActivityCreated(savedInstanceState);
 	    setHasOptionsMenu(true);
     }
 
     private void displayShowcase() {
-        mUserLearnedFillStudentInfo = true;
+        /*mUserLearnedFillStudentInfo = true;
         SharedPreferences sp = PreferenceManager
                 .getDefaultSharedPreferences(getActivity());
-        sp.edit().putBoolean(PREF_USER_LEARNED_FILL_STUDENT_INFO, true).apply();
+        sp.edit().putBoolean(PREF_USER_LEARNED_FILL_STUDENT_INFO, true).apply();*/
 
-        new ShowcaseView.Builder(mainActivity)
+        DisplayMetrics metrics = new DisplayMetrics();
+        mainActivity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        int screenWidth = metrics.widthPixels;
+        int screenHeight = metrics.heightPixels;
+
+        mStudentInfoShowcaseview = new ShowcaseView.Builder(mainActivity)
+                .singleShot(mShowcaseviewShotId)
                 .setTarget(new ViewTarget(R.id.linearlayout_studentinputform, mainActivity))
                 .setContentTitle(getString(R.string.showcase_title_student_input_form))
                 .setContentText(R.string.showcase_detail_student_input_form)
                 .hideOnTouchOutside()
-                .setScaleMultiplier(1F)
+                .setStyle(R.style.ShowcaseView_Light)
+                .setScaleMultiplier(0.5F)
+                .hasManualPosition(true)
+                .setPosition((int) (screenWidth * 0.05), (int) (screenHeight * 0.45))
                 .build();
     }
 

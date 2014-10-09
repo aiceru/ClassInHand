@@ -49,57 +49,69 @@
             android:gravity="end"/>
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/linearlayout_segments_container"
-        android:orientation="horizontal"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:weightSum="1">
-
-        <GridView
-            android:layout_width="0dp"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/textview_warning_no_student_info"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="0.32"
-            android:id="@+id/gridview_segment1"
-            android:numColumns="2"
-            android:horizontalSpacing="1dp"
-            android:verticalSpacing="1dp"
-            tools:listitem="@layout/seat"
-            android:scrollbars="none"
-            android:choiceMode="multipleChoice" />
+            android:text="@string/warning_no_student_info"
+            android:textSize="18sp"
+            android:gravity="center"/>
 
-        <Space
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="0.02"/>
-
-        <GridView
-            android:layout_width="0dp"
+        <LinearLayout
+            android:id="@+id/linearlayout_segments_container"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="0.32"
-            android:id="@+id/gridview_segment2"
-            android:numColumns="2"
-            android:horizontalSpacing="1dp"
-            android:verticalSpacing="1dp"
-            tools:listitem="@layout/seat"/>
+            android:layout_gravity="center"
+            android:weightSum="1">
 
-        <Space
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="0.02"/>
+            <GridView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.32"
+                android:id="@+id/gridview_segment1"
+                android:numColumns="2"
+                android:horizontalSpacing="1dp"
+                android:verticalSpacing="1dp"
+                tools:listitem="@layout/seat"
+                android:scrollbars="none"
+                android:choiceMode="multipleChoice" />
 
-        <GridView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.32"
-            android:id="@+id/gridview_segment3"
-            android:numColumns="2"
-            android:horizontalSpacing="1dp"
-            android:verticalSpacing="1dp"
-            tools:listitem="@layout/seat"/>
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="0.02"/>
 
-    </LinearLayout>
+            <GridView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.32"
+                android:id="@+id/gridview_segment2"
+                android:numColumns="2"
+                android:horizontalSpacing="1dp"
+                android:verticalSpacing="1dp"
+                tools:listitem="@layout/seat"/>
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="0.02"/>
+
+            <GridView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.32"
+                android:id="@+id/gridview_segment3"
+                android:numColumns="2"
+                android:horizontalSpacing="1dp"
+                android:verticalSpacing="1dp"
+                tools:listitem="@layout/seat"/>
+
+        </LinearLayout>
+    </RelativeLayout>
 
     <Button
         android:id="@+id/btn_random_assign"

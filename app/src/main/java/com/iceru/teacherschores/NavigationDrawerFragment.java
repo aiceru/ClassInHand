@@ -30,6 +30,7 @@ import android.widget.Toast;
 
 import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.targets.PointTarget;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
@@ -67,6 +68,9 @@ public class NavigationDrawerFragment extends Fragment {
     private boolean mFromSavedInstanceState;
 
     private boolean mUserLearnedDrawer;
+
+    private ShowcaseView    mPutInfoShowcaseview = null;
+    private static final long mShowcaseviewShotId = 00L;
     
     List<DrawerContent> drawerContentList;
 
@@ -165,6 +169,8 @@ public class NavigationDrawerFragment extends Fragment {
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
+                mPutInfoShowcaseview.hide();
+
                 if (!isAdded()) {
                     return;
                 }
@@ -297,16 +303,14 @@ public class NavigationDrawerFragment extends Fragment {
     }
 
     private void displayShowcase() {
-        View target = mDrawerListView.getChildAt(2);
-        int[] location = new int[2];
-        target.getLocationInWindow(location);
-        int x = location[0] + target.getWidth() / 3;
-        int y = location[1] + target.getHeight() / 2;
-        new ShowcaseView.Builder(getActivity())
-                .setTarget(new PointTarget(new Point(x,y)))
+        mPutInfoShowcaseview = new ShowcaseView.Builder(getActivity())
+                .singleShot(mShowcaseviewShotId)
+                .setTarget(new ViewTarget(mDrawerListView.getChildAt(2)))
                 .setContentTitle(getString(R.string.showcase_title_input_students_info))
                 .setContentText(getString(R.string.showcase_detail_input_students_info))
-                .hideOnTouchOutside().setScaleMultiplier(0.4F)
+                .hideOnTouchOutside()
+                .setStyle(R.style.ShowcaseView_Light)
+                .setScaleMultiplier(0.4F)
                 .build();
     }
 

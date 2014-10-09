@@ -73,6 +73,10 @@ public class ShowcaseView extends RelativeLayout
     private long fadeInMillis;
     private long fadeOutMillis;
 
+    // Position items
+    private boolean hasManualPostion = false;
+    private int xPosition, yPosition, width;
+
     protected ShowcaseView(Context context, boolean newStyle) {
         this(context, null, R.styleable.CustomTheme_showcaseViewStyle, newStyle);
     }
@@ -251,6 +255,9 @@ public class ShowcaseView extends RelativeLayout
         boolean recalculateText = recalculatedCling || hasAlteredText;
         if (recalculateText) {
             textDrawer.calculateTextPosition(getMeasuredWidth(), getMeasuredHeight(), this, shouldCentreText);
+            if (hasManualPostion) {
+                textDrawer.setTestPostionManually(xPosition, yPosition);
+            }
         }
         hasAlteredText = false;
         return true;
@@ -510,6 +517,17 @@ public class ShowcaseView extends RelativeLayout
 
         public Builder setShowcaseEventListener(OnShowcaseEventListener showcaseEventListener) {
             showcaseView.setOnShowcaseEventListener(showcaseEventListener);
+            return this;
+        }
+
+        public Builder hasManualPosition(boolean hasManualPosition) {
+            showcaseView.hasManualPostion = hasManualPosition;
+            return this;
+        }
+
+        public Builder setPosition(int x, int y) {
+            showcaseView.xPosition = x;
+            showcaseView.yPosition = y;
             return this;
         }
     }

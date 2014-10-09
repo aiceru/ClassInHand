@@ -189,6 +189,11 @@ class TextDrawer {
         hasRecalculated = true;
     }
 
+    public void setTestPostionManually(int xPosition, int yPosition) {
+        mBestTextPosition[0] = xPosition;
+        mBestTextPosition[1] = yPosition;
+    }
+
     public void setTitleStyling(int styleId) {
         mTitleSpan = new TextAppearanceSpan(this.context, styleId);
         setContentTitle(mTitle);
