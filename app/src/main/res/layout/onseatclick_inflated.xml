@@ -34,7 +34,7 @@
             android:id="@+id/btn_change_seat"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:background="@drawable/ic_action_shuffle"
+            android:background="@drawable/btn_seatplan_exchange"
             android:visibility="invisible"
             />
     </LinearLayout>
