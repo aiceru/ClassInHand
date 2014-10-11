@@ -169,7 +169,7 @@ public class NavigationDrawerFragment extends Fragment {
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
-                mPutInfoShowcaseview.hide();
+                if(mPutInfoShowcaseview != null) mPutInfoShowcaseview.hide();
 
                 if (!isAdded()) {
                     return;

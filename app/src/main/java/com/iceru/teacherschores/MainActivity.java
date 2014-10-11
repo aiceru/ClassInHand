@@ -7,11 +7,13 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
+import android.view.ViewConfiguration;
 
 import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.targets.ActionViewTarget;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeMap;
@@ -40,6 +42,20 @@ public class MainActivity extends Activity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // hack for permanentMenuKey (ex. galaxy series)
+        try {
+            ViewConfiguration config = ViewConfiguration.get(this);
+            Field menuKeyField = ViewConfiguration.class.getDeclaredField("sHasPermanentMenuKey");
+            if(menuKeyField != null) {
+                menuKeyField.setAccessible(true);
+                menuKeyField.setBoolean(config, false);
+            }
+        } catch (Exception ex) {
+            // Ignore
+        }
+        // End hack
+
         setContentView(R.layout.activity_main);
 
 	    num_boys = 0;
@@ -54,8 +70,7 @@ public class MainActivity extends Activity
         while(c.moveToNext()) {
             int id = c.getInt(c.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_STUDENT_ID));
             String name = c.getString(c.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_STUDENT_NAME));
-            boolean isBoy = (c.getInt(c.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_STUDENT_GENDER)) == 1)?
-                    true : false;
+            boolean isBoy = (c.getInt(c.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_STUDENT_GENDER)) == 1);
 	        Student temp = new Student(id, name, isBoy);
             mStudents.put(id, temp);//new Student(id, name, isBoy));
             if(isBoy) num_boys++;

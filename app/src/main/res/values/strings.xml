@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">TeachersChores</string>
+    <string name="app_name">손안에 교실</string>
     <string name="title_seatplan">자리배치도</string>
     <string name="title_eachrole">1인 1역</string>
     <string name="title_classtime">수업시수관리</string>

@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -296,7 +297,7 @@ public class SeatFragment extends Fragment {
         tv_curDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mHistoryShowcaseview.hide();
+                if(mHistoryShowcaseview != null) mHistoryShowcaseview.hide();
                 AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
                 builder
                         .setTitle(R.string.title_dialog_select_date)
@@ -375,6 +376,10 @@ public class SeatFragment extends Fragment {
         /*SharedPreferences sp = PreferenceManager
                 .getDefaultSharedPreferences(getActivity());
         sp.edit().putBoolean(PREF_USER_LEARNED_NEW_PLAN, true).apply();*/
+        DisplayMetrics metrics = new DisplayMetrics();
+        mainActivity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        int screenWidth = metrics.widthPixels;
+        int screenHeight = metrics.heightPixels;
 
         mNewPlanShowcaseview = new ShowcaseView.Builder(mainActivity)
                 .singleShot(mNewPlanShowcaseviewShotId)
@@ -384,10 +389,17 @@ public class SeatFragment extends Fragment {
                 .hideOnTouchOutside()
                 .setStyle(R.style.ShowcaseView_Light)
                 .setScaleMultiplier(0.5F)
+                .hasManualPosition(true)
+                .setPosition((int)(screenWidth * 0.05), (int)(screenHeight * 0.8))
                 .build();
     }
 
     private void displayHistoryShowcase() {
+        DisplayMetrics metrics = new DisplayMetrics();
+        mainActivity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        int screenWidth = metrics.widthPixels;
+        int screenHeight = metrics.heightPixels;
+
         mHistoryShowcaseview = new ShowcaseView.Builder(mainActivity)
                 .singleShot(mHistoryShowcaseviewShotId)
                 .setTarget(new ViewTarget((View)tv_curDate))
@@ -396,6 +408,8 @@ public class SeatFragment extends Fragment {
                 .hideOnTouchOutside()
                 .setStyle(R.style.ShowcaseView_Light)
                 .setScaleMultiplier(0.3F)
+                .hasManualPosition(true)
+                .setPosition((int)(screenWidth * 0.05), (int)(screenHeight * 0.8))
                 .build();
     }
 
@@ -925,7 +939,7 @@ public class SeatFragment extends Fragment {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        mNewPlanShowcaseview.hide();
+        if(mNewPlanShowcaseview != null) mNewPlanShowcaseview.hide();
 
 		if(id == R.id.seatplan_new) {
             mEditMode = true;

@@ -225,7 +225,7 @@ public class FillStudentInfoFragment extends Fragment {
         mEditTextNum.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                mStudentInfoShowcaseview.hide();
+                if(mStudentInfoShowcaseview != null) mStudentInfoShowcaseview.hide();
             }
         });
 		mEditTextNum.setOnEditorActionListener(new EditText.OnEditorActionListener() {
