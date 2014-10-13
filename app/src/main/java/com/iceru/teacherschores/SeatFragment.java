@@ -1135,6 +1135,7 @@ public class SeatFragment extends Fragment {
                         historyCount--;
                     }
                 }
+                historyCursor.close();
                 curStudent.setSeatPoint(seatPoint);
                 studentIdx++;
             }
@@ -1199,6 +1200,7 @@ public class SeatFragment extends Fragment {
                             historyCount--;
                         }
                     }
+                    historyCursor.close();
                     candidate.setPairPoint(pairPoint);
                     candidate.setSeatPoint(seatPoint);
                     studentIdx++;

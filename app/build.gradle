@@ -8,8 +8,8 @@ android {
         applicationId "com.iceru.classinhand"
         minSdkVersion 14
         targetSdkVersion 19
-        versionCode 1
-        versionName "0.1"
+        versionCode 3
+        versionName "0.11"
     }
 
     signingConfigs {
