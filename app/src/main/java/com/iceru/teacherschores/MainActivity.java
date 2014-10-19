@@ -13,11 +13,23 @@ import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.targets.ActionViewTarget;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
+import org.acra.ACRA;
+import org.acra.annotation.ReportsCrashes;
+import org.acra.sender.HttpSender;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeMap;
 
+@ReportsCrashes(
+        formKey = "",
+        httpMethod = HttpSender.Method.PUT,
+        reportType = HttpSender.Type.JSON,
+        formUri = "http://aiceru.iriscouch.com/acra-classinhand/_design/acra-storage/_update/report",
+        formUriBasicAuthLogin = "tester_classinhand",
+        formUriBasicAuthPassword = "classinhandTester"
+)
 public class MainActivity extends Activity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 	private TreeMap<Integer, Student> mStudents;
@@ -79,9 +91,9 @@ public class MainActivity extends Activity
         c.close();
 
 	    mShPrefStudentNameList = getSharedPreferences(getString(
-			    R.string.sharedpref_student_name_list), Context.MODE_PRIVATE);
+                R.string.sharedpref_student_name_list), Context.MODE_PRIVATE);
 	    mShPrefStudentBoygirlList = getSharedPreferences(getString(
-			    R.string.sharedpref_boygirl_list), Context.MODE_PRIVATE);
+                R.string.sharedpref_boygirl_list), Context.MODE_PRIVATE);
 	    mShPrefRoleList = getSharedPreferences(getString(
 			    R.string.sharedpref_role_list), Context.MODE_PRIVATE);
 

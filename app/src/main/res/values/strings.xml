@@ -76,4 +76,15 @@
         <item>6</item>
 	</string-array>
 
+    <string name="crash_dialog_title">버그를 알려주세요</string>
+    <string name="crash_dialog_text">
+        테스트 버전을 사용해 주셔서 감사합니다.
+        에러 로그를 개발자에게 전송해 주시면 빠른 시일 내에 버그를 수정하겠습니다.
+        \"확인\" 버튼을 누르시기만 하면 됩니다 :)
+    </string>
+    <string name="crash_dialog_comment_prompt">
+        덧붙이고 싶은 말:
+    </string>
+    <string name="crash_dialog_ok_toast">에러 로그가 전송되었습니다</string>
+
 </resources>
