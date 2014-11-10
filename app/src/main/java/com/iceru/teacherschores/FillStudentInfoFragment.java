@@ -360,13 +360,13 @@ public class FillStudentInfoFragment extends Fragment {
 		actionBar.setTitle(R.string.title_fillinfo);
 	}
 
-	@Override
+	/*@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		if (!((MainActivity)getActivity()).isDrawerOpen()) {
 			inflater.inflate(R.menu.menu_fillinfo, menu);
 			showActionBar();
 		}
-	}
+	}*/
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {

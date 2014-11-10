@@ -885,7 +885,7 @@ public class SeatFragment extends Fragment {
         super.onResume();
     }
 
-    @Override
+    /*@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         Log.d(this.getClass().getSimpleName(), "onCreateOptionMenu()");
 		if (!mainActivity.isDrawerOpen()) {
@@ -903,7 +903,7 @@ public class SeatFragment extends Fragment {
                 displayNewPlanShowcase();
             }
 		}
-	}
+	}*/
 
     @Override
     public void onPause() {

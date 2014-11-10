@@ -7,13 +7,9 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
+import android.view.View;
 import android.view.ViewConfiguration;
 
-import com.github.amlcurran.showcaseview.ShowcaseView;
-import com.github.amlcurran.showcaseview.targets.ActionViewTarget;
-import com.github.amlcurran.showcaseview.targets.ViewTarget;
-
-import org.acra.ACRA;
 import org.acra.annotation.ReportsCrashes;
 import org.acra.sender.HttpSender;
 
@@ -21,6 +17,10 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeMap;
+
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.Toolbar;
 
 @ReportsCrashes(
         formKey = "",
@@ -30,8 +30,8 @@ import java.util.TreeMap;
         formUriBasicAuthLogin = "tester_classinhand",
         formUriBasicAuthPassword = "classinhandTester"
 )
-public class MainActivity extends Activity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+public class MainActivity extends ActionBarActivity {
+        //implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 	private TreeMap<Integer, Student> mStudents;
 	private ArrayList<Role> mRoles;
 	private int num_boys, num_girls, num_roleConsume;
@@ -40,7 +40,9 @@ public class MainActivity extends Activity
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
-    private NavigationDrawerFragment    mNavigationDrawerFragment;
+    //private NavigationDrawerFragment    mNavigationDrawerFragment;
+    private DrawerLayout mDrawerLayout;
+    private ActionBarDrawerToggle mDrawerToggle;
 
     /**
      * Used to store the last screen title. For use in {link #restoreActionBar()}.
@@ -67,8 +69,6 @@ public class MainActivity extends Activity
             // Ignore
         }
         // End hack
-
-        setContentView(R.layout.activity_main);
 
 	    num_boys = 0;
 	    num_girls = 0;
@@ -116,18 +116,54 @@ public class MainActivity extends Activity
 		    num_roleConsume += role.getConsume();
 	    }
 
-        mNavigationDrawerFragment = (NavigationDrawerFragment)
-                getFragmentManager().findFragmentById(R.id.navigation_drawer);
+        //mNavigationDrawerFragment = (NavigationDrawerFragment)
+        //        getFragmentManager().findFragmentById(R.id.navigation_drawer);
 
 	    //mTitle = getTitle();
 
         // Set up the drawer.
-        mNavigationDrawerFragment.setUp(
-                R.id.navigation_drawer,
-                (DrawerLayout) findViewById(R.id.drawer_layout));
+        //mNavigationDrawerFragment.setUp(
+        //        R.id.navigation_drawer,
+        //        (DrawerLayout) findViewById(R.id.drawer_layout));
+        setContentView(R.layout.activity_main);
+        initViews();
     }
 
-    @Override
+    private void initViews() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+
+        toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
+        setSupportActionBar(toolbar);
+
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar,
+                R.string.drawer_open, R.string.drawer_close) {
+
+            /** Called when a drawer has settled in a completely closed state. */
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
+                //getActionBar().setTitle(mTitle);
+                //invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+
+            /** Called when a drawer has settled in a completely open state. */
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                //getActionBar().setTitle(mDrawerTitle);
+                //invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+        };
+
+
+        // Set the drawer toggle as the DrawerListener
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+    }
+
+    /*@Override
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getFragmentManager();
@@ -141,11 +177,11 @@ public class MainActivity extends Activity
 	        default:
 	            break;
         }
-    }
+    }*/
     
-    public boolean isDrawerOpen() {
-    	return mNavigationDrawerFragment.isDrawerOpen();
-    }
+    //public boolean isDrawerOpen() {
+    //	return mNavigationDrawerFragment.isDrawerOpen();
+    //}
 
     public ClassDBHelper getDbHelper() {
         return dbHelper;
