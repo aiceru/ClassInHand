@@ -2,8 +2,6 @@ package com.iceru.teacherschores;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v13.app.FragmentTabHost;
@@ -18,6 +16,9 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TabHost;
 
+import android.app.Fragment;
+import android.app.FragmentTransaction;
+
 import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.targets.ActionViewTarget;
 
@@ -25,6 +26,9 @@ import com.github.amlcurran.showcaseview.targets.ActionViewTarget;
  * Created by iceru on 14. 8. 9.
  */
 public class FillInfoPagerFragment extends Fragment {
+
+    private SlidingTabLayout    mSlidingTabLayout;
+    private ViewPager           mViewPager;
 
 	public static FillInfoPagerFragment newInstance() {
 		FillInfoPagerFragment fragment = new FillInfoPagerFragment();
@@ -46,12 +50,13 @@ public class FillInfoPagerFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(this.getClass().getSimpleName(), "onCreateView()");
-        View rootView = (LinearLayout) inflater.inflate(R.layout.fragment_fillinfopager, container, false);
+        /*View rootView = (LinearLayout) inflater.inflate(R.layout.fragment_fillinfopager, container, false);
         final TabHost mTabHost = (TabHost) rootView.findViewById(R.id.tabhost_fillinfo);
         mTabHost.setup();
 
         TabHost.TabSpec mTabSpec1 = mTabHost.newTabSpec("studentinfo").setIndicator("학생정보");
         TabHost.TabSpec mTabSpec2 = mTabHost.newTabSpec("roleinfo").setIndicator("역할정보");
+
 
         mTabSpec1.setContent(new TabFactory(getActivity()));
         mTabSpec2.setContent(new TabFactory(getActivity()));
@@ -59,7 +64,8 @@ public class FillInfoPagerFragment extends Fragment {
         mTabHost.addTab(mTabSpec1);
         mTabHost.addTab(mTabSpec2);
 
-        final ViewPager mViewPager = (ViewPager) rootView.findViewById(R.id.viewpager_fillinfo);
+
+        mViewPager = (ViewPager) rootView.findViewById(R.id.viewpager_fillinfo);
         mViewPager.setAdapter(new FillInfoPagerAdapter(getActivity(), getChildFragmentManager()));
 
         mTabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
@@ -76,7 +82,8 @@ public class FillInfoPagerFragment extends Fragment {
                 mTabHost.setCurrentTab(position);
             }
         });
-        return rootView;
+        return rootView;*/
+        return inflater.inflate(R.layout.fragment_fillinfopager, container, false);
     }
 
     @Override
@@ -101,9 +108,21 @@ public class FillInfoPagerFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        Log.d(this.getClass().getSimpleName(), "onViewCreated()");
-        super.onViewCreated(view, savedInstanceState);
+        // BEGIN_INCLUDE (setup_viewpager)
+        // Get the ViewPager and set it's PagerAdapter so that it can display items
+        mViewPager = (ViewPager) view.findViewById(R.id.viewpager_fillinfo);
+        mViewPager.setAdapter(new FillInfoPagerAdapter(getActivity(), getChildFragmentManager()));
+        // END_INCLUDE (setup_viewpager)
+
+        // BEGIN_INCLUDE (setup_slidingtablayout)
+        // Give the SlidingTabLayout the ViewPager, this must be done AFTER the ViewPager has had
+        // it's PagerAdapter set.
+        mSlidingTabLayout = (SlidingTabLayout) view.findViewById(R.id.sliding_tabs);
+        mSlidingTabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.accent));
+        mSlidingTabLayout.setViewPager(mViewPager);
+        // END_INCLUDE (setup_slidingtablayout)
     }
+    // END_INCLUDE (fragment_onviewcreated)
 
     @Override
     public void onSaveInstanceState(Bundle outState) {

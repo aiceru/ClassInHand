@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primary">#FF5722</color>       // Deep Orange 500
+    <color name="primary_dark">#E64A19</color>  // Deep Orange 700
+    <color name="accent">#03A9F4</color>        // Light Blue 500
+</resources>

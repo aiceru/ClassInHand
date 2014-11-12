@@ -1,7 +1,5 @@
 package com.iceru.teacherschores;
 
-import android.app.Activity;
-import android.app.FragmentManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -15,12 +13,16 @@ import org.acra.sender.HttpSender;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import android.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.widget.AdapterView;
+import android.widget.ListView;
 
 @ReportsCrashes(
         formKey = "",
@@ -41,8 +43,10 @@ public class MainActivity extends ActionBarActivity {
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
     //private NavigationDrawerFragment    mNavigationDrawerFragment;
-    private DrawerLayout mDrawerLayout;
-    private ActionBarDrawerToggle mDrawerToggle;
+    private DrawerLayout            mDrawerLayout;
+    private ListView                mDrawerListView;
+    private List<DrawerContent>     mDrawerList;
+    private ActionBarDrawerToggle   mDrawerToggle;
 
     /**
      * Used to store the last screen title. For use in {link #restoreActionBar()}.
@@ -132,10 +136,25 @@ public class MainActivity extends ActionBarActivity {
     private void initViews() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-
+        mDrawerListView = (ListView) findViewById(R.id.navigation_drawer);
 
         toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
         setSupportActionBar(toolbar);
+
+        mDrawerList = new ArrayList<DrawerContent>();
+        mDrawerList.add(DrawerItem.create(101, getString(R.string.title_seatplan), "ic_action_3d_cube", true, this));
+        //drawerContentList.add(DrawerItem.create(102, getString(R.string.title_eachrole), "ic_action_user", true, this.getActivity()));
+        //drawerContentList.add(DrawerItem.create(103, getString(R.string.title_classtime), "ic_action_alarm_clock", true, this.getActivity()));
+        mDrawerList.add(DrawerSection.create(200, "Settings"));
+        mDrawerList.add(DrawerSubItem.create(201, getString(R.string.title_fillinfo), "ic_action_edit", true, this));
+
+        mDrawerListView.setAdapter(new DrawerContentAdapter(getSupportActionBar().getThemedContext(), R.layout.drawer_item, mDrawerList));
+        mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                selectItem(position);
+            }
+        });
 
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar,
                 R.string.drawer_open, R.string.drawer_close) {
@@ -143,6 +162,7 @@ public class MainActivity extends ActionBarActivity {
             /** Called when a drawer has settled in a completely closed state. */
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
+                //mDrawerToggle.syncState();
                 //getActionBar().setTitle(mTitle);
                 //invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
@@ -150,6 +170,7 @@ public class MainActivity extends ActionBarActivity {
             /** Called when a drawer has settled in a completely open state. */
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
+                //mDrawerToggle.syncState();
                 //getActionBar().setTitle(mDrawerTitle);
                 //invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
@@ -161,6 +182,34 @@ public class MainActivity extends ActionBarActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
+
+        //mDrawerToggle.syncState();
+    }
+
+    private void selectItem(int position) {
+        if (mDrawerListView != null) {
+            mDrawerListView.setItemChecked(position, false);
+        }
+        if (mDrawerLayout != null) {
+            mDrawerLayout.closeDrawer(mDrawerListView);
+        }
+        FragmentManager fragmentManager = getFragmentManager();
+        switch(position+1) {
+            case 1:
+                fragmentManager.beginTransaction().replace(R.id.main_contents, SeatFragment.newInstance()).commit();
+                break;
+            case 3:
+                fragmentManager.beginTransaction().replace(R.id.main_contents, FillInfoPagerFragment.newInstance()).commit();
+                break;
+            default:
+                break;
+        }
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        mDrawerToggle.syncState();
     }
 
     /*@Override
