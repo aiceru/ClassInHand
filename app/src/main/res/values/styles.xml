@@ -11,11 +11,14 @@
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
         <item name="colorAccent">@color/accent</item>
+        <item name="android:textColorPrimary">@color/text_primary</item>
+        <item name="android:textColor">@color/text_secondary</item>
+
         <item name="windowActionBar">false</item>
-        <item name="drawerArrowStyle">@style/Theme.Test.DrawerArrowStyle</item>
+        <item name="drawerArrowStyle">@style/Theme.DrawerArrowStyle</item>
     </style>
 
-    <style name="Theme.Test.DrawerArrowStyle" parent="@style/Widget.AppCompat.DrawerArrowToggle">
+    <style name="Theme.DrawerArrowStyle" parent="@style/Widget.AppCompat.DrawerArrowToggle">
         <item name="spinBars">true</item>
         <item name="color">@android:color/white</item>
     </style>

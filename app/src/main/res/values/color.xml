@@ -3,4 +3,6 @@
     <color name="primary">#FF5722</color>       // Deep Orange 500
     <color name="primary_dark">#E64A19</color>  // Deep Orange 700
     <color name="accent">#03A9F4</color>        // Light Blue 500
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#333333</color>
 </resources>

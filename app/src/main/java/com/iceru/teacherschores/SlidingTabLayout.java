@@ -17,6 +17,7 @@
 package com.iceru.teacherschores;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.support.v4.view.PagerAdapter;
@@ -67,7 +68,7 @@ public class SlidingTabLayout extends HorizontalScrollView {
 
     private static final int TITLE_OFFSET_DIPS = 24;
     private static final int TAB_VIEW_PADDING_DIPS = 16;
-    private static final int TAB_VIEW_TEXT_SIZE_SP = 12;
+    private static final int TAB_VIEW_TEXT_SIZE_SP = 14;
 
     private int mTitleOffset;
 
@@ -172,6 +173,7 @@ public class SlidingTabLayout extends HorizontalScrollView {
         TextView textView = new TextView(context);
         textView.setGravity(Gravity.CENTER);
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, TAB_VIEW_TEXT_SIZE_SP);
+        textView.setTextColor(Color.WHITE);
         textView.setTypeface(Typeface.DEFAULT_BOLD);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -190,6 +192,7 @@ public class SlidingTabLayout extends HorizontalScrollView {
 
         int padding = (int) (TAB_VIEW_PADDING_DIPS * getResources().getDisplayMetrics().density);
         textView.setPadding(padding, padding, padding, padding);
+        textView.setWidth((int)(getResources().getDisplayMetrics().widthPixels)/2);
 
         return textView;
     }

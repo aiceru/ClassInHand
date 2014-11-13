@@ -119,6 +119,7 @@ public class FillInfoPagerFragment extends Fragment {
         // it's PagerAdapter set.
         mSlidingTabLayout = (SlidingTabLayout) view.findViewById(R.id.sliding_tabs);
         mSlidingTabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.accent));
+        mSlidingTabLayout.setBackgroundColor(getResources().getColor(R.color.primary));
         mSlidingTabLayout.setViewPager(mViewPager);
         // END_INCLUDE (setup_slidingtablayout)
     }
