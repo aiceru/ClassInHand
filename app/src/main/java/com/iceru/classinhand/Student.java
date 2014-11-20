@@ -1,10 +1,11 @@
-package com.iceru.teacherschores;
+package com.iceru.classinhand;
 
 /**
  * Created by iceru on 14. 8. 13.
  */
 public class Student implements Cloneable {
-	private int		num;
+    private int     id;
+	private int		attendNum;
 	private String	name;
 	private boolean boy;		// true -> boy, false -> girl... T/F has no meaning. :)
 	private Seat    itsCurrentSeat;
@@ -12,17 +13,19 @@ public class Student implements Cloneable {
     private double     seatPoint = 0;  // 자리 배치할 때 사용
     private double     pairPoint = 0;  // 짝 배치할 때 사용
 
-	public Student(int num, String name, boolean boy) {
-		this.num = num;
+	public Student(int id, int attendNum, String name, boolean boy) {
+        this.id = id;
+		this.attendNum = attendNum;
 		this.name = name;
 		this.boy = boy;
 		this.itsCurrentSeat = null;
 	}
+
 	/**
 	 * @return the num
 	 */
-	public int getNum() {
-		return num;
+	public int getAttendNum() {
+		return attendNum;
 	}
 	/**
 	 * @return the name

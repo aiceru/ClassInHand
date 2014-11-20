@@ -1,26 +1,16 @@
-package com.iceru.teacherschores;
+package com.iceru.classinhand;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v13.app.FragmentTabHost;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.TabHost;
 
 import android.app.Fragment;
-import android.app.FragmentTransaction;
-
-import com.github.amlcurran.showcaseview.ShowcaseView;
-import com.github.amlcurran.showcaseview.targets.ActionViewTarget;
 
 /**
  * Created by iceru on 14. 8. 9.

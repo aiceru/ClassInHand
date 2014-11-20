@@ -1,4 +1,4 @@
-package com.iceru.teacherschores;
+package com.iceru.classinhand;
 
 
 import java.util.ArrayList;
@@ -8,7 +8,6 @@ import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
 import android.content.Context;
-import android.graphics.Point;
 import android.os.Handler;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
@@ -29,7 +28,6 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.github.amlcurran.showcaseview.ShowcaseView;
-import com.github.amlcurran.showcaseview.targets.PointTarget;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
 /**

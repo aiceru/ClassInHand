@@ -5,5 +5,5 @@
     android:choiceMode="singleChoice"
     android:dividerHeight="0.1dp"
     android:background="?android:attr/windowBackground"
-    tools:context="com.iceru.teacherschores.NavigationDrawerFragment" />
+    tools:context="com.iceru.classinhand.NavigationDrawerFragment" />
 

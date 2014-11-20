@@ -1,13 +1,10 @@
-package com.iceru.teacherschores;
+package com.iceru.classinhand;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.support.v13.app.FragmentPagerAdapter;
-import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
 /**
  * Created by iceru on 14. 8. 9.
@@ -15,29 +12,31 @@ import android.widget.TextView;
 public class FillInfoPagerAdapter extends FragmentPagerAdapter{
 	private FillStudentInfoFragment mFillStudentInfoFragment;
 	private FillRoleInfoFragment mFillRoleInfoFragment;
+    private StudentListFragment mStudentListFragment;
 	private Context mContext;
 
 	public FillInfoPagerAdapter(Context context, FragmentManager fm) {
 		super(fm);
 		mContext = context;
-		mFillStudentInfoFragment = FillStudentInfoFragment.newInstance();
-		mFillRoleInfoFragment = FillRoleInfoFragment.newInstance();
+		//mFillStudentInfoFragment = FillStudentInfoFragment.newInstance();
+		//mFillRoleInfoFragment = FillRoleInfoFragment.newInstance();
+        mStudentListFragment = StudentListFragment.newInstance();
 	}
 
 	@Override
 	public Fragment getItem(int i) {
 		switch(i) {
 			case 0:
-				return mFillStudentInfoFragment;
-			case 1:
-				return mFillRoleInfoFragment;
+				return mStudentListFragment;
+			//case 1:
+			//	return mFillRoleInfoFragment;
 		}
 		return null;
 	}
 
 	@Override
 	public int getCount() {
-		return 2;
+		return 1;
 	}
 
 	@Override
@@ -45,8 +44,8 @@ public class FillInfoPagerAdapter extends FragmentPagerAdapter{
 		switch(position) {
 			case 0:
 				return mContext.getString(R.string.tabtitle_studentinfo);
-			case 1:
-				return mContext.getString(R.string.tabtitle_roleinfo);
+			//case 1:
+			//	return mContext.getString(R.string.tabtitle_roleinfo);
 		}
 		return null;
 	}

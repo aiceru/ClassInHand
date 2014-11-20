@@ -1,27 +1,20 @@
-package com.iceru.teacherschores;
+package com.iceru.classinhand;
 
-import java.util.Iterator;
 import java.util.TreeMap;
-import java.util.TreeSet;
 
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
@@ -34,7 +27,6 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.github.amlcurran.showcaseview.ShowcaseView;
-import com.github.amlcurran.showcaseview.targets.ActionViewTarget;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
 /**
@@ -94,10 +86,10 @@ public class FillStudentInfoFragment extends Fragment {
 			final Student student = (Student)this.getItem(position);
 
 			if(student != null) {
-				TextView tvNum = (TextView)view.findViewById(R.id.textview_num);
+				TextView tvNum = (TextView)view.findViewById(R.id.textview_attend_num);
 				TextView tvName = (TextView)view.findViewById(R.id.textview_name);
 				ImageView ivGender = (ImageView)view.findViewById(R.id.imageview_gender);
-				tvNum.setText(String.valueOf(student.getNum()));
+				tvNum.setText(String.valueOf(student.getAttendNum()));
 				tvName.setText(student.getName());
 				ivGender.setImageResource((student.isBoy()? R.drawable.ic_toggle_boy : R.drawable.ic_toggle_girl));
 			}
@@ -180,7 +172,7 @@ public class FillStudentInfoFragment extends Fragment {
 				TextView tv_num = (TextView)longClickDialog.findViewById(R.id.textview_dialog_student_edit_num);
 				TextView tv_name = (TextView)longClickDialog.findViewById(R.id.textview_dialog_student_edit_name);
 				ImageView iv_boygirl = (ImageView)longClickDialog.findViewById(R.id.imageview_dialog_student_edit_boygirl);
-				tv_num.setText(String.valueOf(target.getNum()));
+				tv_num.setText(String.valueOf(target.getAttendNum()));
 				tv_name.setText(target.getName().toString());
 				iv_boygirl.setImageResource(target.isBoy()? R.drawable.ic_toggle_boy : R.drawable.ic_toggle_girl);
 
@@ -193,7 +185,7 @@ public class FillStudentInfoFragment extends Fragment {
 					public void onClick(View v) {
 						mainActivity.removeStudent(target);
 						setTotalText();
-						mEditTextNum.setText(String.valueOf(target.getNum()));
+						mEditTextNum.setText(String.valueOf(target.getAttendNum()));
 						mEditTextName.setText(target.getName().toString());
 						mTglbtnBoygirl.setChecked(target.isBoy()? true : false);
 						longClickDialog.dismiss();
@@ -379,7 +371,7 @@ public class FillStudentInfoFragment extends Fragment {
 	}
 
 	private void addStudent() {
-		String curNumString = mEditTextNum.getText().toString();
+		/*String curNumString = mEditTextNum.getText().toString();
 		String curName = mEditTextName.getText().toString();
 
 		if(curNumString.isEmpty()) {
@@ -410,7 +402,7 @@ public class FillStudentInfoFragment extends Fragment {
 		}
 		else {
 			Toast.makeText(mainActivity, getString(R.string.warning_existing_num), Toast.LENGTH_SHORT).show();
-		}
+		}*/
 	}
 
 	private void setTotalText() {

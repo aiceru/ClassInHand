@@ -1,20 +1,15 @@
-package com.iceru.teacherschores;
+package com.iceru.classinhand;
 
-import android.content.Context;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.view.View;
-import android.view.ViewConfiguration;
 
 import org.acra.annotation.ReportsCrashes;
 import org.acra.sender.HttpSender;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.TreeMap;
 
 import android.app.FragmentManager;
@@ -61,8 +56,21 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        mStudents = new TreeMap<Integer, Student>();
+
+        Student s;
+        int i;
+        for(i = 0; i < 10; i++) {
+            s = new Student(i, i+1, "이름" + String.valueOf(i+1), true);
+            mStudents.put(i, s);
+        }
+        for(; i < 20; i++) {
+            s = new Student(i, i+1, "여자 " + String.valueOf(i-9), false);
+            mStudents.put(i, s);
+        }
+
         // hack for permanentMenuKey (ex. galaxy series)
-        try {
+        /*try {
             ViewConfiguration config = ViewConfiguration.get(this);
             Field menuKeyField = ViewConfiguration.class.getDeclaredField("sHasPermanentMenuKey");
             if(menuKeyField != null) {
@@ -101,7 +109,7 @@ public class MainActivity extends ActionBarActivity {
 	    mShPrefRoleList = getSharedPreferences(getString(
 			    R.string.sharedpref_role_list), Context.MODE_PRIVATE);
 
-	    /*Map<String, ?> allEntries = mShPrefStudentNameList.getAll();
+	    *//*Map<String, ?> allEntries = mShPrefStudentNameList.getAll();
 	    for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
 		    Student student = new Student(Integer.valueOf(entry.getKey()),
 				    entry.getValue().toString(),
@@ -109,7 +117,7 @@ public class MainActivity extends ActionBarActivity {
 		    mStudents.add(student);
 		    if(student.isBoy()) num_boys++;
 		    else num_girls++;
-	    }*/
+	    }*//*
 
         Map<String, ?> allEntries = mShPrefRoleList.getAll();
 	    for(Map.Entry<String, ?> entry : allEntries.entrySet()) {
@@ -118,7 +126,7 @@ public class MainActivity extends ActionBarActivity {
 				    Integer.valueOf(entry.getValue().toString()));
 		    mRoles.add(role);
 		    num_roleConsume += role.getConsume();
-	    }
+	    }*/
 
         //mNavigationDrawerFragment = (NavigationDrawerFragment)
         //        getFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -196,7 +204,7 @@ public class MainActivity extends ActionBarActivity {
         FragmentManager fragmentManager = getFragmentManager();
         switch(position+1) {
             case 1:
-                fragmentManager.beginTransaction().replace(R.id.main_contents, SeatFragment.newInstance()).commit();
+                fragmentManager.beginTransaction().replace(R.id.main_contents, SeatFragmentRecyclerView.newInstance()).commit();
                 break;
             case 3:
                 fragmentManager.beginTransaction().replace(R.id.main_contents, FillInfoPagerFragment.newInstance()).commit();
@@ -261,22 +269,22 @@ public class MainActivity extends ActionBarActivity {
 	}
 
 	public boolean addStudent(Student student) {
-		boolean exist = null != mStudents.get(student.getNum());
+		boolean exist = null != mStudents.get(student.getAttendNum());
 		if(!exist) {
-			mStudents.put(student.getNum(), student);
+			mStudents.put(student.getAttendNum(), student);
 			if(student.isBoy()) num_boys++;
 			else num_girls++;
-            dbHelper.insert(student);
+            //dbHelper.insert(student);
 		}
 		return !exist;
 	}
 
 	public boolean removeStudent(Student student) {
-		boolean success = null != mStudents.remove(student.getNum());
+		boolean success = null != mStudents.remove(student.getAttendNum());
 		if(success) {
 			if(student.isBoy()) num_boys--;
 			else num_girls--;
-			dbHelper.delete(student);
+			//dbHelper.delete(student);
 		}
 		return success;
 	}
@@ -285,7 +293,7 @@ public class MainActivity extends ActionBarActivity {
         mStudents.clear();
         num_boys = 0;
         num_girls = 0;
-        dbHelper.deleteAllStudents();
+        //dbHelper.deleteAllStudents();
     }
 
 	public boolean addRole(Role role) {

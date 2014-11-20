@@ -10,7 +10,7 @@
               android:paddingLeft="70dp"
               android:paddingRight="70dp"
               android:paddingTop="@dimen/activity_vertical_margin"
-              tools:context="com.iceru.teacherschores.MainActivty" >
+              tools:context="com.iceru.classinhand.MainActivty" >
 
     <TextView
         android:layout_width="match_parent"

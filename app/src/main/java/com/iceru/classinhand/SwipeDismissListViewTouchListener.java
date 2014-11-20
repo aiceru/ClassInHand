@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.iceru.teacherschores;
+package com.iceru.classinhand;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;

@@ -1,12 +1,8 @@
-package com.iceru.teacherschores;
+package com.iceru.classinhand;
 
-import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
-import java.util.ArrayList;
 
 /**
  * Created by iceru on 14. 8. 23.
@@ -34,7 +30,7 @@ public class ClassDBHelper extends SQLiteOpenHelper {
 
 	}
 
-	public long insert(Student student) {
+	/*public long insert(Student student) {
 		ContentValues values = new ContentValues();
 		values.put(ClassDBContract.StudentInfo.COLUMN_NAME_STUDENT_ID, student.getNum());
 		values.put(ClassDBContract.StudentInfo.COLUMN_NAME_STUDENT_NAME, student.getName());
@@ -114,13 +110,13 @@ public class ClassDBHelper extends SQLiteOpenHelper {
                 String.valueOf(id)
         };
         return rDB.query(
-        /* TABLE        */  ClassDBContract.StudentInfo.TABLE_NAME,
-        /* COLUMNS      */  projection,
-        /* SELECTION    */  ClassDBContract.StudentInfo.COLUMN_NAME_STUDENT_ID + " = ?",
-        /* SELECTARGS   */  selectArg,
-        /* GROUP BY     */  null,
-        /* HAVING       */  null,
-        /* ORDER BY     */  null
+        *//* TABLE        *//*  ClassDBContract.StudentInfo.TABLE_NAME,
+        *//* COLUMNS      *//*  projection,
+        *//* SELECTION    *//*  ClassDBContract.StudentInfo.COLUMN_NAME_STUDENT_ID + " = ?",
+        *//* SELECTARGS   *//*  selectArg,
+        *//* GROUP BY     *//*  null,
+        *//* HAVING       *//*  null,
+        *//* ORDER BY     *//*  null
         );
     }
 
@@ -129,13 +125,13 @@ public class ClassDBHelper extends SQLiteOpenHelper {
                 ClassDBContract.SeatHistory.COLUMN_NAME_DATE
         };
         return rDB.query(
-        /* TABLE        */  ClassDBContract.SeatHistory.TABLE_NAME,
-        /* COLUMNS      */  projection,
-        /* SELECTION    */  null,
-        /* SELECTARGS   */  null,
-        /* GROUP BY     */  ClassDBContract.SeatHistory.COLUMN_NAME_DATE,
-        /* HAVING       */  null,
-        /* ORDER BY     */  ClassDBContract.SeatHistory.COLUMN_NAME_DATE + " DESC"
+        *//* TABLE        *//*  ClassDBContract.SeatHistory.TABLE_NAME,
+        *//* COLUMNS      *//*  projection,
+        *//* SELECTION    *//*  null,
+        *//* SELECTARGS   *//*  null,
+        *//* GROUP BY     *//*  ClassDBContract.SeatHistory.COLUMN_NAME_DATE,
+        *//* HAVING       *//*  null,
+        *//* ORDER BY     *//*  ClassDBContract.SeatHistory.COLUMN_NAME_DATE + " DESC"
         );
     }
 
@@ -167,13 +163,13 @@ public class ClassDBHelper extends SQLiteOpenHelper {
         };
 
         return rDB.query(
-        /* TABLE        */  ClassDBContract.SeatHistory.TABLE_NAME,
-        /* COLUMNS      */  projection,
-        /* SELECTION    */  selection,
-        /* SELECTARGS   */  selectionArgs,
-        /* GROUP BY     */  null,
-        /* HAVING       */  null,
-        /* ORDER BY     */  ClassDBContract.SeatHistory.COLUMN_NAME_DATE + " DESC"
+        *//* TABLE        *//*  ClassDBContract.SeatHistory.TABLE_NAME,
+        *//* COLUMNS      *//*  projection,
+        *//* SELECTION    *//*  selection,
+        *//* SELECTARGS   *//*  selectionArgs,
+        *//* GROUP BY     *//*  null,
+        *//* HAVING       *//*  null,
+        *//* ORDER BY     *//*  ClassDBContract.SeatHistory.COLUMN_NAME_DATE + " DESC"
         );
     }
 
@@ -192,13 +188,13 @@ public class ClassDBHelper extends SQLiteOpenHelper {
         };
 
         return rDB.query(
-        /* TABLE        */  ClassDBContract.SeatHistory.TABLE_NAME,
-        /* COLUMNS      */  projection,
-        /* SELECTION    */  selection,
-        /* SELECTARGS   */  selectionArgs,
-        /* GROUP BY     */  null,
-        /* HAVING       */  null,
-        /* ORDER BY     */  null
+        *//* TABLE        *//*  ClassDBContract.SeatHistory.TABLE_NAME,
+        *//* COLUMNS      *//*  projection,
+        *//* SELECTION    *//*  selection,
+        *//* SELECTARGS   *//*  selectionArgs,
+        *//* GROUP BY     *//*  null,
+        *//* HAVING       *//*  null,
+        *//* ORDER BY     *//*  null
         );
     }
 
@@ -254,5 +250,5 @@ public class ClassDBHelper extends SQLiteOpenHelper {
 				null,
 				null
 		);
-	}
+	}*/
 }

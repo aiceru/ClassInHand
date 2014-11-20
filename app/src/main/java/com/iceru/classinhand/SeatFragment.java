@@ -1,9 +1,8 @@
-package com.iceru.teacherschores;
+package com.iceru.classinhand;
 
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
@@ -11,15 +10,12 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -32,8 +28,6 @@ import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.GregorianCalendar;
 import java.util.TreeMap;
 
@@ -136,7 +130,7 @@ public class SeatFragment extends Fragment {
                 TextView tvName = (TextView) view.findViewById(R.id.textview_seated_name);
                 ImageView ivBoygirl = (ImageView) view.findViewById(R.id.imageview_seated_boygirl);
                 if(seat.getItsStudent() != null) {
-                    tvNum.setText(String.valueOf(seat.getItsStudent().getNum()));
+                    tvNum.setText(String.valueOf(seat.getItsStudent().getAttendNum()));
                     tvName.setText(seat.getItsStudent().getName());
                     ivBoygirl.setImageResource(seat.getItsStudent().isBoy() ? R.drawable.ic_toggle_boy : R.drawable.ic_toggle_girl);
                 }
@@ -176,7 +170,7 @@ public class SeatFragment extends Fragment {
         ClassDBHelper dbHelper = mainActivity.getDbHelper();
 
         /* Loading Saved Date List from DB... */
-        Cursor dateListCursor = dbHelper.getSavedDateList();
+        /*Cursor dateListCursor = dbHelper.getSavedDateList();
         mSavedDateList = new ArrayList<Long>();
         mSavedDateStringList = new ArrayList<String>();
         mCurrentShowingCal = new GregorianCalendar();
@@ -196,7 +190,7 @@ public class SeatFragment extends Fragment {
             mCurrentShowingCal.setTimeInMillis(mCurrentShowingDate);
         }
         // If there is no saved plan (ex. first run), mCurrentShowingDate is 0
-        dateListCursor.close();
+        dateListCursor.close();*/
         /* End */
 
         /* Getting (latest) Students list from main Activity... */
@@ -219,7 +213,7 @@ public class SeatFragment extends Fragment {
             /* End */
 
 	        /* apply current seat map read from database */
-            Cursor seatCursor = dbHelper.getSeatPlan(mCurrentShowingDate);
+            /*Cursor seatCursor = dbHelper.getSeatPlan(mCurrentShowingDate);
 
             if (seatCursor.moveToFirst()) {
                 while (!seatCursor.isAfterLast()) {
@@ -235,7 +229,7 @@ public class SeatFragment extends Fragment {
                     seatCursor.moveToNext();
                 }
             }
-            seatCursor.close();
+            seatCursor.close();*/
             /* End */
         }
 
@@ -447,13 +441,13 @@ public class SeatFragment extends Fragment {
 
                 ClassDBHelper dbHelper = mainActivity.getDbHelper();
                 Seat pairSeat = getSeatByAbsolutePosition(mLeftSelectedSeat.getPairSeatId());
-                dbHelper.update(mLeftSelectedSeat,
+                /*dbHelper.update(mLeftSelectedSeat,
                         pairSeat == null? -1 : pairSeat.getItsStudent().getNum(),
                         mCurrentShowingDate);
                 pairSeat = getSeatByAbsolutePosition(mRightSelectedSeat.getPairSeatId());
                 dbHelper.update(mRightSelectedSeat,
                         pairSeat == null? -1 : pairSeat.getItsStudent().getNum(),
-                        mCurrentShowingDate);
+                        mCurrentShowingDate);*/
 
                 mLeftSelectedSeat.setSelected(false);
                 mRightSelectedSeat.setSelected(false);
@@ -502,7 +496,7 @@ public class SeatFragment extends Fragment {
             tv.setText(selectedStudent.getName());
             tv.setTextSize(18);
             layout_onseatclick_left.addView(tv);
-            historyCursor = dbHelper.getHistory(selectedStudent.getNum());
+            /*historyCursor = dbHelper.getHistory(selectedStudent.getNum());
             if (historyCursor.moveToFirst()) {
                 int historyCount = 0;
                 historyCursor.moveToNext();
@@ -521,7 +515,7 @@ public class SeatFragment extends Fragment {
                     historyCursor.moveToNext();
                     historyCount++;
                 }
-            }
+            }*/
             btn_left_cancel.setVisibility(View.VISIBLE);
         }
         else if(mRightSelectedSeat == null) {
@@ -532,7 +526,7 @@ public class SeatFragment extends Fragment {
             tv.setText(selectedStudent.getName());
             tv.setTextSize(18);
             layout_onseatclick_right.addView(tv);
-            historyCursor = dbHelper.getHistory(selectedStudent.getNum());
+            /*historyCursor = dbHelper.getHistory(selectedStudent.getNum());
             if(historyCursor.moveToFirst()) {
                 int historyCount = 0;
                 historyCursor.moveToNext();
@@ -551,7 +545,7 @@ public class SeatFragment extends Fragment {
                     historyCursor.moveToNext();
                     historyCount++;
                 }
-            }
+            }*/
             btn_right_cancel.setVisibility(View.VISIBLE);
         }
 
@@ -575,7 +569,7 @@ public class SeatFragment extends Fragment {
     }
 
     private void showPlan(long plannedDate) {
-        ClassDBHelper dbHelper = mainActivity.getDbHelper();
+        /*ClassDBHelper dbHelper = mainActivity.getDbHelper();
         Cursor studentCursor;
         Cursor seatsForDateCursor = dbHelper.getSeatPlan(plannedDate);
 
@@ -629,7 +623,7 @@ public class SeatFragment extends Fragment {
             refreshSegView();
         }
         else {
-            /* There is no saved plans, so Creating segments and Seats... */
+            *//* There is no saved plans, so Creating segments and Seats... *//*
             mSegment1 = new ArrayList<Seat>();
             mSegment2 = new ArrayList<Seat>();
             mSegment3 = new ArrayList<Seat>();
@@ -647,7 +641,7 @@ public class SeatFragment extends Fragment {
 
             tv_curDate.setText(null);
         }
-        seatsForDateCursor.close();
+        seatsForDateCursor.close();*/
     }
 
     private void createNewPlan() {
@@ -664,7 +658,7 @@ public class SeatFragment extends Fragment {
         for(TreeMap.Entry<Integer, Student> entry : mStudents.entrySet()) {
             try {
                 st = entry.getValue().clone();
-                mNewStudents.put(st.getNum(), st);
+                mNewStudents.put(st.getAttendNum(), st);
             } catch (CloneNotSupportedException e) {
                 e.printStackTrace();
             }
@@ -730,19 +724,19 @@ public class SeatFragment extends Fragment {
     }
 
     private void saveCurrentPlan() {
-        assert(mNewStudents != null && mNewSegment1 != null
+        /*assert(mNewStudents != null && mNewSegment1 != null
                 && mNewSegment2 != null && mNewSegment3 != null);
 
         // TODO : check if all students have his/her own seat
 
-	    /* get current date */
+	    *//* get current date *//*
         int year, month, day;
         final GregorianCalendar cal = new GregorianCalendar();
         year = cal.get(Calendar.YEAR);
         month = cal.get(Calendar.MONTH);
         day = cal.get(Calendar.DAY_OF_MONTH);
 
-		/* dialog : select date */
+		*//* dialog : select date *//*
         DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
@@ -757,7 +751,7 @@ public class SeatFragment extends Fragment {
                         swapWithClones();
                         mEditMode = false;
 
-                        /* save to DB */
+                        *//* save to DB *//*
                         Student st;
                         Seat seat, pairSeat;
                         for (TreeMap.Entry<Integer, Student> entry : mStudents.entrySet()) {
@@ -770,7 +764,7 @@ public class SeatFragment extends Fragment {
                                     curDateInMills);                                                        // date
                         }
 
-                        /* add to Saved Date List (Long, String both) */
+                        *//* add to Saved Date List (Long, String both) *//*
                         mCurrentShowingDate = curDateInMills;
                         mCurrentShowingCal.setTimeInMillis(mCurrentShowingDate);
                         mSavedDateList.add(mCurrentShowingDate);
@@ -781,7 +775,7 @@ public class SeatFragment extends Fragment {
                         Collections.sort(mSavedDateList, Collections.reverseOrder());
                         Collections.sort(mSavedDateStringList, Collections.reverseOrder());
 
-                        /* deal with views */
+                        *//* deal with views *//*
                         tv_curDate.setText(String.format("%04d. %02d. %02d",
                                 mCurrentShowingCal.get(Calendar.YEAR),
                                 mCurrentShowingCal.get(Calendar.MONTH)+1,
@@ -804,7 +798,7 @@ public class SeatFragment extends Fragment {
                                 swapWithClones();
                                 mEditMode = false;
 
-                                /* update DB */
+                                *//* update DB *//*
                                 Student st;
                                 Seat seat, pairSeat;
                                 for(TreeMap.Entry<Integer, Student> entry : mStudents.entrySet()) {
@@ -817,12 +811,12 @@ public class SeatFragment extends Fragment {
                                             curDateInMills);
                                 }
 
-                                /* No need to add Saved Date List (already exist because this is UPDATE, not INSERT
-                                 * only set current showing date */
+                                *//* No need to add Saved Date List (already exist because this is UPDATE, not INSERT
+                                 * only set current showing date *//*
                                 mCurrentShowingDate = curDateInMills;
                                 mCurrentShowingCal.setTimeInMillis(mCurrentShowingDate);
 
-                                /* deal with views */
+                                *//* deal with views *//*
                                 tv_curDate.setText(String.format("%04d. %02d. %02d",
                                         mCurrentShowingCal.get(Calendar.YEAR),
                                         mCurrentShowingCal.get(Calendar.MONTH)+1,
@@ -845,7 +839,7 @@ public class SeatFragment extends Fragment {
                 }
             }
         };
-        new DatePickerDialog(mainActivity, dateSetListener, year, month, day).show();
+        new DatePickerDialog(mainActivity, dateSetListener, year, month, day).show();*/
     }
 
     private void swapWithClones() {
@@ -862,7 +856,7 @@ public class SeatFragment extends Fragment {
     }
 
     private void deleteShowingPlan() {
-        if(mCurrentShowingDate != 0) {
+        /*if(mCurrentShowingDate != 0) {
             mainActivity.getDbHelper().deleteSeatPlan(mCurrentShowingDate);
             int idx = mSavedDateList.indexOf(mCurrentShowingDate);
             mSavedDateList.remove(idx);
@@ -870,7 +864,7 @@ public class SeatFragment extends Fragment {
             mCurrentShowingDate = mSavedDateList.isEmpty() ? 0 : mSavedDateList.get(0);
             mCurrentShowingCal.setTimeInMillis(mCurrentShowingDate);
             showPlan(mCurrentShowingDate);
-        }
+        }*/
     }
 
     @Override
@@ -971,7 +965,7 @@ public class SeatFragment extends Fragment {
         }
 		else if(id == R.id.seatplan_delete_all) {
 			ClassDBHelper dbHelper = mainActivity.getDbHelper();
-			dbHelper.deleteAllSeats();
+			//dbHelper.deleteAllSeats();
 
             removeAssignments(mSegment1);
             removeAssignments(mSegment2);
@@ -1076,7 +1070,7 @@ public class SeatFragment extends Fragment {
 	}
 
     private void assignRandom() {
-        Seat curSeat;
+        /*Seat curSeat;
         Student curStudent, candidate;
 
         Cursor historyCursor;
@@ -1232,7 +1226,7 @@ public class SeatFragment extends Fragment {
                 curArray.remove(candidate);
             }
             leftSeatIdArray.remove(0);
-        }
+        }*/
 
         /*
         while(!rightSeatIdArray.isEmpty()) {                    // 나머지 오른쪽 자리 모두 배치

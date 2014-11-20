@@ -1,8 +1,7 @@
-package com.iceru.teacherschores;
+package com.iceru.classinhand;
 
 import android.app.Application;
 
-import org.acra.ACRA;
 import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
 import org.acra.sender.HttpSender;
@@ -29,6 +28,6 @@ public class ClassInHand extends Application {
     @Override
     public final void onCreate() {
         super.onCreate();
-        ACRA.init(this);
+        //ACRA.init(this);
     }
 }

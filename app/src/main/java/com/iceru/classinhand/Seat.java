@@ -1,4 +1,4 @@
-package com.iceru.teacherschores;
+package com.iceru.classinhand;
 
 /**
  * Created by iceru on 14. 8. 14.

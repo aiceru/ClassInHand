@@ -1,21 +1,21 @@
-package com.iceru.teacherschores;
+package com.iceru.classinhand;
 
 import android.content.Context;
 
-public class DrawerSubItem implements DrawerContent {
+public class DrawerItem implements DrawerContent {
 
-	public static final int SUBITEM_TYPE = 2;
+	public static final int ITEM_TYPE = 1;
 
 	private int id;
 	private String label;  
 	private int icon;
 	private boolean updateActionBarTitle;
 
-	private DrawerSubItem() {
+	private DrawerItem() {
 	}
 
-	public static DrawerSubItem create( int id, String label, String icon, boolean updateActionBarTitle, Context context ) {
-		DrawerSubItem item = new DrawerSubItem();
+	public static DrawerItem create( int id, String label, String icon, boolean updateActionBarTitle, Context context ) {
+		DrawerItem item = new DrawerItem();
 		item.setId(id);
 		item.setLabel(label);
 		item.setIcon(context.getResources().getIdentifier( icon, "drawable", context.getPackageName()));
@@ -54,7 +54,7 @@ public class DrawerSubItem implements DrawerContent {
 	@Override
 	public int getType() {
 		// TODO Auto-generated method stub
-		return SUBITEM_TYPE;
+		return ITEM_TYPE;
 	}
 
 	@Override

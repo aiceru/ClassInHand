@@ -1,4 +1,4 @@
-package com.iceru.teacherschores;
+package com.iceru.classinhand;
 
 import java.util.List;
 
