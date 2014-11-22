@@ -61,7 +61,7 @@ public class MainActivity extends ActionBarActivity {
         Student s;
         int i;
         for(i = 0; i < 10; i++) {
-            s = new Student(i, i+1, "이름" + String.valueOf(i+1), true);
+            s = new Student(i, i+1, "남자 " + String.valueOf(i+1), true);
             mStudents.put(i, s);
         }
         for(; i < 20; i++) {

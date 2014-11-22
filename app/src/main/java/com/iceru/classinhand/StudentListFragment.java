@@ -23,12 +23,15 @@ public class StudentListFragment extends Fragment {
     private MainActivity                    mainActivity;
     private TreeMap<Integer, Student>       mStudents;
 
-    private RecyclerView                    mBoysListRecyclerView;
+    private RecyclerView                    mStudentListRecyclerView;
+    private RecyclerView.Adapter            mStudentListAdapter;
+    private RecyclerView.LayoutManager      mStudentListLayoutManager;
+    /*private RecyclerView                    mBoysListRecyclerView;
     private RecyclerView                    mGirlsListRecyclerView;
     private RecyclerView.Adapter            mBoysListAdapter;
     private RecyclerView.Adapter            mGirlsListAdapter;
     private RecyclerView.LayoutManager      mBoysListLayoutManager;
-    private RecyclerView.LayoutManager      mGirlsListLayoutManager;
+    private RecyclerView.LayoutManager      mGirlsListLayoutManager;*/
 
     public static StudentListFragment newInstance() {
         StudentListFragment fragment = new StudentListFragment();
@@ -47,7 +50,13 @@ public class StudentListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_studentlist, container, false);
 
-        mBoysListRecyclerView = (RecyclerView)rootView.findViewById(R.id.recyclerview_boyslist);
+        mStudentListRecyclerView = (RecyclerView)rootView.findViewById(R.id.recyclerview_studentlist);
+        mStudentListRecyclerView.setHasFixedSize(true);
+        mStudentListLayoutManager = new LinearLayoutManager(mainActivity);
+        mStudentListRecyclerView.setLayoutManager(mStudentListLayoutManager);
+        mStudentListAdapter = new StudentListAdapter(mStudents);
+        mStudentListRecyclerView.setAdapter(mStudentListAdapter);
+        /*mBoysListRecyclerView = (RecyclerView)rootView.findViewById(R.id.recyclerview_boyslist);
         mGirlsListRecyclerView = (RecyclerView)rootView.findViewById(R.id.recyclerview_girlslist);
 
         mBoysListRecyclerView.setHasFixedSize(true);
@@ -56,9 +65,9 @@ public class StudentListFragment extends Fragment {
         mBoysListLayoutManager = new LinearLayoutManager(mainActivity);
         mBoysListRecyclerView.setLayoutManager(mBoysListLayoutManager);
         mGirlsListLayoutManager = new LinearLayoutManager(mainActivity);
-        mGirlsListRecyclerView.setLayoutManager(mGirlsListLayoutManager);
+        mGirlsListRecyclerView.setLayoutManager(mGirlsListLayoutManager);*/
 
-        Collection<Student> boysList = Collections2.filter(mStudents.values(), new Predicate<Student>() {
+        /*Collection<Student> boysList = Collections2.filter(mStudents.values(), new Predicate<Student>() {
             @Override
             public boolean apply(@Nullable Student input) {
                 return input.isBoy();
@@ -74,7 +83,7 @@ public class StudentListFragment extends Fragment {
         mBoysListAdapter = new StudentListAdapter(boysList);
         mBoysListRecyclerView.setAdapter(mBoysListAdapter);
         mGirlsListAdapter = new StudentListAdapter(girlsList);
-        mGirlsListRecyclerView.setAdapter(mGirlsListAdapter);
+        mGirlsListRecyclerView.setAdapter(mGirlsListAdapter);*/
 
         return rootView;
     }

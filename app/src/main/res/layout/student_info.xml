@@ -4,36 +4,20 @@
     android:layout_height="@dimen/recyclerview_item_height"
     android:gravity="center"
     android:orientation="horizontal"
-    android:weightSum="1"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin">
+    <Space
+        android:layout_width="72dp"
+        android:layout_height="match_parent"/>
 
-    <RelativeLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.3">
-
-        <com.iceru.classinhand.RoundedImageView
-            android:id="@+id/imageview_gender"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:gravity="center"
-            android:contentDescription="gender_icon"></com.iceru.classinhand.RoundedImageView>
-
-        <TextView
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:id="@+id/textview_attend_num"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:clickable="false"
-            android:longClickable="false"
-            android:textSize="18sp" ></TextView>
-
-    </RelativeLayout>
+    <ImageView
+        android:id="@+id/imageview_gender"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:gravity="center"
+        android:contentDescription="gender_icon"></ImageView>
 
     <Space
         android:layout_width="@dimen/activity_horizontal_margin"
@@ -41,9 +25,8 @@
     
     <TextView 
         android:id="@+id/textview_name"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="0.7"
         android:gravity="center"
         android:clickable="false"
         android:longClickable="false"

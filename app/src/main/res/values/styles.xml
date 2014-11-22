@@ -5,7 +5,7 @@
         by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
 
     -->
-    <style name="Theme.Test" parent="@style/Theme.AppCompat.Light">
+    <style name="AppTheme" parent="@style/Theme.AppCompat.Light">
 
         <!-- customize the color palette -->
         <item name="colorPrimary">@color/primary</item>
@@ -16,6 +16,8 @@
 
         <item name="windowActionBar">false</item>
         <item name="drawerArrowStyle">@style/Theme.DrawerArrowStyle</item>
+
+        <item name="floatingActionButtonStyle">@style/AppTheme.Fab</item>
     </style>
 
     <style name="Theme.DrawerArrowStyle" parent="@style/Widget.AppCompat.DrawerArrowToggle">
@@ -23,18 +25,8 @@
         <item name="color">@android:color/white</item>
     </style>
 
-    <style name="AppBaseTheme" parent="android:Theme.Light">
-        <!--
-            Theme customizations available in newer API levels can go in
-            res/values-vXX/styles.xml, while customizations related to
-            backward-compatibility can go here.
-
-        -->
-    </style>
-
-    <!-- Application theme. -->
-    <style name="AppTheme" parent="Theme.Test">
-        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+    <style name="AppTheme.Fab" parent="FloatingActionButton">
+        <item name="floatingActionButtonColor">@color/fab_color</item>
     </style>
 
     <style name="Widget.Button.Toggle" parent="android:Widget">

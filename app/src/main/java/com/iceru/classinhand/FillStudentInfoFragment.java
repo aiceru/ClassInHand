@@ -86,10 +86,10 @@ public class FillStudentInfoFragment extends Fragment {
 			final Student student = (Student)this.getItem(position);
 
 			if(student != null) {
-				TextView tvNum = (TextView)view.findViewById(R.id.textview_attend_num);
+				//TextView tvNum = (TextView)view.findViewById(R.id.textview_attend_num);
 				TextView tvName = (TextView)view.findViewById(R.id.textview_name);
 				ImageView ivGender = (ImageView)view.findViewById(R.id.imageview_gender);
-				tvNum.setText(String.valueOf(student.getAttendNum()));
+				//tvNum.setText(String.valueOf(student.getAttendNum()));
 				tvName.setText(student.getName());
 				ivGender.setImageResource((student.isBoy()? R.drawable.ic_toggle_boy : R.drawable.ic_toggle_girl));
 			}

@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import java.security.cert.CollectionCertStoreParameters;
 import java.util.Collection;
+import java.util.Map;
 import java.util.TreeMap;
 
 /**
@@ -17,22 +18,22 @@ import java.util.TreeMap;
  */
 public class StudentListAdapter extends RecyclerView.Adapter<StudentListAdapter.ViewHolder> {
 
-    private Collection<Student>     mDataset;
+    private TreeMap<Integer, Student>     mDataset;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView     tv_attend_num;
+        //public TextView     tv_attend_num;
         public TextView     tv_name;
-        public RoundedImageView    iv_gender;
+        public ImageView    iv_gender;
 
         public ViewHolder(View v) {
             super(v);
-            tv_attend_num = (TextView)v.findViewById(R.id.textview_attend_num);
+            //tv_attend_num = (TextView)v.findViewById(R.id.textview_attend_num);
             tv_name = (TextView)v.findViewById(R.id.textview_name);
-            iv_gender = (RoundedImageView)v.findViewById(R.id.imageview_gender);
+            iv_gender = (ImageView)v.findViewById(R.id.imageview_gender);
         }
     }
 
-    public StudentListAdapter(Collection<Student> dataset) {
+    public StudentListAdapter(TreeMap<Integer, Student> dataset) {
         mDataset = dataset;
     }
 
@@ -45,10 +46,9 @@ public class StudentListAdapter extends RecyclerView.Adapter<StudentListAdapter.
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
         Student s = (Student)this.getItem(i);
-        viewHolder.tv_attend_num.setText(String.valueOf(s.getAttendNum()));
-        viewHolder.tv_name.setText(s.getName());
-        viewHolder.iv_gender.setForegroundColor(s.isBoy()? 0xFFFCE4EC : 0xFFE3F2FD);
-        //viewHolder.iv_gender.setImageResource((s.isBoy()? R.drawable.ic_toggle_boy : R.drawable.ic_toggle_girl));
+        //viewHolder.tv_attend_num.setText(String.valueOf(s.getAttendNum()));
+        viewHolder.tv_name.setText(String.valueOf((s.getAttendNum())) + ". " + s.getName());
+        viewHolder.iv_gender.setImageResource((s.isBoy()? R.drawable.ic_listcircleicon_boys : R.drawable.ic_listcircleicon_girls));
     }
 
     @Override
@@ -57,7 +57,6 @@ public class StudentListAdapter extends RecyclerView.Adapter<StudentListAdapter.
     }
 
     public Object getItem(int position) {
-        Object[] arrayDataset = mDataset.toArray();
-        return arrayDataset[position];
+        return mDataset.get(position);
     }
 }
