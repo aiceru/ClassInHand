@@ -1,5 +1,6 @@
 package com.iceru.classinhand;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
@@ -29,9 +30,9 @@ import android.widget.ListView;
 )
 public class MainActivity extends ActionBarActivity {
         //implements NavigationDrawerFragment.NavigationDrawerCallbacks {
-	private TreeMap<Integer, Student> mStudents;
+	//private TreeMap<Integer, Student> mStudents;
 	private ArrayList<Role> mRoles;
-	private int num_boys, num_girls, num_roleConsume;
+	private int num_roleConsume;
     private ClassDBHelper dbHelper;
 
     /**
@@ -55,19 +56,6 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        mStudents = new TreeMap<Integer, Student>();
-
-        Student s;
-        int i;
-        for(i = 0; i < 10; i++) {
-            s = new Student(i, i+1, "남자 " + String.valueOf(i+1), true);
-            mStudents.put(i, s);
-        }
-        for(; i < 20; i++) {
-            s = new Student(i, i+1, "여자 " + String.valueOf(i-9), false);
-            mStudents.put(i, s);
-        }
 
         // hack for permanentMenuKey (ex. galaxy series)
         /*try {
@@ -244,57 +232,13 @@ public class MainActivity extends ActionBarActivity {
         return dbHelper;
     }
 
-    public int getNum_boys() {
-		return num_boys;
-	}
-
-	public int getNum_girls() {
-		return num_girls;
-	}
-
 	public int getNum_roleConsume() {
 		return num_roleConsume;
 	}
 
-	public TreeMap<Integer, Student> getmStudents() {
-		return mStudents;
-	}
-
-    public void setmStudents(TreeMap<Integer, Student> newStudents) {
-        this.mStudents = newStudents;
-    }
-
 	public ArrayList<Role> getmRoles() {
 		return mRoles;
 	}
-
-	public boolean addStudent(Student student) {
-		boolean exist = null != mStudents.get(student.getAttendNum());
-		if(!exist) {
-			mStudents.put(student.getAttendNum(), student);
-			if(student.isBoy()) num_boys++;
-			else num_girls++;
-            //dbHelper.insert(student);
-		}
-		return !exist;
-	}
-
-	public boolean removeStudent(Student student) {
-		boolean success = null != mStudents.remove(student.getAttendNum());
-		if(success) {
-			if(student.isBoy()) num_boys--;
-			else num_girls--;
-			//dbHelper.delete(student);
-		}
-		return success;
-	}
-
-    public void removeAllStudents() {
-        mStudents.clear();
-        num_boys = 0;
-        num_girls = 0;
-        //dbHelper.deleteAllStudents();
-    }
 
 	public boolean addRole(Role role) {
 		boolean success = mRoles.add(role);
@@ -319,6 +263,11 @@ public class MainActivity extends ActionBarActivity {
 		}
 		return success;
 	}
+
+    public void addPerson(View view) {
+        Intent intent = new Intent(this, AddPersonActivity.class);
+        startActivity(intent);
+    }
 
     
 

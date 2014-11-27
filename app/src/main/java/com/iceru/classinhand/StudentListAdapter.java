@@ -1,5 +1,7 @@
 package com.iceru.classinhand;
 
+import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,7 +20,9 @@ import java.util.TreeMap;
  */
 public class StudentListAdapter extends RecyclerView.Adapter<StudentListAdapter.ViewHolder> {
 
-    private TreeMap<Integer, Student>     mDataset;
+    private TreeMap<Integer, Student>       mDataset;
+    private TypedArray                      mGirlsColorArray;
+    private TypedArray                      mBoysColorArray;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         //public TextView     tv_attend_num;
@@ -33,8 +37,10 @@ public class StudentListAdapter extends RecyclerView.Adapter<StudentListAdapter.
         }
     }
 
-    public StudentListAdapter(TreeMap<Integer, Student> dataset) {
+    public StudentListAdapter(TreeMap<Integer, Student> dataset, Context context) {
         mDataset = dataset;
+        mGirlsColorArray = context.getResources().obtainTypedArray(R.array.girls_ic_colors);
+        mBoysColorArray = context.getResources().obtainTypedArray(R.array.boys_ic_colors);
     }
 
     @Override
@@ -46,9 +52,13 @@ public class StudentListAdapter extends RecyclerView.Adapter<StudentListAdapter.
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
         Student s = (Student)this.getItem(i);
+        int colorArrayIndex = (int)(Math.random() * mGirlsColorArray.length());
         //viewHolder.tv_attend_num.setText(String.valueOf(s.getAttendNum()));
         viewHolder.tv_name.setText(String.valueOf((s.getAttendNum())) + ". " + s.getName());
-        viewHolder.iv_gender.setImageResource((s.isBoy()? R.drawable.ic_listcircleicon_boys : R.drawable.ic_listcircleicon_girls));
+        viewHolder.iv_gender.setBackgroundColor(
+                s.isBoy() ?
+                mBoysColorArray.getColor(colorArrayIndex, 0) :
+                mGirlsColorArray.getColor(colorArrayIndex, 0));
     }
 
     @Override

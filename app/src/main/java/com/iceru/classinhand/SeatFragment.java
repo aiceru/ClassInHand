@@ -194,9 +194,9 @@ public class SeatFragment extends Fragment {
         /* End */
 
         /* Getting (latest) Students list from main Activity... */
-		mStudents = mainActivity.getmStudents();
-		mBoysSeats = mainActivity.getNum_boys();
-		mGirlsSeats = mainActivity.getNum_girls();
+		mStudents = ClassInHandApplication.getInstance().getmStudents();
+		/*mBoysSeats = ClassInHandApplication.getInstance().getNum_boys();
+		mGirlsSeats = ClassInHandApplication.getInstance().getNum_girls();*/
 		mTotalSeats = mBoysSeats + mGirlsSeats;
         /* End */
 
@@ -844,7 +844,7 @@ public class SeatFragment extends Fragment {
 
     private void swapWithClones() {
         mStudents = mNewStudents;
-        mainActivity.setmStudents(mNewStudents);
+        //mainActivity.setmStudents(mNewStudents);
         mSegment1 = mNewSegment1;
         mSegment2 = mNewSegment2;
         mSegment3 = mNewSegment3;

@@ -16,75 +16,62 @@
     <string name="action_new">새로 생성</string>
     <string name="action_done">저장</string>
     <string name="action_edit">수정</string>
-	<string name="action_cancel">취소</string>
+    <string name="action_cancel">취소</string>
     <string name="action_delete">삭제</string>
-	<string name="action_delete_all">전체 삭제</string>
+    <string name="action_delete_all">전체 삭제</string>
     <string name="action_overwrite">덮어쓰기</string>
     <string name="action_history">지난 좌석표</string>
     <string name="action_example">Example action</string>
     <string name="action_settings">Settings</string>
-    
     <string name="section">section</string>
     <string name="textview">textview</string>
     <string name="icon">icon</string>
     <string name="done">done</string>
     <string name="cancel">취소</string>
-	<string name="deleteAll">deleteAll</string>
-	
-	<string name="hint_edittext_name">이름</string>
+    <string name="deleteAll">deleteAll</string>
+    <string name="hint_edittext_name">이름</string>
     <string name="hint_edittext_role">역할</string>
-
     <string name="warning_edittext_name_is_null">이름을 입력하세요</string>
     <string name="warning_edittext_num_is_null">번호를 입력하세요</string>
     <string name="warning_existing_num">이미 등록된 출석번호입니다</string>
     <string name="warning_existing_rolename">이미 등록된 역할입니다</string>
     <string name="warning_no_student_info">등록된 학생정보가 없습니다</string>
-
     <string name="sharedpref_student_name_list">com.iceru.teacherschores.PREF_KEY_STUDENT_LIST</string>
     <string name="sharedpref_boygirl_list">com.iceru.teacherschores.PREF_KEY_BOYGIRL_LIST</string>
     <string name="sharedpref_role_list">com.iceru.teacherschores.PREF_KEY_ROLE_LIST</string>
-
     <string name="tabtitle_studentinfo">학생정보</string>
     <string name="tabtitle_roleinfo">역할정보</string>
-
     <string name="string_segment">분단</string>
     <string name="string_row">줄</string>
     <string name="string_left">왼쪽</string>
     <string name="string_right">오른쪽</string>
-
     <string name="showcase_title_input_students_info">학생정보를 입력하세요</string>
-    <string name="showcase_detail_input_students_info">
-        등록된 학생정보가 없습니다. \"기본정보 입력\" 을 탭하여 학생정보를 입력하세요.
-    </string>
+    <string name="showcase_detail_input_students_info">        등록된 학생정보가 없습니다. \"기본정보 입력\" 을 탭하여 학생정보를 입력하세요.</string>
     <string name="showcase_title_student_input_form">학생정보 입력</string>
-    <string name="showcase_detail_student_input_form">
-        번호와 이름을 입력하고 성별을 선택하세요. 키보드의 \"확인\" 을 눌러도 입력이 가능합니다.
-    </string>
+    <string name="showcase_detail_student_input_form">        번호와 이름을 입력하고 성별을 선택하세요. 키보드의 \"확인\" 을 눌러도 입력이 가능합니다.</string>
     <string name="showcase_title_new_plan">새로운 배치를 생성하세요</string>
     <string name="showcase_detail_new_plan">메뉴를 열어 \"새로 생성\"을 선택하세요</string>
     <string name="showcase_title_history">이전 자리배치를 조회할 수 있습니다</string>
     <string name="showcase_detail_history">날짜를 탭하여 과거 자리배치도를 조회하세요</string>
-
     <string name="sorry_developing">기능 추가 예정입니다</string>
-	
-	<string-array name="roleconsume_array">
-	    <item>1</item>
-	    <item>2</item>
+
+    <string-array name="roleconsume_array">
+        <item>1</item>
+        <item>2</item>
         <item>3</item>
         <item>4</item>
         <item>5</item>
         <item>6</item>
-	</string-array>
+    </string-array>
 
     <string name="crash_dialog_title">버그를 알려주세요</string>
-    <string name="crash_dialog_text">
-        테스트 버전을 사용해 주셔서 감사합니다.
+    <string name="crash_dialog_text">        테스트 버전을 사용해 주셔서 감사합니다.
         에러 로그를 개발자에게 전송해 주시면 빠른 시일 내에 버그를 수정하겠습니다.
-        \"확인\" 버튼을 누르시기만 하면 됩니다 :)
-    </string>
-    <string name="crash_dialog_comment_prompt">
-        덧붙이고 싶은 말:
-    </string>
+        \"확인\" 버튼을 누르시기만 하면 됩니다 :)</string>
+    <string name="crash_dialog_comment_prompt">        덧붙이고 싶은 말:</string>
     <string name="crash_dialog_ok_toast">에러 로그가 전송되었습니다</string>
+
+
+    <string name="title_activity_add_person">학생 정보 등록</string>
 
 </resources>

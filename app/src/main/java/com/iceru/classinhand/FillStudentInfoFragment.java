@@ -122,7 +122,7 @@ public class FillStudentInfoFragment extends Fragment {
         mUserLearnedFillStudentInfo = sp.getBoolean(PREF_USER_LEARNED_FILL_STUDENT_INFO, false);*/
 
         mainActivity = (MainActivity)getActivity();
-        mStudents = mainActivity.getmStudents();
+        mStudents = ClassInHandApplication.getInstance().getmStudents();
         mStudentListAdapter = new studentListAdapter(this.getActivity(), mStudents);
     }
 
@@ -183,7 +183,7 @@ public class FillStudentInfoFragment extends Fragment {
 				btn_edit.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						mainActivity.removeStudent(target);
+						ClassInHandApplication.getInstance().removeStudent(target);
 						setTotalText();
 						mEditTextNum.setText(String.valueOf(target.getAttendNum()));
 						mEditTextName.setText(target.getName().toString());
@@ -195,7 +195,7 @@ public class FillStudentInfoFragment extends Fragment {
 				btn_delete.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						mainActivity.removeStudent(target);
+						ClassInHandApplication.getInstance().removeStudent(target);
 						setTotalText();
 						longClickDialog.dismiss();
 						mStudentListAdapter.notifyDataSetChanged();
@@ -364,7 +364,7 @@ public class FillStudentInfoFragment extends Fragment {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		int id = item.getItemId();
 		if(id == R.id.action_deleteAll) {
-			mainActivity.removeAllStudents();
+			ClassInHandApplication.getInstance().removeAllStudents();
             mStudentListAdapter.notifyDataSetChanged();
 		}
 		return super.onOptionsItemSelected(item);
@@ -406,10 +406,8 @@ public class FillStudentInfoFragment extends Fragment {
 	}
 
 	private void setTotalText() {
-		int sum = mainActivity.getNum_boys() + mainActivity.getNum_girls();
-		mTotalTextView.setText("남자 " + mainActivity.getNum_boys() + "명, 여자 "
-				+ mainActivity.getNum_girls()
-				+ "명, 합계 " + sum + "명");
+		int sum = 1234;//mainActivity.getNum_boys() + mainActivity.getNum_girls();
+		mTotalTextView.setText(String.valueOf(sum));
 	}
 
 }

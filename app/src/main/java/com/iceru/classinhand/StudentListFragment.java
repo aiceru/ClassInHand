@@ -8,18 +8,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
-
-import java.util.Collection;
 import java.util.TreeMap;
-
-import javax.annotation.Nullable;
 
 /**
  * Created by iceru on 14. 11. 19..
  */
 public class StudentListFragment extends Fragment {
+    private ClassInHandApplication          application;
     private MainActivity                    mainActivity;
     private TreeMap<Integer, Student>       mStudents;
 
@@ -43,7 +38,8 @@ public class StudentListFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         mainActivity = (MainActivity)getActivity();
-        mStudents = mainActivity.getmStudents();
+        application = ClassInHandApplication.getInstance();
+        mStudents = application.getmStudents();
     }
 
     @Override
@@ -54,7 +50,7 @@ public class StudentListFragment extends Fragment {
         mStudentListRecyclerView.setHasFixedSize(true);
         mStudentListLayoutManager = new LinearLayoutManager(mainActivity);
         mStudentListRecyclerView.setLayoutManager(mStudentListLayoutManager);
-        mStudentListAdapter = new StudentListAdapter(mStudents);
+        mStudentListAdapter = new StudentListAdapter(mStudents, mainActivity);
         mStudentListRecyclerView.setAdapter(mStudentListAdapter);
         /*mBoysListRecyclerView = (RecyclerView)rootView.findViewById(R.id.recyclerview_boyslist);
         mGirlsListRecyclerView = (RecyclerView)rootView.findViewById(R.id.recyclerview_girlslist);
