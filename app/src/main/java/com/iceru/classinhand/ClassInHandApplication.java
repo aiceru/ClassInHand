@@ -28,8 +28,13 @@ import java.util.TreeMap;
 )
 public class ClassInHandApplication extends Application {
 
+    /* Public Constants */
+    public static final int MAX_STUDENTS = 99;
+    public static int       NEXT_ID;
+
     private static ClassInHandApplication appInstance;
-    private TreeMap <Integer, Student> mStudents;
+    private TreeMap <Integer, Student> mStudents;       // "Current" students, KEY : ID (NOT attend num)
+    private TreeMap <Integer, Student> mPastStudents;   // "Past" students
 
     @Override
     public final void onCreate() {
@@ -49,6 +54,8 @@ public class ClassInHandApplication extends Application {
             s = new Student(i, i+1, "여자 " + String.valueOf(i-9), false);
             mStudents.put(i, s);
         }
+
+        NEXT_ID = i;
     }
 
     public static ClassInHandApplication getInstance() {
@@ -58,6 +65,7 @@ public class ClassInHandApplication extends Application {
     public TreeMap<Integer, Student> getmStudents() {
         return mStudents;
     }
+
 
     public void setmStudents(TreeMap<Integer, Student> newStudents) {
         this.mStudents = newStudents;

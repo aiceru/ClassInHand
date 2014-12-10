@@ -22,7 +22,7 @@ import java.util.ArrayList;
  * Created by iceru on 14. 8. 11.
  */
 public class FillRoleInfoFragment extends Fragment{
-	private MainActivity    mainActivity;
+	/*private MainActivity    mainActivity;
 	private ArrayList<Role> mRoles;
 	private RoleListAdapter mRoleListAdapter;
 	private int mTotalConsume = 0;
@@ -30,9 +30,9 @@ public class FillRoleInfoFragment extends Fragment{
 	private ListView mRoleListView;
 	private Spinner mSpinnerConsume;
 	private EditText mEditTextName;
-	private Button mBtnAddRole;
+	private Button mBtnAddRole;*/
 
-	private class RoleListAdapter extends ArrayAdapter<Role> {
+	/*private class RoleListAdapter extends ArrayAdapter<Role> {
 		private ArrayList<Role> items;
 
 		public RoleListAdapter(Context context, int resource, ArrayList<Role> objects) {
@@ -56,7 +56,7 @@ public class FillRoleInfoFragment extends Fragment{
 			}
 			return v;
 		}
-	}
+	}*/
 
 	public static FillRoleInfoFragment newInstance() {
 		FillRoleInfoFragment fragment = new FillRoleInfoFragment();
@@ -67,16 +67,16 @@ public class FillRoleInfoFragment extends Fragment{
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		mainActivity = (MainActivity)getActivity();
+	/*	mainActivity = (MainActivity)getActivity();
 		mRoles = mainActivity.getmRoles();
-		mRoleListAdapter = new RoleListAdapter(getActivity(), android.R.layout.simple_list_item_1, mRoles);
+		mRoleListAdapter = new RoleListAdapter(getActivity(), android.R.layout.simple_list_item_1, mRoles);*/
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_fillroleinfo, container, false);
 
-		mRoleListView = (ListView)rootView.findViewById(R.id.listview_roles);
+		/*mRoleListView = (ListView)rootView.findViewById(R.id.listview_roles);
 		mRoleListView.setAdapter(mRoleListAdapter);
 
 		mSpinnerConsume = (Spinner)rootView.findViewById(R.id.spinner_roleconsume);
@@ -133,12 +133,12 @@ public class FillRoleInfoFragment extends Fragment{
 		mRoleListView.setOnTouchListener(touchListener);
 		// Setting this scroll listener is required to ensure that during ListView scrolling,
 		// we don't look for swipes.
-		mRoleListView.setOnScrollListener(touchListener.makeScrollListener());
+		mRoleListView.setOnScrollListener(touchListener.makeScrollListener());*/
 
 		return rootView;
 	}
 
-	private void addRole() {
+	/*private void addRole() {
 		String curRoleName = mEditTextName.getText().toString();
 		int curConsume = Integer.valueOf(mSpinnerConsume.getSelectedItem().toString());
 
@@ -164,5 +164,5 @@ public class FillRoleInfoFragment extends Fragment{
 	private void setTotalText() {
 		mTotalTextView.setText("총원 XX명, 역할인원 " +
 				mainActivity.getNum_roleConsume() + "명");
-	}
+	}*/
 }

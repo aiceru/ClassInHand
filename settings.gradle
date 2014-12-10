@@ -1,2 +1,2 @@
-include ':app', ':showcase'
+include ':app', ':showcase', ':myapplication'
 project(':showcase').projectDir = new File('libraries/showcase')

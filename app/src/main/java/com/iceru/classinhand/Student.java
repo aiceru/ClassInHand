@@ -4,40 +4,38 @@ package com.iceru.classinhand;
  * Created by iceru on 14. 8. 13.
  */
 public class Student implements Cloneable {
+
     private int     id;
 	private int		attendNum;
 	private String	name;
-	private boolean boy;		// true -> boy, false -> girl... T/F has no meaning. :)
+	private boolean isBoy;		// true -> boy, false -> girl... T/F has no meaning. :)
 	private Seat    itsCurrentSeat;
 
     private double     seatPoint = 0;  // 자리 배치할 때 사용
     private double     pairPoint = 0;  // 짝 배치할 때 사용
 
-	public Student(int id, int attendNum, String name, boolean boy) {
+	public Student(int id, int attendNum, String name, boolean isBoy) {
         this.id = id;
 		this.attendNum = attendNum;
 		this.name = name;
-		this.boy = boy;
+		this.isBoy = isBoy;
 		this.itsCurrentSeat = null;
 	}
 
-	/**
-	 * @return the num
-	 */
 	public int getAttendNum() {
 		return attendNum;
 	}
-	/**
-	 * @return the name
-	 */
+
 	public String getName() {
 		return name;
 	}
-	/**
-	 * @return the gender
-	 */
+
+    public int getId() {
+        return id;
+    }
+
 	public boolean isBoy() {
-		return boy;
+		return isBoy;
 	}
 
 	public Seat getItsCurrentSeat() {

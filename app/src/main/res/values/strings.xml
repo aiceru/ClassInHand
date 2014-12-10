@@ -29,7 +29,7 @@
     <string name="done">done</string>
     <string name="cancel">취소</string>
     <string name="deleteAll">deleteAll</string>
-    <string name="hint_edittext_name">이름</string>
+
     <string name="hint_edittext_role">역할</string>
     <string name="warning_edittext_name_is_null">이름을 입력하세요</string>
     <string name="warning_edittext_num_is_null">번호를 입력하세요</string>
@@ -73,5 +73,13 @@
 
 
     <string name="title_activity_add_person">학생 정보 등록</string>
+
+    <string-array name="gender_array">
+        <item>남자</item>
+        <item>여자</item>
+    </string-array>
+
+    <string name="hint_edittext_name">이름</string>
+    <string name="hint_edittext_attendnum">번호</string>
 
 </resources>

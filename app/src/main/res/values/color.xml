@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary">#FF5722</color>       // Deep Orange 500
-    <color name="primary_dark">#E64A19</color>  // Deep Orange 700
-    <color name="accent">#03A9F4</color>        // Light Blue 500
-    <color name="text_primary">#FFFFFF</color>
-    <color name="text_secondary">#333333</color>
-    <color name="fab_color">#FF5722</color>
+    <color name="primary">@color/indigo_500</color>
+    <color name="primary_dark">@color/indigo_700</color>
+    <color name="accent">@color/pink_a200</color>
+    <color name="text_primary">@color/white</color>
+    <color name="text_secondary">@color/grey_900</color>
+    <color name="fab_color">@color/primary</color>
 
     <!-- RED -->
     <color name="red_50">#fde0dc</color>
@@ -276,7 +276,6 @@
     <color name="brown_900">#3e2723</color>
 
     <!-- GREY -->
-    <color name="grey_0">#ffffff</color> <!-- Grey 1000 (White) -->
     <color name="grey_50">#fafafa</color>
     <color name="grey_100">#f5f5f5</color>
     <color name="grey_200">#eeeeee</color>
@@ -287,7 +286,6 @@
     <color name="grey_700">#616161</color>
     <color name="grey_800">#424242</color>
     <color name="grey_900">#212121</color>
-    <color name="grey_1000">#ffffff</color> <!-- Grey 1000 (Black) -->
 
     <!-- BLUE GREY -->
     <color name="bluegrey_50">#eceff1</color>
@@ -300,6 +298,9 @@
     <color name="bluegrey_700">#455a64</color>
     <color name="bluegrey_800">#37474f</color>
     <color name="bluegrey_900">#263238</color>
+
+    <color name="black">#000000</color>
+    <color name="white">#ffffff</color>
 
 
     <array name="girls_ic_colors">

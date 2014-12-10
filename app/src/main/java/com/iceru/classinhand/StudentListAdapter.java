@@ -21,6 +21,7 @@ import java.util.TreeMap;
 public class StudentListAdapter extends RecyclerView.Adapter<StudentListAdapter.ViewHolder> {
 
     private TreeMap<Integer, Student>       mDataset;
+    private Collection<Student>             mDataCollection;
     private TypedArray                      mGirlsColorArray;
     private TypedArray                      mBoysColorArray;
 
@@ -39,6 +40,7 @@ public class StudentListAdapter extends RecyclerView.Adapter<StudentListAdapter.
 
     public StudentListAdapter(TreeMap<Integer, Student> dataset, Context context) {
         mDataset = dataset;
+        mDataCollection = mDataset.values();
         mGirlsColorArray = context.getResources().obtainTypedArray(R.array.girls_ic_colors);
         mBoysColorArray = context.getResources().obtainTypedArray(R.array.boys_ic_colors);
     }
@@ -53,6 +55,7 @@ public class StudentListAdapter extends RecyclerView.Adapter<StudentListAdapter.
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
         Student s = (Student)this.getItem(i);
         int colorArrayIndex = (int)(Math.random() * mGirlsColorArray.length());
+
         //viewHolder.tv_attend_num.setText(String.valueOf(s.getAttendNum()));
         viewHolder.tv_name.setText(String.valueOf((s.getAttendNum())) + ". " + s.getName());
         viewHolder.iv_gender.setBackgroundColor(
@@ -67,6 +70,6 @@ public class StudentListAdapter extends RecyclerView.Adapter<StudentListAdapter.
     }
 
     public Object getItem(int position) {
-        return mDataset.get(position);
+        return mDataCollection.toArray()[position];
     }
 }

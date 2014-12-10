@@ -19,24 +19,24 @@ public class FillInfoPagerAdapter extends FragmentPagerAdapter{
 		super(fm);
 		mContext = context;
 		//mFillStudentInfoFragment = FillStudentInfoFragment.newInstance();
-		//mFillRoleInfoFragment = FillRoleInfoFragment.newInstance();
         mStudentListFragment = StudentListFragment.newInstance();
-	}
+        mFillRoleInfoFragment = FillRoleInfoFragment.newInstance();
+    }
 
 	@Override
 	public Fragment getItem(int i) {
 		switch(i) {
 			case 0:
 				return mStudentListFragment;
-			//case 1:
-			//	return mFillRoleInfoFragment;
+			case 1:
+				return mFillRoleInfoFragment;
 		}
 		return null;
 	}
 
 	@Override
 	public int getCount() {
-		return 1;
+		return 2;
 	}
 
 	@Override
@@ -44,8 +44,8 @@ public class FillInfoPagerAdapter extends FragmentPagerAdapter{
 		switch(position) {
 			case 0:
 				return mContext.getString(R.string.tabtitle_studentinfo);
-			//case 1:
-			//	return mContext.getString(R.string.tabtitle_roleinfo);
+			case 1:
+				return mContext.getString(R.string.tabtitle_roleinfo);
 		}
 		return null;
 	}
