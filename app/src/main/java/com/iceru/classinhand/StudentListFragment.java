@@ -7,7 +7,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import java.util.Collection;
 import java.util.TreeMap;
 
 /**
@@ -19,14 +21,8 @@ public class StudentListFragment extends Fragment {
     private TreeMap<Integer, Student>       mStudents;
 
     private RecyclerView                    mStudentListRecyclerView;
-    private RecyclerView.Adapter            mStudentListAdapter;
+    private StudentListAdapter              mStudentListAdapter;
     private RecyclerView.LayoutManager      mStudentListLayoutManager;
-    /*private RecyclerView                    mBoysListRecyclerView;
-    private RecyclerView                    mGirlsListRecyclerView;
-    private RecyclerView.Adapter            mBoysListAdapter;
-    private RecyclerView.Adapter            mGirlsListAdapter;
-    private RecyclerView.LayoutManager      mBoysListLayoutManager;
-    private RecyclerView.LayoutManager      mGirlsListLayoutManager;*/
 
     public static StudentListFragment newInstance() {
         StudentListFragment fragment = new StudentListFragment();
@@ -47,39 +43,41 @@ public class StudentListFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_studentlist, container, false);
 
         mStudentListRecyclerView = (RecyclerView)rootView.findViewById(R.id.recyclerview_studentlist);
-        mStudentListRecyclerView.setHasFixedSize(true);
+        mStudentListRecyclerView.setHasFixedSize(false);
         mStudentListLayoutManager = new LinearLayoutManager(mainActivity);
         mStudentListRecyclerView.setLayoutManager(mStudentListLayoutManager);
         mStudentListAdapter = new StudentListAdapter(mStudents, mainActivity);
         mStudentListRecyclerView.setAdapter(mStudentListAdapter);
-        /*mBoysListRecyclerView = (RecyclerView)rootView.findViewById(R.id.recyclerview_boyslist);
-        mGirlsListRecyclerView = (RecyclerView)rootView.findViewById(R.id.recyclerview_girlslist);
+        mStudentListRecyclerView.addOnItemTouchListener(
+                new RecyclerItemClickListener(mainActivity, new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        // TODO : 학생 세부정보 보여주기 구현!
+                        // mStudentListAdapter.removeAt(position);
+                    }
+                }));
 
-        mBoysListRecyclerView.setHasFixedSize(true);
-        mGirlsListRecyclerView.setHasFixedSize(true);
+        SwipeDismissRecyclerViewTouchListener touchListener =
+                new SwipeDismissRecyclerViewTouchListener(
+                        mStudentListRecyclerView,
+                        new SwipeDismissRecyclerViewTouchListener.DismissCallbacks() {
+                            @Override
+                            public boolean canDismiss(int position) {
+                                return true;
+                            }
 
-        mBoysListLayoutManager = new LinearLayoutManager(mainActivity);
-        mBoysListRecyclerView.setLayoutManager(mBoysListLayoutManager);
-        mGirlsListLayoutManager = new LinearLayoutManager(mainActivity);
-        mGirlsListRecyclerView.setLayoutManager(mGirlsListLayoutManager);*/
+                            @Override
+                            public void onDismiss(RecyclerView recyclerView, int[] reverseSortedPositions) {
+                                for(int position : reverseSortedPositions) {
+                                    application.removeStudent((Student)mStudentListAdapter.getItem(position));
+                                }
+                                mStudentListAdapter.notifyDataSetChanged();
+                            }
+                        }
+                );
 
-        /*Collection<Student> boysList = Collections2.filter(mStudents.values(), new Predicate<Student>() {
-            @Override
-            public boolean apply(@Nullable Student input) {
-                return input.isBoy();
-            }
-        });
-        Collection<Student> girlsList = Collections2.filter(mStudents.values(), new Predicate<Student>() {
-            @Override
-            public boolean apply(@Nullable Student input) {
-                return !input.isBoy();
-            }
-        });
-
-        mBoysListAdapter = new StudentListAdapter(boysList);
-        mBoysListRecyclerView.setAdapter(mBoysListAdapter);
-        mGirlsListAdapter = new StudentListAdapter(girlsList);
-        mGirlsListRecyclerView.setAdapter(mGirlsListAdapter);*/
+        mStudentListRecyclerView.setOnTouchListener(touchListener);
+        mStudentListRecyclerView.setOnScrollListener(touchListener.makeScrollListener());
 
         return rootView;
     }

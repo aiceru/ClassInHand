@@ -1,11 +1,15 @@
 package com.iceru.classinhand;
 
 import android.app.Application;
+import android.database.Cursor;
 
 import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
 import org.acra.sender.HttpSender;
 
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.TreeMap;
 
 /**
@@ -33,29 +37,41 @@ public class ClassInHandApplication extends Application {
     public static int       NEXT_ID;
 
     private static ClassInHandApplication appInstance;
-    private TreeMap <Integer, Student> mStudents;       // "Current" students, KEY : ID (NOT attend num)
-    private TreeMap <Integer, Student> mPastStudents;   // "Past" students
+
+    private TreeMap <Integer, Integer> mIdMap;          // ID-AttendNum pairs of "Current" students
+    private TreeMap <Integer, Student> mStudents;       // "Current" students, KEY : Attend Num
+    private TreeMap <Integer, Student> mPastStudents;   // "Past" students, KEY : ID
+
+    private ClassDBHelper   dbHelper;
 
     @Override
     public final void onCreate() {
         super.onCreate();
-        appInstance = this;
         //ACRA.init(this);
 
+        appInstance = this;
+        dbHelper = new ClassDBHelper(this);
+
+        mIdMap = new TreeMap<Integer, Integer>();
         mStudents = new TreeMap<Integer, Student>();
 
-        Student s;
-        int i;
-        for(i = 0; i < 10; i++) {
-            s = new Student(i, i+1, "남자 " + String.valueOf(i+1), true);
-            mStudents.put(i, s);
-        }
-        for(; i < 20; i++) {
-            s = new Student(i, i+1, "여자 " + String.valueOf(i-9), false);
-            mStudents.put(i, s);
-        }
+        Cursor c = dbHelper.getStudentsList();
+        while(c.moveToNext()) {
+            int id = c.getInt(c.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_ID));
+            int attendNum = c.getInt(c.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_ATTEND_NUM));
+            String name = c.getString(c.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_NAME));
+            boolean isBoy = (c.getInt(c.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_GENDER)) == 1);
+            long inDate = c.getInt(c.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_IN_DATE));
+            long outDate = c.getInt(c.getColumnIndexOrThrow(ClassDBContract.StudentInfo.ColUMN_NAME_OUT_DATE));
 
-        NEXT_ID = i;
+            Student s = new Student(id, attendNum, name, isBoy, inDate, outDate);
+
+            mIdMap.put(id, attendNum);
+            mStudents.put(attendNum, s);
+
+            NEXT_ID = s.getId()+1;
+        }
+        c.close();;
     }
 
     public static ClassInHandApplication getInstance() {
@@ -66,18 +82,19 @@ public class ClassInHandApplication extends Application {
         return mStudents;
     }
 
-
-    public void setmStudents(TreeMap<Integer, Student> newStudents) {
-        this.mStudents = newStudents;
+    public void addStudentAll(TreeMap<Integer, Student> addingStudents) {
+        for(Map.Entry<Integer, Student> entry : addingStudents.entrySet()) {
+            Student student = entry.getValue();
+            addStudent(student);
+        }
     }
 
     public boolean addStudent(Student student) {
         boolean exist = null != mStudents.get(student.getAttendNum());
         if(!exist) {
+            mIdMap.put(student.getId(), student.getAttendNum());
             mStudents.put(student.getAttendNum(), student);
-            /*if(student.isBoy()) num_boys++;
-            else num_girls++;*/
-            //dbHelper.insert(student);
+            dbHelper.insert(student);
         }
         return !exist;
     }
@@ -85,17 +102,15 @@ public class ClassInHandApplication extends Application {
     public boolean removeStudent(Student student) {
         boolean success = null != mStudents.remove(student.getAttendNum());
         if(success) {
-            /*if(student.isBoy()) num_boys--;
-            else num_girls--;*/
-            //dbHelper.delete(student);
+            mIdMap.remove(student.getId());
+            dbHelper.delete(student);
         }
         return success;
     }
 
     public void removeAllStudents() {
+        mIdMap.clear();
         mStudents.clear();
-        /*num_boys = 0;
-        num_girls = 0;*/
-        //dbHelper.deleteAllStudents();
+        dbHelper.deleteAllStudents();
     }
 }

@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import java.util.Comparator;
 import java.util.TreeMap;
 
 
@@ -45,11 +46,11 @@ public class AddPersonActivity extends ActionBarActivity {
         application = ClassInHandApplication.getInstance();
         mStudents = application.getmStudents();
 
-        mAddingStudents = new TreeMap<Integer, Student>();
+        mAddingStudents = new TreeMap<>();
 
         mAttendNumArray = new boolean[ClassInHandApplication.MAX_STUDENTS]; // initialized to false
         for(TreeMap.Entry<Integer, Student> entry : mStudents.entrySet()) {
-            mAttendNumArray[entry.getValue().getAttendNum()] = true;
+            mAttendNumArray[entry.getKey()] = true;
         }
 
         /*Student s;
@@ -131,10 +132,10 @@ public class AddPersonActivity extends ActionBarActivity {
             return;
         }
 
-        student = new Student(ClassInHandApplication.NEXT_ID, attendNum, name, isboy);
+        student = new Student(ClassInHandApplication.NEXT_ID, attendNum, name, isboy, 0, 0);
         ClassInHandApplication.NEXT_ID++;
 
-        mAddingStudents.put(student.getId(), student);
+        mAddingStudents.put(student.getAttendNum(), student);
         mAttendNumArray[attendNum] = true;
 
         mAddingListAdapter.notifyDataSetChanged();
@@ -158,7 +159,7 @@ public class AddPersonActivity extends ActionBarActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_done) {
-            mStudents.putAll(mAddingStudents);
+            application.addStudentAll(mAddingStudents);
             //TODO : Save mAddingStudents to database
             finish();
         }

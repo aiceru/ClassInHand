@@ -21,6 +21,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.graphics.Rect;
 import android.os.SystemClock;
+import android.support.v7.widget.RecyclerView;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -35,25 +36,25 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * A {@link View.OnTouchListener} that makes the list items in a {@link ListView}
- * dismissable. {@link ListView} is given special treatment because by default it handles touches
+ * A {@link android.view.View.OnTouchListener} that makes the list items in a {@link android.widget.ListView}
+ * dismissable. {@link android.widget.ListView} is given special treatment because by default it handles touches
  * for its list items... i.e. it's in charge of drawing the pressed state (the list selector),
  * handling list item clicks, etc.
  *
  * <p>After creating the listener, the caller should also call
- * {@link ListView#setOnScrollListener(AbsListView.OnScrollListener)}, passing
+ * {@link android.widget.ListView#setOnScrollListener(android.widget.AbsListView.OnScrollListener)}, passing
  * in the scroll listener returned by {@link #makeScrollListener()}. If a scroll listener is
  * already assigned, the caller should still pass scroll changes through to this listener. This will
- * ensure that this {@link SwipeDismissListViewTouchListener} is paused during list view
+ * ensure that this {@link com.iceru.classinhand.SwipeDismissRecyclerViewTouchListener} is paused during list view
  * scrolling.</p>
  *
  * <p>Example usage:</p>
  *
  * <pre>
- * SwipeDismissListViewTouchListener touchListener =
- *         new SwipeDismissListViewTouchListener(
+ * SwipeDismissRecyclerViewTouchListener touchListener =
+ *         new SwipeDismissRecyclerViewTouchListener(
  *                 listView,
- *                 new SwipeDismissListViewTouchListener.OnDismissCallback() {
+ *                 new SwipeDismissRecyclerViewTouchListener.OnDismissCallback() {
  *                     public void onDismiss(ListView listView, int[] reverseSortedPositions) {
  *                         for (int position : reverseSortedPositions) {
  *                             adapter.remove(adapter.getItem(position));
@@ -66,14 +67,14 @@ import java.util.List;
  * </pre>
  *
  * <p>This class Requires API level 12 or later due to use of {@link
- * ViewPropertyAnimator}.</p>
+ * android.view.ViewPropertyAnimator}.</p>
  *
- * <p>For a generalized {@link View.OnTouchListener} that makes any view dismissable,
+ * <p>For a generalized {@link android.view.View.OnTouchListener} that makes any view dismissable,
  * see {@link SwipeDismissTouchListener}.</p>
  *
  * @see SwipeDismissTouchListener
  */
-public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
+public class SwipeDismissRecyclerViewTouchListener implements View.OnTouchListener {
     // Cached ViewConfiguration and system-wide constant values
     private int mSlop;
     private int mMinFlingVelocity;
@@ -81,7 +82,7 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
     private long mAnimationTime;
 
     // Fixed properties
-    private ListView mListView;
+    private RecyclerView mRecyclerView;
     private DismissCallbacks mCallbacks;
     private int mViewWidth = 1; // 1 and not 0 to prevent dividing by zero
 
@@ -98,7 +99,7 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
     private boolean mPaused;
 
     /**
-     * The callback interface used by {@link SwipeDismissListViewTouchListener} to inform its client
+     * The callback interface used by {@link com.iceru.classinhand.SwipeDismissRecyclerViewTouchListener} to inform its client
      * about a successful dismissal of one or more list item positions.
      */
     public interface DismissCallbacks {
@@ -111,28 +112,28 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
          * Called when the user has indicated they she would like to dismiss one or more list item
          * positions.
          *
-         * @param listView               The originating {@link ListView}.
+         * @param recyclerView               The originating {@link android.widget.ListView}.
          * @param reverseSortedPositions An array of positions to dismiss, sorted in descending
          *                               order for convenience.
          */
-        void onDismiss(ListView listView, int[] reverseSortedPositions);
+        void onDismiss(RecyclerView recyclerView, int[] reverseSortedPositions);
     }
 
     /**
      * Constructs a new swipe-to-dismiss touch listener for the given list view.
      *
-     * @param listView  The list view whose items should be dismissable.
+     * @param recyclerView  The list view whose items should be dismissable.
      * @param callbacks The callback to trigger when the user has indicated that she would like to
      *                  dismiss one or more list items.
      */
-    public SwipeDismissListViewTouchListener(ListView listView, DismissCallbacks callbacks) {
-        ViewConfiguration vc = ViewConfiguration.get(listView.getContext());
+    public SwipeDismissRecyclerViewTouchListener(RecyclerView recyclerView, DismissCallbacks callbacks) {
+        ViewConfiguration vc = ViewConfiguration.get(recyclerView.getContext());
         mSlop = vc.getScaledTouchSlop();
         mMinFlingVelocity = vc.getScaledMinimumFlingVelocity() * 16;
         mMaxFlingVelocity = vc.getScaledMaximumFlingVelocity();
-        mAnimationTime = listView.getContext().getResources().getInteger(
+        mAnimationTime = recyclerView.getContext().getResources().getInteger(
                 android.R.integer.config_shortAnimTime);
-        mListView = listView;
+        mRecyclerView = recyclerView;
         mCallbacks = callbacks;
     }
 
@@ -146,23 +147,23 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
     }
 
     /**
-     * Returns an {@link AbsListView.OnScrollListener} to be added to the {@link
-     * ListView} using {@link ListView#setOnScrollListener(AbsListView.OnScrollListener)}.
+     * Returns an {@link android.widget.AbsListView.OnScrollListener} to be added to the {@link
+     * android.widget.ListView} using {@link android.widget.ListView#setOnScrollListener(android.widget.AbsListView.OnScrollListener)}.
      * If a scroll listener is already assigned, the caller should still pass scroll changes through
-     * to this listener. This will ensure that this {@link SwipeDismissListViewTouchListener} is
+     * to this listener. This will ensure that this {@link com.iceru.classinhand.SwipeDismissRecyclerViewTouchListener} is
      * paused during list view scrolling.</p>
      *
-     * @see SwipeDismissListViewTouchListener
+     * @see com.iceru.classinhand.SwipeDismissRecyclerViewTouchListener
      */
-    public AbsListView.OnScrollListener makeScrollListener() {
-        return new AbsListView.OnScrollListener() {
+    public RecyclerView.OnScrollListener makeScrollListener() {
+        return new RecyclerView.OnScrollListener() {
             @Override
-            public void onScrollStateChanged(AbsListView absListView, int scrollState) {
-                setEnabled(scrollState != AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL);
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                setEnabled(newState != AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL);
             }
 
             @Override
-            public void onScroll(AbsListView absListView, int i, int i1, int i2) {
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             }
         };
     }
@@ -170,7 +171,7 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
         if (mViewWidth < 2) {
-            mViewWidth = mListView.getWidth();
+            mViewWidth = mRecyclerView.getWidth();
         }
 
         switch (motionEvent.getActionMasked()) {
@@ -183,14 +184,14 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
 
                 // Find the child view that was touched (perform a hit test)
                 Rect rect = new Rect();
-                int childCount = mListView.getChildCount();
+                int childCount = mRecyclerView.getChildCount();
                 int[] listViewCoords = new int[2];
-                mListView.getLocationOnScreen(listViewCoords);
+                mRecyclerView.getLocationOnScreen(listViewCoords);
                 int x = (int) motionEvent.getRawX() - listViewCoords[0];
                 int y = (int) motionEvent.getRawY() - listViewCoords[1];
                 View child;
                 for (int i = 0; i < childCount; i++) {
-                    child = mListView.getChildAt(i);
+                    child = mRecyclerView.getChildAt(i);
                     child.getHitRect(rect);
                     if (rect.contains(x, y)) {
                         mDownView = child;
@@ -201,7 +202,7 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
                 if (mDownView != null) {
                     mDownX = motionEvent.getRawX();
                     mDownY = motionEvent.getRawY();
-                    mDownPosition = mListView.getPositionForView(mDownView);
+                    mDownPosition = mRecyclerView.getChildPosition(mDownView);
                     if (mCallbacks.canDismiss(mDownPosition)) {
                         mVelocityTracker = VelocityTracker.obtain();
                         mVelocityTracker.addMovement(motionEvent);
@@ -301,14 +302,14 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
                 if (Math.abs(deltaX) > mSlop && Math.abs(deltaY) < Math.abs(deltaX) / 2) {
                     mSwiping = true;
                     mSwipingSlop = (deltaX > 0 ? mSlop : -mSlop);
-                    mListView.requestDisallowInterceptTouchEvent(true);
+                    mRecyclerView.requestDisallowInterceptTouchEvent(true);
 
                     // Cancel ListView's touch (un-highlighting the item)
                     MotionEvent cancelEvent = MotionEvent.obtain(motionEvent);
                     cancelEvent.setAction(MotionEvent.ACTION_CANCEL |
                             (motionEvent.getActionIndex()
                                     << MotionEvent.ACTION_POINTER_INDEX_SHIFT));
-                    mListView.onTouchEvent(cancelEvent);
+                    mRecyclerView.onTouchEvent(cancelEvent);
                     cancelEvent.recycle();
                 }
 
@@ -363,7 +364,7 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
                     for (int i = mPendingDismisses.size() - 1; i >= 0; i--) {
                         dismissPositions[i] = mPendingDismisses.get(i).position;
                     }
-                    mCallbacks.onDismiss(mListView, dismissPositions);
+                    mCallbacks.onDismiss(mRecyclerView, dismissPositions);
                     
                     // Reset mDownPosition to avoid MotionEvent.ACTION_UP trying to start a dismiss 
                     // animation with a stale position
@@ -383,7 +384,7 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
                     long time = SystemClock.uptimeMillis();
                     MotionEvent cancelEvent = MotionEvent.obtain(time, time,
                             MotionEvent.ACTION_CANCEL, 0, 0, 0);
-                    mListView.dispatchTouchEvent(cancelEvent);
+                    mRecyclerView.dispatchTouchEvent(cancelEvent);
 
                     mPendingDismisses.clear();
                 }

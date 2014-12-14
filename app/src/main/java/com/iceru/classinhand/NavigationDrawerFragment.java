@@ -118,6 +118,7 @@ public class NavigationDrawerFragment extends Fragment {
         drawerContentList.add(DrawerSection.create(200, "Settings"));
         drawerContentList.add(DrawerSubItem.create(201, getString(R.string.title_fillinfo), "ic_action_edit", true, this.getActivity()));
         //drawerContentList.add(DrawerSubItem.create(202, getString(R.string.title_setting), "ic_action_settings", true, this.getActivity()));
+
         mDrawerListView.setAdapter(new DrawerContentAdapter(getActionBar().getThemedContext(), R.layout.drawer_item, drawerContentList));
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, false);
 

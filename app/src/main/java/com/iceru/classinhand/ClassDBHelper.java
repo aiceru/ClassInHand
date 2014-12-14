@@ -1,6 +1,8 @@
 package com.iceru.classinhand;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -30,16 +32,19 @@ public class ClassDBHelper extends SQLiteOpenHelper {
 
 	}
 
-	/*public long insert(Student student) {
+	public long insert(Student student) {
 		ContentValues values = new ContentValues();
-		values.put(ClassDBContract.StudentInfo.COLUMN_NAME_STUDENT_ID, student.getNum());
-		values.put(ClassDBContract.StudentInfo.COLUMN_NAME_STUDENT_NAME, student.getName());
-		values.put(ClassDBContract.StudentInfo.COLUMN_NAME_STUDENT_GENDER, student.isBoy()? 1 : 2);
+		values.put(ClassDBContract.StudentInfo.COLUMN_NAME_ID, student.getId());
+        values.put(ClassDBContract.StudentInfo.COLUMN_NAME_ATTEND_NUM, student.getAttendNum());
+        values.put(ClassDBContract.StudentInfo.COLUMN_NAME_NAME, student.getName());
+        values.put(ClassDBContract.StudentInfo.COLUMN_NAME_GENDER, student.isBoy()? 1:2);
+        values.put(ClassDBContract.StudentInfo.COLUMN_NAME_IN_DATE, student.getInDate());
+        values.put(ClassDBContract.StudentInfo.ColUMN_NAME_OUT_DATE, student.getOutDate());
 
 		return wDB.insert(ClassDBContract.StudentInfo.TABLE_NAME, null, values);
 	}
 
-	public long insert(Seat seat, int pairedStudentId, long date) {
+	/*public long insert(Seat seat, int pairedStudentId, long date) {
 		ContentValues values = new ContentValues();
 		values.put(ClassDBContract.SeatHistory.COLUMN_NAME_SEAT_ID, seat.getId());
         values.put(ClassDBContract.SeatHistory.COLUMN_NAME_DATE, date);
@@ -83,23 +88,19 @@ public class ClassDBHelper extends SQLiteOpenHelper {
                 whereArgs
         );
     }
+    */
 
 	public Cursor getStudentsList() {
-		String[] projection = {
-				ClassDBContract.StudentInfo.COLUMN_NAME_STUDENT_ID,
-				ClassDBContract.StudentInfo.COLUMN_NAME_STUDENT_NAME,
-				ClassDBContract.StudentInfo.COLUMN_NAME_STUDENT_GENDER
-		};
 		String sortOrder =
-				ClassDBContract.StudentInfo.COLUMN_NAME_STUDENT_ID + " ASC";
+				ClassDBContract.StudentInfo.COLUMN_NAME_ID + " ASC";
 
 		return rDB.query(
 				ClassDBContract.StudentInfo.TABLE_NAME,
-				projection,
-				null, null, null, null,
+				null, null, null, null, null,
 				sortOrder
 		);
 	}
+    /*
 
     public Cursor getStudent(int id) {
         String[] projection = {
@@ -197,11 +198,12 @@ public class ClassDBHelper extends SQLiteOpenHelper {
         *//* ORDER BY     *//*  null
         );
     }
+    */
 
 	public int delete(Student student) {
-		String selection = ClassDBContract.StudentInfo.COLUMN_NAME_STUDENT_ID + " LIKE ?";
+		String selection = ClassDBContract.StudentInfo.COLUMN_NAME_ID + " LIKE ?";
 		String[] selectionArgs = {
-				String.valueOf(student.getNum())
+				String.valueOf(student.getId())
 		};
 
 		return wDB.delete(
@@ -211,6 +213,7 @@ public class ClassDBHelper extends SQLiteOpenHelper {
 		);
 	}
 
+    /*
 	public int delete(Seat seat) {
 		String selection = ClassDBContract.SeatHistory.COLUMN_NAME_SEAT_ID + " LIKE ?";
 		String[] selectionArgs = {
@@ -235,6 +238,7 @@ public class ClassDBHelper extends SQLiteOpenHelper {
                 selectionArgs
         );
     }
+    */
 
 	public int deleteAllStudents() {
 		return wDB.delete(
@@ -244,6 +248,7 @@ public class ClassDBHelper extends SQLiteOpenHelper {
 		);
 	}
 
+    /*
 	public int deleteAllSeats() {
 		return wDB.delete(
 				ClassDBContract.SeatHistory.TABLE_NAME,

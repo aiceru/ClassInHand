@@ -167,7 +167,7 @@ public class SeatFragment extends Fragment {
         mUserLearnedNewPlan = sp.getBoolean(PREF_USER_LEARNED_NEW_PLAN, false);
         mUserLearnedSeeHistory = sp.getBoolean(PREF_USER_LEARNED_SEE_HISTORY, false);*/
 
-        ClassDBHelper dbHelper = mainActivity.getDbHelper();
+//        ClassDBHelper dbHelper = mainActivity.getDbHelper();
 
         /* Loading Saved Date List from DB... */
         /*Cursor dateListCursor = dbHelper.getSavedDateList();
@@ -419,7 +419,7 @@ public class SeatFragment extends Fragment {
         final LinearLayout layout_onseatclick_right =
                 (LinearLayout)layout_onseatclick_inflated.findViewById(R.id.linearlayout_onseatclick_right);
 
-        ClassDBHelper dbHelper = mainActivity.getDbHelper();
+        //ClassDBHelper dbHelper = mainActivity.getDbHelper();
 
         int where, pair;
         long when;
@@ -439,7 +439,7 @@ public class SeatFragment extends Fragment {
                 mLeftSelectedSeat.getItsStudent().setItsCurrentSeat(mLeftSelectedSeat);
                 mRightSelectedSeat.getItsStudent().setItsCurrentSeat(mRightSelectedSeat);
 
-                ClassDBHelper dbHelper = mainActivity.getDbHelper();
+                //ClassDBHelper dbHelper = mainActivity.getDbHelper();
                 Seat pairSeat = getSeatByAbsolutePosition(mLeftSelectedSeat.getPairSeatId());
                 /*dbHelper.update(mLeftSelectedSeat,
                         pairSeat == null? -1 : pairSeat.getItsStudent().getNum(),
@@ -655,14 +655,14 @@ public class SeatFragment extends Fragment {
         mNewSegment3 = new ArrayList<Seat>();
 
         Student st = null;
-        for(TreeMap.Entry<Integer, Student> entry : mStudents.entrySet()) {
+        /*for(TreeMap.Entry<Integer, Student> entry : mStudents.entrySet()) {
             try {
-                st = entry.getValue().clone();
+                st = entry.getValue();
                 mNewStudents.put(st.getAttendNum(), st);
             } catch (CloneNotSupportedException e) {
                 e.printStackTrace();
             }
-        }
+        }*/
         for(Seat seat : mSegment1) {
             try {
                 Seat newSeat = seat.clone();
@@ -964,7 +964,7 @@ public class SeatFragment extends Fragment {
             return true;
         }
 		else if(id == R.id.seatplan_delete_all) {
-			ClassDBHelper dbHelper = mainActivity.getDbHelper();
+			//ClassDBHelper dbHelper = mainActivity.getDbHelper();
 			//dbHelper.deleteAllSeats();
 
             removeAssignments(mSegment1);

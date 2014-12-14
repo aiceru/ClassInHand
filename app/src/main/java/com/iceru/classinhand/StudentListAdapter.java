@@ -20,21 +20,21 @@ import java.util.TreeMap;
  */
 public class StudentListAdapter extends RecyclerView.Adapter<StudentListAdapter.ViewHolder> {
 
-    private TreeMap<Integer, Student>       mDataset;
-    private Collection<Student>             mDataCollection;
-    private TypedArray                      mGirlsColorArray;
-    private TypedArray                      mBoysColorArray;
+    private TreeMap<Integer, Student> mDataset;
+    private Collection<Student> mDataCollection;
+    private TypedArray mGirlsColorArray;
+    private TypedArray mBoysColorArray;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         //public TextView     tv_attend_num;
-        public TextView     tv_name;
-        public ImageView    iv_gender;
+        public TextView tv_name;
+        public ImageView iv_gender;
 
         public ViewHolder(View v) {
             super(v);
             //tv_attend_num = (TextView)v.findViewById(R.id.textview_attend_num);
-            tv_name = (TextView)v.findViewById(R.id.textview_name);
-            iv_gender = (ImageView)v.findViewById(R.id.imageview_gender);
+            tv_name = (TextView) v.findViewById(R.id.textview_name);
+            iv_gender = (ImageView) v.findViewById(R.id.imageview_gender);
         }
     }
 
@@ -53,15 +53,15 @@ public class StudentListAdapter extends RecyclerView.Adapter<StudentListAdapter.
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
-        Student s = (Student)this.getItem(i);
-        int colorArrayIndex = (int)(Math.random() * mGirlsColorArray.length());
+        Student s = (Student) this.getItem(i);
+        int colorArrayIndex = (int) (Math.random() * mGirlsColorArray.length());
 
         //viewHolder.tv_attend_num.setText(String.valueOf(s.getAttendNum()));
         viewHolder.tv_name.setText(String.valueOf((s.getAttendNum())) + ". " + s.getName());
         viewHolder.iv_gender.setBackgroundColor(
                 s.isBoy() ?
-                mBoysColorArray.getColor(colorArrayIndex, 0) :
-                mGirlsColorArray.getColor(colorArrayIndex, 0));
+                        mBoysColorArray.getColor(colorArrayIndex, 0) :
+                        mGirlsColorArray.getColor(colorArrayIndex, 0));
     }
 
     @Override
@@ -72,4 +72,10 @@ public class StudentListAdapter extends RecyclerView.Adapter<StudentListAdapter.
     public Object getItem(int position) {
         return mDataCollection.toArray()[position];
     }
+
+    /*public void removeAt(int position) {
+        Student s = (Student) this.getItem(position);
+        mDataset.remove(s.getAttendNum());
+        notifyItemRemoved(position);
+    }*/
 }

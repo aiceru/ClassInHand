@@ -1,5 +1,8 @@
 package com.iceru.classinhand;
 
+import java.util.Comparator;
+import java.util.TreeMap;
+
 /**
  * Created by iceru on 14. 8. 13.
  */
@@ -11,15 +14,21 @@ public class Student implements Cloneable {
 	private boolean isBoy;		// true -> boy, false -> girl... T/F has no meaning. :)
 	private Seat    itsCurrentSeat;
 
+    private long    inDate;
+    private long    outDate;
+
     private double     seatPoint = 0;  // 자리 배치할 때 사용
     private double     pairPoint = 0;  // 짝 배치할 때 사용
 
-	public Student(int id, int attendNum, String name, boolean isBoy) {
+	public Student(int id, int attendNum, String name, boolean isBoy, long inDate, long outDate) {
         this.id = id;
 		this.attendNum = attendNum;
 		this.name = name;
 		this.isBoy = isBoy;
 		this.itsCurrentSeat = null;
+
+        this.inDate = inDate;
+        this.outDate = outDate;
 	}
 
 	public int getAttendNum() {
@@ -46,9 +55,12 @@ public class Student implements Cloneable {
 		this.itsCurrentSeat = itsCurrentSeat;
 	}
 
-    @Override
-    public Student clone() throws CloneNotSupportedException {
-        return (Student) super.clone();
+    public long getInDate() {
+        return inDate;
+    }
+
+    public long getOutDate() {
+        return outDate;
     }
 
     public double getSeatPoint() {
