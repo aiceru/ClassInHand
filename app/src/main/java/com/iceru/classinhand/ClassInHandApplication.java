@@ -7,7 +7,9 @@ import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
 import org.acra.sender.HttpSender;
 
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
@@ -42,6 +44,8 @@ public class ClassInHandApplication extends Application {
     private TreeMap <Integer, Student> mStudents;       // "Current" students, KEY : Attend Num
     private TreeMap <Integer, Student> mPastStudents;   // "Past" students, KEY : ID
 
+    private ArrayList<Seatplan>         mSeatplans;
+
     private ClassDBHelper   dbHelper;
 
     @Override
@@ -52,8 +56,8 @@ public class ClassInHandApplication extends Application {
         appInstance = this;
         dbHelper = new ClassDBHelper(this);
 
-        mIdMap = new TreeMap<Integer, Integer>();
-        mStudents = new TreeMap<Integer, Student>();
+        mIdMap = new TreeMap<>();
+        mStudents = new TreeMap<>();
 
         Cursor c = dbHelper.getStudentsList();
         while(c.moveToNext()) {
@@ -71,7 +75,21 @@ public class ClassInHandApplication extends Application {
 
             NEXT_ID = s.getId()+1;
         }
-        c.close();;
+        c.close();
+
+        mSeatplans = new ArrayList<>();
+        ArrayList<Seat> temparray = new ArrayList<>();
+        ArrayList<Seat> temparray2 = new ArrayList<>();
+        int i = 0;
+        for(Map.Entry<Integer, Student> entry : mStudents.entrySet()) {
+            Seat s = new Seat(i++, entry.getValue());
+            temparray.add(s);
+            temparray2.add(s);
+        }
+        Seatplan sp = new Seatplan(new GregorianCalendar(2014, 12, 12), temparray);
+        Seatplan sp2 = new Seatplan(new GregorianCalendar(2014, 12, 25), temparray2);
+        mSeatplans.add(sp);
+        mSeatplans.add(sp2);
     }
 
     public static ClassInHandApplication getInstance() {
@@ -80,6 +98,10 @@ public class ClassInHandApplication extends Application {
 
     public TreeMap<Integer, Student> getmStudents() {
         return mStudents;
+    }
+
+    public ArrayList<Seatplan> getmSeatplans() {
+        return mSeatplans;
     }
 
     public void addStudentAll(TreeMap<Integer, Student> addingStudents) {

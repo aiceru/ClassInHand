@@ -1,7 +1,5 @@
 package com.iceru.classinhand;
 
-import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -21,13 +19,11 @@ import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TreeMap;
 
 import android.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -233,7 +229,7 @@ public class MainActivity extends ActionBarActivity {
         FragmentManager fragmentManager = getFragmentManager();
         switch(position+1) {
             case 1:
-                fragmentManager.beginTransaction().replace(R.id.main_contents, SeatFragmentRecyclerView.newInstance()).commit();
+                fragmentManager.beginTransaction().replace(R.id.main_contents, SeatplansFragment.newInstance()).commit();
                 break;
             case 3:
                 fragmentManager.beginTransaction().replace(R.id.main_contents, FillInfoPagerFragment.newInstance()).commit();
