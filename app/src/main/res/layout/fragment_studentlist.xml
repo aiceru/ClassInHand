@@ -21,7 +21,7 @@
         android:layout_alignParentRight="true"
         android:layout_margin="@dimen/activity_horizontal_margin"
         android:src="@drawable/ic_person_add"
-        android:onClick="addPerson"
+        android:onClick="openAddPersonActivity"
         app:floatingActionButtonColor="@color/fab_color"
         app:floatingActionButtonSize="normal"
         />

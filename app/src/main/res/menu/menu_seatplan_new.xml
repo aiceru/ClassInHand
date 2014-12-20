@@ -7,7 +7,8 @@
         android:id="@+id/seatplan_done"
         android:showAsAction="always"
         android:title="@string/action_done"
-        android:icon="@drawable/ic_action_accept"/>
+        />
+    <!--android:icon="@drawable/ic_action_accept"-->
 
     <item
         android:id="@+id/seatplan_cancel"

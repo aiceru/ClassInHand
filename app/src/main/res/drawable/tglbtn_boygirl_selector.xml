@@ -2,8 +2,8 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android" >
     <item
         android:state_checked="true"
-        android:drawable="@drawable/ic_toggle_boy" />
+        android:drawable="@drawable/ic_gender_boy" />
     <item
         android:state_checked="false"
-        android:drawable="@drawable/ic_toggle_girl" />
+        android:drawable="@drawable/ic_gender_girl" />
 </selector>

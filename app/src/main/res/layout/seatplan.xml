@@ -13,7 +13,7 @@
         android:id="@+id/cardview_seatplan"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         card_view:cardCornerRadius="@dimen/cardview_default_radius"
         card_view:cardElevation="@dimen/cardview_default_elevation"
         card_view:contentPadding="8dp">

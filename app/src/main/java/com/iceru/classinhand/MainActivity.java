@@ -303,8 +303,13 @@ public class MainActivity extends ActionBarActivity {
 		return success;
 	}*/
 
-    public void addPerson(View view) {
+    public void openAddPersonActivity(View view) {
         Intent intent = new Intent(this, AddPersonActivity.class);
+        startActivity(intent);
+    }
+
+    public void openAddSeatplanActivity(View view) {
+        Intent intent = new Intent(this, AddSeatplanActivity.class);
         startActivity(intent);
     }
 

@@ -27,7 +27,7 @@ import java.util.TreeMap;
         formUriBasicAuthPassword = "classinhandTester",
         mode = ReportingInteractionMode.DIALOG,
         resDialogText = R.string.crash_dialog_text,
-        resDialogIcon = R.drawable.ic_action_warning, //optional. default is a warning sign
+        //resDialogIcon = R.drawable.ic_action_warning, //optional. default is a warning sign
         resDialogTitle = R.string.crash_dialog_title, // optional. default is your application name
         resDialogCommentPrompt = R.string.crash_dialog_comment_prompt, // optional. when defined, adds a user text field input with this text resource as a label
         resDialogOkToast = R.string.crash_dialog_ok_toast // optional. displays a Toast message when the user accepts to send a report.
@@ -78,7 +78,7 @@ public class ClassInHandApplication extends Application {
         c.close();
 
         mSeatplans = new ArrayList<>();
-        ArrayList<Seat> temparray = new ArrayList<>();
+        /*ArrayList<Seat> temparray = new ArrayList<>();
         ArrayList<Seat> temparray2 = new ArrayList<>();
         int i = 0;
         for(Map.Entry<Integer, Student> entry : mStudents.entrySet()) {
@@ -89,7 +89,7 @@ public class ClassInHandApplication extends Application {
         Seatplan sp = new Seatplan(new GregorianCalendar(2014, 12, 12), temparray);
         Seatplan sp2 = new Seatplan(new GregorianCalendar(2014, 12, 25), temparray2);
         mSeatplans.add(sp);
-        mSeatplans.add(sp2);
+        mSeatplans.add(sp2);*/
     }
 
     public static ClassInHandApplication getInstance() {
@@ -134,5 +134,10 @@ public class ClassInHandApplication extends Application {
         mIdMap.clear();
         mStudents.clear();
         dbHelper.deleteAllStudents();
+    }
+
+    public void addSeatplan(Seatplan plan) {
+        mSeatplans.add(plan);
+        // TODO : DB save
     }
 }

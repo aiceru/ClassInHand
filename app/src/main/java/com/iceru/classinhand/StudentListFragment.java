@@ -57,7 +57,7 @@ public class StudentListFragment extends Fragment {
                     }
                 }));
 
-        SwipeDismissRecyclerViewTouchListener touchListener =
+        /*SwipeDismissRecyclerViewTouchListener touchListener =
                 new SwipeDismissRecyclerViewTouchListener(
                         mStudentListRecyclerView,
                         new SwipeDismissRecyclerViewTouchListener.DismissCallbacks() {
@@ -77,7 +77,7 @@ public class StudentListFragment extends Fragment {
                 );
 
         mStudentListRecyclerView.setOnTouchListener(touchListener);
-        mStudentListRecyclerView.setOnScrollListener(touchListener.makeScrollListener());
+        mStudentListRecyclerView.setOnScrollListener(touchListener.makeScrollListener());*/
 
         return rootView;
     }

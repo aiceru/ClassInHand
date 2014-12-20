@@ -91,7 +91,7 @@ public class FillStudentInfoFragment extends Fragment {
 				ImageView ivGender = (ImageView)view.findViewById(R.id.imageview_gender);
 				//tvNum.setText(String.valueOf(student.getAttendNum()));
 				tvName.setText(student.getName());
-				ivGender.setImageResource((student.isBoy()? R.drawable.ic_toggle_boy : R.drawable.ic_toggle_girl));
+				//ivGender.setImageResource((student.isBoy()? R.drawable.ic_toggle_boy : R.drawable.ic_toggle_girl));
 			}
 
 			return view;
@@ -174,7 +174,7 @@ public class FillStudentInfoFragment extends Fragment {
 				ImageView iv_boygirl = (ImageView)longClickDialog.findViewById(R.id.imageview_dialog_student_edit_boygirl);
 				tv_num.setText(String.valueOf(target.getAttendNum()));
 				tv_name.setText(target.getName().toString());
-				iv_boygirl.setImageResource(target.isBoy()? R.drawable.ic_toggle_boy : R.drawable.ic_toggle_girl);
+				//iv_boygirl.setImageResource(target.isBoy()? R.drawable.ic_toggle_boy : R.drawable.ic_toggle_girl);
 
 				Button btn_delete = (Button) longClickDialog.findViewById(R.id.button_dialog_student_edit_delete);
 				Button btn_edit = (Button) longClickDialog.findViewById(R.id.button_dialog_student_edit_edit);

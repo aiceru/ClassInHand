@@ -132,7 +132,7 @@ public class SeatFragment extends Fragment {
                 if(seat.getItsStudent() != null) {
                     tvNum.setText(String.valueOf(seat.getItsStudent().getAttendNum()));
                     tvName.setText(seat.getItsStudent().getName());
-                    ivBoygirl.setImageResource(seat.getItsStudent().isBoy() ? R.drawable.ic_toggle_boy : R.drawable.ic_toggle_girl);
+                    //ivBoygirl.setImageResource(seat.getItsStudent().isBoy() ? R.drawable.ic_toggle_boy : R.drawable.ic_toggle_girl);
                 }
                 else {
                     tvNum.setText(null);

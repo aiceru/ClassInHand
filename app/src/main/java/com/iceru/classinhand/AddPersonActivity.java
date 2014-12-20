@@ -74,6 +74,8 @@ public class AddPersonActivity extends ActionBarActivity {
 
         toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
 
         mAddingListRecyclerView = (RecyclerView)findViewById(R.id.recyclerview_adding_list);
         mAddingListRecyclerView .setHasFixedSize(true);
@@ -97,9 +99,6 @@ public class AddPersonActivity extends ActionBarActivity {
         });
 
         mGenderTglbtn = (ToggleButton)findViewById(R.id.tglbtn_addperson_gender);
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
 
         while(mAttendNumArray[attendNum]) attendNum++;
         mAttendNumEditText.setText(String.valueOf(attendNum));

@@ -78,8 +78,7 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_margin="4dp"
-        android:background="@drawable/btn_addrole_selector"
-
         android:visibility="invisible"/>
+    <!--android:background="@drawable/btn_addrole_selector"-->
 
 </LinearLayout>

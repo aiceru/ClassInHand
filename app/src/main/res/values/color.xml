@@ -301,19 +301,4 @@
 
     <color name="black">#000000</color>
     <color name="white">#ffffff</color>
-
-
-    <array name="girls_ic_colors">
-        <item>@color/red_100</item>
-        <item>@color/pink_100</item>
-        <item>@color/yellow_100</item>
-        <item>@color/orange_100</item>
-    </array>
-
-    <array name="boys_ic_colors">
-        <item>@color/indigo_100</item>
-        <item>@color/blue_100</item>
-        <item>@color/teal_100</item>
-        <item>@color/light_green_100</item>
-    </array>
 </resources>

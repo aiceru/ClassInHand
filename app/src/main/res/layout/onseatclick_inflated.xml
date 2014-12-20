@@ -15,8 +15,8 @@
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_alignParentRight="true"
-            android:background="@drawable/ic_action_cancel"
             android:visibility="invisible"/>
+        <!--android:background="@drawable/ic_action_cancel"-->
         <LinearLayout
             android:id="@+id/linearlayout_onseatclick_left"
             android:orientation="vertical"
@@ -34,9 +34,9 @@
             android:id="@+id/btn_change_seat"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:background="@drawable/btn_seatplan_exchange"
             android:visibility="invisible"
             />
+        <!--android:background="@drawable/btn_seatplan_exchange"-->
     </LinearLayout>
     <RelativeLayout
         android:layout_width="0dp"
@@ -48,8 +48,8 @@
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_alignParentRight="true"
-            android:background="@drawable/ic_action_cancel"
             android:visibility="invisible"/>
+        <!--android:background="@drawable/ic_action_cancel"-->
         <LinearLayout
             android:id="@+id/linearlayout_onseatclick_right"
             android:orientation="vertical"
