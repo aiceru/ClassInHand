@@ -11,6 +11,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
+import java.util.TreeMap;
 
 /**
  * Created by iceru on 14. 11. 13..
@@ -19,7 +21,7 @@ public class SeatplansFragment extends Fragment{
     private ClassInHandApplication      application;
     private MainActivity                mainActivity;
 
-    private ArrayList<Seatplan>         mSeatplans;
+    private TreeMap<GregorianCalendar, Seatplan> mSeatplans;
 
     private RecyclerView                mSeatplanRecyclerView;
     private RecyclerView.LayoutManager  mSeatplanLayoutManager;
@@ -57,5 +59,11 @@ public class SeatplansFragment extends Fragment{
         );
 
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mSeatplansAdapter.notifyDataSetChanged();
     }
 }

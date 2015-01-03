@@ -1,13 +1,18 @@
 package com.iceru.classinhand;
 
+import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.DatePicker;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Map;
 import java.util.TreeMap;
@@ -27,6 +32,8 @@ public class AddSeatplanActivity extends ActionBarActivity {
     /* Views */
     private ExpandableGridView              gv_seats;
 
+    private GregorianCalendar               mNewDate;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,9 +41,13 @@ public class AddSeatplanActivity extends ActionBarActivity {
         application = ClassInHandApplication.getInstance();
         mStudents = application.getmStudents();
 
-        GregorianCalendar today = new GregorianCalendar();
+        mNewDate = new GregorianCalendar();
+        mNewDate.clear(Calendar.HOUR);
+        mNewDate.clear(Calendar.MINUTE);
+        mNewDate.clear(Calendar.SECOND);
+        mNewDate.clear(Calendar.MILLISECOND);
 
-        mNewPlan = new Seatplan(today, new ArrayList<Seat>());
+        mNewPlan = new Seatplan(mNewDate, new ArrayList<Seat>());
         for(int i = 0; i < mStudents.size(); i++) {
             Seat s = new Seat(i);
             mNewPlan.getmSeats().add(s);
@@ -93,9 +104,50 @@ public class AddSeatplanActivity extends ActionBarActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_done) {
-            application.addSeatplan(mNewPlan);
-            finish();
+            GregorianCalendar today = new GregorianCalendar();
+            DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
+                @Override
+                public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                    //if(view.isShown()) {
+                        mNewDate.clear();
+                        mNewDate.set(year, monthOfYear, dayOfMonth);
+                        mNewPlan.setmApplyDate(mNewDate);
+                        if (dateAlreadyExist(mNewDate)) {
+                            askOverwriteOrNot();
+                        } else {
+                            application.addSeatplan(mNewPlan);
+                            finish();
+                        }
+                    //}
+                }
+            };
+            new DatePickerDialog(this, dateSetListener, today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH)).show();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private boolean dateAlreadyExist(GregorianCalendar cal) {
+        return application.getmSeatplans().containsKey(cal);
+    }
+
+    private void askOverwriteOrNot() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.title_dialog_warning);
+        builder.setMessage(R.string.contents_dialog_seat_assign_already_exists);
+        builder.setPositiveButton(R.string.action_overwrite, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked OK button
+                application.removeSeatplan(mNewDate);
+                application.addSeatplan(mNewPlan);
+                finish();
+            }
+        });
+        builder.setNegativeButton(R.string.action_cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User cancelled the dialog, Do nothing
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }

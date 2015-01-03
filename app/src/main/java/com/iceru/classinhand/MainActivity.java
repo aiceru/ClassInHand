@@ -159,14 +159,16 @@ public class MainActivity extends ActionBarActivity {
         setSupportActionBar(toolbar);
 
         mDrawerList = new ArrayList<>();
-        mDrawerList.add(DrawerItem.create(101, getString(R.string.title_seatplan), "ic_action_3d_cube", true, this));
+        mDrawerList.add(DrawerItem.create(101, getString(R.string.title_seatplan), "ic_grid_on_grey600_24dp", true, this));
         //drawerContentList.add(DrawerItem.create(102, getString(R.string.title_eachrole), "ic_action_user", true, this.getActivity()));
         //drawerContentList.add(DrawerItem.create(103, getString(R.string.title_classtime), "ic_action_alarm_clock", true, this.getActivity()));
         mDrawerList.add(DrawerSection.create(200, "Settings"));
-        mDrawerList.add(DrawerSubItem.create(201, getString(R.string.title_fillinfo), "ic_action_edit", true, this));
+        mDrawerList.add(DrawerSubItem.create(201, getString(R.string.title_fillinfo), "ic_edit_grey600_24dp", true, this));
 
         // TODO : Delete this!!
-        mDrawerList.add(DrawerSubItem.create(901, "DB추출(개발자용)", "ic_action_settings", false, this));
+        mDrawerList.add(DrawerSubItem.create(901, "DB추출(개발자용)", "ic_settings_grey600_24dp", false, this));
+        mDrawerList.add(DrawerSubItem.create(902, "DB삭제(개발자용)", "ic_settings_grey600_24dp", false, this));
+        mDrawerList.add(DrawerSubItem.create(903, "TestDB생성(개발자용)", "ic_settings_grey600_24dp", false, this));
 
         mDrawerListView.setAdapter(new DrawerContentAdapter(getSupportActionBar().getThemedContext(), R.layout.drawer_item, mDrawerList));
         mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -236,6 +238,14 @@ public class MainActivity extends ActionBarActivity {
                 break;
             case 4:
                 exportDB();
+                break;
+            case 5:
+                ClassInHandApplication.getInstance().removeAllStudents();
+                ClassInHandApplication.getInstance().removeAllSeatplans();
+                break;
+            case 6:
+                ClassInHandApplication.getInstance().createTestData();
+                break;
             default:
                 break;
         }

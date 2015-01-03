@@ -34,7 +34,7 @@ public class FillInfoPagerAdapter extends FragmentPagerAdapter{
 		return null;
 	}
 
-	@Override
+    @Override
 	public int getCount() {
 		return 2;
 	}

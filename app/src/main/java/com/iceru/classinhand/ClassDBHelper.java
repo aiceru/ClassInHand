@@ -44,6 +44,21 @@ public class ClassDBHelper extends SQLiteOpenHelper {
 		return wDB.insert(ClassDBContract.StudentInfo.TABLE_NAME, null, values);
 	}
 
+    public long insert(Seatplan plan) {
+        long ret = 0;
+        long applyDate = plan.getmApplyDate().getTimeInMillis();
+        ContentValues values = new ContentValues();
+        for(Seat seat : plan.getmSeats()) {
+            values.put(ClassDBContract.SeatHistory.COLUMN_NAME_ID, seat.getId());
+            values.put(ClassDBContract.SeatHistory.COLUMN_NAME_STUDENT_ID, seat.getItsStudent().getId());
+            values.put(ClassDBContract.SeatHistory.COLUMN_NAME_APPLY_DATE, applyDate);
+
+            ret |= wDB.insert(ClassDBContract.SeatHistory.TABLE_NAME, null, values);
+            values.clear();
+        }
+        return ret;
+    }
+
 	/*public long insert(Seat seat, int pairedStudentId, long date) {
 		ContentValues values = new ContentValues();
 		values.put(ClassDBContract.SeatHistory.COLUMN_NAME_SEAT_ID, seat.getId());
@@ -120,22 +135,24 @@ public class ClassDBHelper extends SQLiteOpenHelper {
         *//* ORDER BY     *//*  null
         );
     }
+    */
 
     public Cursor getSavedDateList() {
         String[] projection = {
-                ClassDBContract.SeatHistory.COLUMN_NAME_DATE
+                ClassDBContract.SeatHistory.COLUMN_NAME_APPLY_DATE
         };
         return rDB.query(
-        *//* TABLE        *//*  ClassDBContract.SeatHistory.TABLE_NAME,
-        *//* COLUMNS      *//*  projection,
-        *//* SELECTION    *//*  null,
-        *//* SELECTARGS   *//*  null,
-        *//* GROUP BY     *//*  ClassDBContract.SeatHistory.COLUMN_NAME_DATE,
-        *//* HAVING       *//*  null,
-        *//* ORDER BY     *//*  ClassDBContract.SeatHistory.COLUMN_NAME_DATE + " DESC"
+        /* TABLE        */  ClassDBContract.SeatHistory.TABLE_NAME,
+        /* COLUMNS      */  projection,
+        /* SELECTION    */  null,
+        /* SELECTARGS   */  null,
+        /* GROUP BY     */  ClassDBContract.SeatHistory.COLUMN_NAME_APPLY_DATE,
+        /* HAVING       */  null,
+        /* ORDER BY     */  ClassDBContract.SeatHistory.COLUMN_NAME_APPLY_DATE + " DESC"
         );
     }
 
+    /*
 	public Cursor getRecentSeatPlan() {
 		String query = "SELECT * FROM " + ClassDBContract.SeatHistory.TABLE_NAME
 				+ " WHERE " + ClassDBContract.SeatHistory.COLUMN_NAME_DATE
@@ -143,14 +160,16 @@ public class ClassDBHelper extends SQLiteOpenHelper {
 				+ ") FROM " + ClassDBContract.SeatHistory.TABLE_NAME + ");";
 		return rDB.rawQuery(query, null);
 	}
+	*/
 
-    public Cursor getSeatPlan(long date) {
+    public Cursor getSeatplan(long date) {
         String query = "SELECT * FROM " + ClassDBContract.SeatHistory.TABLE_NAME
-                + " WHERE " + ClassDBContract.SeatHistory.COLUMN_NAME_DATE
+                + " WHERE " + ClassDBContract.SeatHistory.COLUMN_NAME_APPLY_DATE
                 + " = " + String.valueOf(date) + ";";
         return rDB.rawQuery(query, null);
     }
 
+    /*
     public Cursor getHistory(int studentId) {
         String[] projection = {
                 ClassDBContract.SeatHistory.COLUMN_NAME_SEAT_ID,
@@ -226,9 +245,10 @@ public class ClassDBHelper extends SQLiteOpenHelper {
 				selectionArgs
 		);
 	}
+	*/
 
     public int deleteSeatPlan(long date) {
-        String selection = ClassDBContract.SeatHistory.COLUMN_NAME_DATE + " LIKE ?";
+        String selection = ClassDBContract.SeatHistory.COLUMN_NAME_APPLY_DATE + " LIKE ?";
         String[] selectionArgs = {
                 String.valueOf(date)
         };
@@ -238,7 +258,6 @@ public class ClassDBHelper extends SQLiteOpenHelper {
                 selectionArgs
         );
     }
-    */
 
 	public int deleteAllStudents() {
 		return wDB.delete(
@@ -248,12 +267,11 @@ public class ClassDBHelper extends SQLiteOpenHelper {
 		);
 	}
 
-    /*
-	public int deleteAllSeats() {
+	public int deleteAllSeatplans() {
 		return wDB.delete(
 				ClassDBContract.SeatHistory.TABLE_NAME,
 				null,
 				null
 		);
-	}*/
+	}
 }

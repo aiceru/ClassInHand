@@ -159,7 +159,6 @@ public class AddPersonActivity extends ActionBarActivity {
         int id = item.getItemId();
         if (id == R.id.action_done) {
             application.addStudentAll(mAddingStudents);
-            //TODO : Save mAddingStudents to database
             finish();
         }
         return super.onOptionsItemSelected(item);

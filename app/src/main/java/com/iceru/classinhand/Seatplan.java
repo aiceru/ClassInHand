@@ -1,6 +1,7 @@
 package com.iceru.classinhand;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 /**
@@ -10,9 +11,17 @@ public class Seatplan {
     private GregorianCalendar       mApplyDate;
     private ArrayList<Seat>         mSeats;
 
-    public Seatplan (GregorianCalendar applyDate, ArrayList<Seat> seats) {
+    public Seatplan(GregorianCalendar applyDate, ArrayList<Seat> seats) {
         this.mApplyDate = applyDate;
+        mApplyDate.clear(Calendar.HOUR);
+        mApplyDate.clear(Calendar.MINUTE);
+        mApplyDate.clear(Calendar.SECOND);
+        mApplyDate.clear(Calendar.MILLISECOND);
         this.mSeats = seats;
+    }
+
+    public void setmApplyDate(GregorianCalendar cal) {
+        this.mApplyDate = cal;
     }
 
     public GregorianCalendar getmApplyDate() {
