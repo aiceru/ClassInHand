@@ -8,9 +8,9 @@ import org.acra.annotation.ReportsCrashes;
 import org.acra.sender.HttpSender;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -36,6 +36,9 @@ public class ClassInHandApplication extends Application {
 
     /* Public Constants */
     public static final int MAX_STUDENTS = 99;
+    public static final int SEATED_NOT = 0;
+    public static final int SEATED_LEFT = 1;
+    public static final int SEATED_RIGHT = 2;
     public static int       NEXT_ID;
 
     private static ClassInHandApplication appInstance;
@@ -44,9 +47,11 @@ public class ClassInHandApplication extends Application {
     private TreeMap <Integer, Student> mStudents;       // "Current" students, KEY : Attend Num
     private TreeMap <Integer, Student> mPastStudents;   // "Past" students, KEY : ID
 
-    private TreeMap<GregorianCalendar, Seatplan>         mSeatplans;
+    private ArrayList<Seatplan>         mSeatplans;
 
     private ClassDBHelper   dbHelper;
+
+    private Comparator<Seatplan> mSeatplanComparator;
 
     @Override
     public final void onCreate() {
@@ -58,6 +63,15 @@ public class ClassInHandApplication extends Application {
 
         mIdMap = new TreeMap<>();
         mStudents = new TreeMap<>();
+        mPastStudents = new TreeMap<>();
+
+        mSeatplanComparator = new Comparator<Seatplan>() {
+            @Override
+            public int compare(Seatplan lhs, Seatplan rhs) {
+                long diff = lhs.getmApplyDate().getTimeInMillis() - rhs.getmApplyDate().getTimeInMillis();
+                return diff > 0 ? -1 : 1;
+            }
+        };
 
         Cursor c = dbHelper.getStudentsList();
         while (c.moveToNext()) {
@@ -77,7 +91,7 @@ public class ClassInHandApplication extends Application {
         }
         c.close();
 
-        mSeatplans = new TreeMap<>();
+        mSeatplans = new ArrayList<>();
         c = dbHelper.getSavedDateList();
         while(c.moveToNext()) {
             long date = c.getLong(c.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_APPLY_DATE));
@@ -92,7 +106,7 @@ public class ClassInHandApplication extends Application {
 
             GregorianCalendar cal = new GregorianCalendar();
             cal.setTimeInMillis(date);
-            mSeatplans.put(cal, new Seatplan(cal, aSeats));
+            mSeatplans.add(new Seatplan(cal, aSeats));
 
             cursorForDate.close();
         }
@@ -119,8 +133,12 @@ public class ClassInHandApplication extends Application {
         return mStudents;
     }
 
-    public TreeMap<GregorianCalendar, Seatplan> getmSeatplans() {
+    public ArrayList<Seatplan> getmSeatplans() {
         return mSeatplans;
+    }
+
+    public ClassDBHelper getDbHelper() {
+        return dbHelper;
     }
 
     public void addStudentAll(TreeMap<Integer, Student> addingStudents) {
@@ -140,6 +158,11 @@ public class ClassInHandApplication extends Application {
         return !exist;
     }
 
+    public Student findStudent(int Id) {
+        if(mIdMap.containsKey(Id)) return mStudents.get(mIdMap.get(Id));
+        else return mPastStudents.get(Id);
+    }
+
     public boolean removeStudent(Student student) {
         boolean success = null != mStudents.remove(student.getAttendNum());
         if(success) {
@@ -156,17 +179,24 @@ public class ClassInHandApplication extends Application {
     }
 
     public void addSeatplan(Seatplan plan) {
-        mSeatplans.put(plan.getmApplyDate(), plan);
+        mSeatplans.add(plan);
+        Collections.sort(mSeatplans, mSeatplanComparator);
         dbHelper.insert(plan);
     }
 
     public void removeSeatplan(Seatplan plan) {
-        removeSeatplan(plan.getmApplyDate());
+        mSeatplans.remove(plan);
+        Collections.sort(mSeatplans, mSeatplanComparator);
+        dbHelper.deleteSeatPlan(plan.getmApplyDate().getTimeInMillis());
     }
 
     public void removeSeatplan(GregorianCalendar cal) {
-        mSeatplans.remove(cal);
-        dbHelper.deleteSeatPlan(cal.getTimeInMillis());
+        for(Seatplan plan : mSeatplans) {
+            if(plan.getmApplyDate().equals(cal))  {
+                removeSeatplan(plan);
+                break;
+            }
+        }
     }
 
     public void removeAllSeatplans() {

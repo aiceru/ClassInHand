@@ -44,6 +44,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.iceru.classinhand.MainActivity" />
         </activity>
+        <activity
+            android:name=".DetailedSeatplanActivity"
+            android:label="@string/title_activity_detailed_seatplan"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.iceru.classinhand.MainActivity" />
+            </activity>
     </application>
 
 </manifest>

@@ -124,8 +124,8 @@ public class SeatFragment extends Fragment {
 			}
 
 			if(seat != null) {
-                if(seat.isSelected()) view.setBackground(getResources().getDrawable(R.drawable.desk_selected));
-                else view.setBackground(getResources().getDrawable(R.drawable.desk));
+                //if(seat.isSelected()) view.setBackground(getResources().getDrawable(R.drawable.desk_selected));
+                //else view.setBackground(getResources().getDrawable(R.drawable.desk));
                 TextView tvNum = (TextView) view.findViewById(R.id.textview_seated_num);
                 TextView tvName = (TextView) view.findViewById(R.id.textview_seated_name);
                 ImageView ivBoygirl = (ImageView) view.findViewById(R.id.imageview_seated_boygirl);
@@ -436,8 +436,8 @@ public class SeatFragment extends Fragment {
                 mLeftSelectedSeat.setItsStudent(mRightSelectedSeat.getItsStudent());
                 mRightSelectedSeat.setItsStudent(tempStd);
 
-                mLeftSelectedSeat.getItsStudent().setItsCurrentSeat(mLeftSelectedSeat);
-                mRightSelectedSeat.getItsStudent().setItsCurrentSeat(mRightSelectedSeat);
+                /*mLeftSelectedSeat.getItsStudent().setItsCurrentSeat(mLeftSelectedSeat);
+                mRightSelectedSeat.getItsStudent().setItsCurrentSeat(mRightSelectedSeat);*/
 
                 //ClassDBHelper dbHelper = mainActivity.getDbHelper();
                 Seat pairSeat = getSeatByAbsolutePosition(mLeftSelectedSeat.getPairSeatId());
@@ -449,8 +449,8 @@ public class SeatFragment extends Fragment {
                         pairSeat == null? -1 : pairSeat.getItsStudent().getNum(),
                         mCurrentShowingDate);*/
 
-                mLeftSelectedSeat.setSelected(false);
-                mRightSelectedSeat.setSelected(false);
+                //mLeftSelectedSeat.setSelected(false);
+                //mRightSelectedSeat.setSelected(false);
 
                 mLeftSelectedSeat = null;
                 mRightSelectedSeat = null;
@@ -465,7 +465,7 @@ public class SeatFragment extends Fragment {
         btn_left_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mLeftSelectedSeat.setSelected(false);
+                //mLeftSelectedSeat.setSelected(false);
                 mLeftSelectedSeat = null;
                 layout_onseatclick_left.removeAllViews();
                 btn_left_cancel.setVisibility(View.INVISIBLE);
@@ -478,7 +478,7 @@ public class SeatFragment extends Fragment {
         btn_right_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mRightSelectedSeat.setSelected(false);
+                //mRightSelectedSeat.setSelected(false);
                 mRightSelectedSeat = null;
                 layout_onseatclick_right.removeAllViews();
                 btn_right_cancel.setVisibility(View.INVISIBLE);
@@ -491,7 +491,7 @@ public class SeatFragment extends Fragment {
         if(mLeftSelectedSeat == null) {
             mLeftSelectedSeat = seg.get(position);
             selectedStudent = mLeftSelectedSeat.getItsStudent();
-            mLeftSelectedSeat.setSelected(true);
+            //mLeftSelectedSeat.setSelected(true);
             tv = new TextView(mainActivity);
             tv.setText(selectedStudent.getName());
             tv.setTextSize(18);
@@ -521,7 +521,7 @@ public class SeatFragment extends Fragment {
         else if(mRightSelectedSeat == null) {
             mRightSelectedSeat = seg.get(position);
             selectedStudent = mRightSelectedSeat.getItsStudent();
-            mRightSelectedSeat.setSelected(true);
+            //mRightSelectedSeat.setSelected(true);
             tv = new TextView(mainActivity);
             tv.setText(selectedStudent.getName());
             tv.setTextSize(18);
@@ -984,7 +984,7 @@ public class SeatFragment extends Fragment {
 
     private void removeAssignments(TreeMap<Integer, Student> studentList) {
         for(TreeMap.Entry<Integer, Student> entry : studentList.entrySet()) {
-            entry.getValue().setItsCurrentSeat(null);
+            ///entry.getValue().setItsCurrentSeat(null);
         }
     }
 

@@ -169,13 +169,8 @@ public class ClassDBHelper extends SQLiteOpenHelper {
         return rDB.rawQuery(query, null);
     }
 
-    /*
     public Cursor getHistory(int studentId) {
-        String[] projection = {
-                ClassDBContract.SeatHistory.COLUMN_NAME_SEAT_ID,
-                ClassDBContract.SeatHistory.COLUMN_NAME_PAIR_STUDENT,
-                ClassDBContract.SeatHistory.COLUMN_NAME_DATE
-        };
+
         String selection =
                 ClassDBContract.SeatHistory.COLUMN_NAME_STUDENT_ID + " = ?";
         String[] selectionArgs = {
@@ -183,16 +178,41 @@ public class ClassDBHelper extends SQLiteOpenHelper {
         };
 
         return rDB.query(
-        *//* TABLE        *//*  ClassDBContract.SeatHistory.TABLE_NAME,
-        *//* COLUMNS      *//*  projection,
-        *//* SELECTION    *//*  selection,
-        *//* SELECTARGS   *//*  selectionArgs,
-        *//* GROUP BY     *//*  null,
-        *//* HAVING       *//*  null,
-        *//* ORDER BY     *//*  ClassDBContract.SeatHistory.COLUMN_NAME_DATE + " DESC"
+        /* TABLE        */  ClassDBContract.SeatHistory.TABLE_NAME,
+        /* COLUMNS      */  null,
+        /* SELECTION    */  selection,
+        /* SELECTARGS   */  selectionArgs,
+        /* GROUP BY     */  null,
+        /* HAVING       */  null,
+        /* ORDER BY     */  ClassDBContract.SeatHistory.COLUMN_NAME_APPLY_DATE + " DESC"
         );
     }
 
+    public int getSeatedStudent(int seatId, long date) {
+        String selection =
+                ClassDBContract.SeatHistory.COLUMN_NAME_ID + " = ? AND " +
+                ClassDBContract.SeatHistory.COLUMN_NAME_APPLY_DATE + " = ?";
+        String[] selectionArgs = {
+                String.valueOf(seatId),
+                String.valueOf(date)
+        };
+        Cursor c = rDB.query(
+                ClassDBContract.SeatHistory.TABLE_NAME,
+                null,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                null
+        );
+        // TODO : c.getcount != 1 일 경우 예외 throw
+        if(c.moveToFirst())
+            return c.getInt(c.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_STUDENT_ID));
+        else
+            return -1;
+    }
+
+    /*
     public Cursor getHistory(int studentId, long date) {
         String[] projection = {
                 ClassDBContract.SeatHistory.COLUMN_NAME_SEAT_ID,
@@ -216,8 +236,7 @@ public class ClassDBHelper extends SQLiteOpenHelper {
         *//* HAVING       *//*  null,
         *//* ORDER BY     *//*  null
         );
-    }
-    */
+    }*/
 
 	public int delete(Student student) {
 		String selection = ClassDBContract.StudentInfo.COLUMN_NAME_ID + " LIKE ?";

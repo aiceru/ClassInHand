@@ -74,6 +74,7 @@
 
     <string name="title_activity_add_person">학생 정보 등록</string>
     <string name="title_activity_add_seatplan">새로 만들기</string>
+    <string name="title_activity_detailed_seatplan">자리배치도</string>
 
     <string-array name="gender_array">
         <item>남자</item>

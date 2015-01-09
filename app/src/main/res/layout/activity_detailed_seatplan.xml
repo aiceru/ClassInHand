@@ -7,20 +7,12 @@
     android:background="#FFFFFF">
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/addseatplanactivity_toolbar"
+        android:id="@+id/detailedseatplanactivity_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
         android:minHeight="?attr/actionBarSize"
         app:theme="@style/ThemeOverlay.AppCompat.ActionBar" />
-
-    <LinearLayout
-        android:id="@+id/linearlayout_onseatclick_inflated"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/recyclerview_singleline_top_padding">
-
-    </LinearLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -28,8 +20,17 @@
         android:padding="@dimen/activity_horizontal_margin"
         android:orientation="vertical">
 
+        <!--TextView
+            android:id="@+id/textview_detailedseatplan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:layout_alignParentEnd="true"
+            android:textSize="@dimen/abc_text_size_body_1_material"
+            android:text="DATE"/-->
+
         <GridView
-            android:id="@+id/gridview_newseatplan"
+            android:id="@+id/gridview_detailedseatplan"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
@@ -38,16 +39,16 @@
             android:numColumns="6"
             tools:listitem="@layout/seat"/>
 
-        <com.shamanland.fab.FloatingActionButton
+        <!--<com.shamanland.fab.FloatingActionButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:layout_margin="@dimen/activity_horizontal_margin"
             android:src="@drawable/ic_shuffle_white_24dp"
-            android:onClick="assignRandom"
             app:floatingActionButtonColor="@color/fab_color"
-            app:floatingActionButtonSize="normal"/>
+            app:floatingActionButtonSize="normal"/>-->
+            <!-- onclick -->
 
     </RelativeLayout>
 

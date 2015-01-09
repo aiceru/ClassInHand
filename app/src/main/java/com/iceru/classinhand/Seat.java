@@ -7,12 +7,13 @@ public class Seat implements Cloneable {
 	private int id;
 	private Student itsStudent;
     private int pairSeatId;
-    private boolean selected = false;
+    private int recentSeated;
 
 	public Seat(int id, Student st) {
 		this.id = id;
 		this.itsStudent = st;
         this.pairSeatId = this.id % 2 == 0? this.id + 1 : this.id - 1;
+        this.recentSeated = ClassInHandApplication.SEATED_NOT;
 	}
 
 	public Seat(int id) {
@@ -40,11 +41,11 @@ public class Seat implements Cloneable {
         return (Seat) super.clone();
     }
 
-    public boolean isSelected() {
-        return selected;
+    public int getRecentSeatedLev() {
+        return recentSeated;
     }
 
-    public void setSelected(boolean _selected) {
-        this.selected = _selected;
+    public void setRecentSeatedLev(int lev) {
+        this.recentSeated = lev;
     }
 }

@@ -1,5 +1,6 @@
 package com.iceru.classinhand;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.TreeMap;
 
@@ -12,7 +13,8 @@ public class Student implements Cloneable {
 	private int		attendNum;
 	private String	name;
 	private boolean isBoy;		// true -> boy, false -> girl... T/F has no meaning. :)
-	private Seat    itsCurrentSeat;
+	//private Seat    itsCurrentSeat;
+    private ArrayList<Seat> itsPastSeats;
 
     private long    inDate;
     private long    outDate;
@@ -25,7 +27,8 @@ public class Student implements Cloneable {
 		this.attendNum = attendNum;
 		this.name = name;
 		this.isBoy = isBoy;
-		this.itsCurrentSeat = null;
+		//this.itsCurrentSeat = null;
+        this.itsPastSeats = new ArrayList<>();
 
         this.inDate = inDate;
         this.outDate = outDate;
@@ -47,13 +50,13 @@ public class Student implements Cloneable {
 		return isBoy;
 	}
 
-	public Seat getItsCurrentSeat() {
+	/*public Seat getItsCurrentSeat() {
 		return itsCurrentSeat;
-	}
+	}*/
 
-	public void setItsCurrentSeat(Seat itsCurrentSeat) {
+	/*public void setItsCurrentSeat(Seat itsCurrentSeat) {
 		this.itsCurrentSeat = itsCurrentSeat;
-	}
+	}*/
 
     public long getInDate() {
         return inDate;
@@ -77,5 +80,9 @@ public class Student implements Cloneable {
 
     public void setPairPoint(double pairPoint) {
         this.pairPoint = pairPoint;
+    }
+
+    public ArrayList<Seat> getItsPastSeats() {
+        return itsPastSeats;
     }
 }

@@ -1,12 +1,12 @@
 package com.iceru.classinhand;
 
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -16,9 +16,11 @@ import java.util.ArrayList;
  */
 public class SeatGridAdapter extends BaseAdapter {
     private ArrayList<Seat> mDataset;
+    private Context         mContext;
 
     public SeatGridAdapter(ArrayList<Seat> seats, Context context) {
         this.mDataset = seats;
+        this.mContext = context;
     }
 
     @Override
@@ -44,6 +46,7 @@ public class SeatGridAdapter extends BaseAdapter {
         }
 
         Seat seat = mDataset.get(position);
+        RelativeLayout rlayout = (RelativeLayout)convertView.findViewById(R.id.relativelayout_seat_background);
         TextView tv_num = (TextView)convertView.findViewById(R.id.textview_seated_num);
         ImageView iv_gender = (ImageView)convertView.findViewById(R.id.imageview_seated_boygirl);
         TextView tv_name = (TextView)convertView.findViewById(R.id.textview_seated_name);
@@ -58,6 +61,18 @@ public class SeatGridAdapter extends BaseAdapter {
         else {
             tv_num.setText(null);
             tv_name.setText(null);
+        }
+
+        switch(seat.getRecentSeatedLev()) {
+            case ClassInHandApplication.SEATED_LEFT:
+                rlayout.setBackgroundColor(mContext.getResources().getColor(R.color.red_300));
+                break;
+            case ClassInHandApplication.SEATED_RIGHT:
+                rlayout.setBackgroundColor(mContext.getResources().getColor(R.color.orange_300));
+                break;
+            default:
+                rlayout.setBackgroundColor(mContext.getResources().getColor(R.color.grey_300));
+                break;
         }
 
         return convertView;

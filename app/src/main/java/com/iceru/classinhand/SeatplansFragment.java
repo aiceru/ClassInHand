@@ -1,6 +1,7 @@
 package com.iceru.classinhand;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,7 +22,7 @@ public class SeatplansFragment extends Fragment{
     private ClassInHandApplication      application;
     private MainActivity                mainActivity;
 
-    private TreeMap<GregorianCalendar, Seatplan> mSeatplans;
+    private ArrayList<Seatplan> mSeatplans;
 
     private RecyclerView                mSeatplanRecyclerView;
     private RecyclerView.LayoutManager  mSeatplanLayoutManager;
@@ -53,7 +54,9 @@ public class SeatplansFragment extends Fragment{
                 new RecyclerItemClickListener(mainActivity, new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        Toast.makeText(mainActivity, "TESSSTTTTTTT", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(mainActivity, DetailedSeatplanActivity.class);
+                        intent.putExtra(MainActivity.SEATPLAN_SELECTED_POSITION, position);
+                        startActivity(intent);
                     }
                 })
         );

@@ -41,6 +41,8 @@ public class MainActivity extends ActionBarActivity {
     private static final String STATE_SELECTED_POSITION = "selected_navigation_drawer_position";
     private static final String PREF_USER_LEARNED_DRAWER = "navigation_drawer_learned";
 
+    public static final String SEATPLAN_SELECTED_POSITION = "com.iceru.classinhand.SEATPLAN_SELECTED_POSITION";
+
 	private ArrayList<Role> mRoles;
 	private int num_roleConsume;
 
