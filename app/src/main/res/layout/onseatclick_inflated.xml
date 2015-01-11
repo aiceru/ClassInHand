@@ -2,7 +2,8 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="16dp"
     android:layout_gravity="center"
     android:weightSum="1">
     <RelativeLayout
@@ -24,19 +25,29 @@
             android:layout_width="match_parent">
         </LinearLayout>
     </RelativeLayout>
-    <LinearLayout
-        android:layout_height="match_parent"
+    <RelativeLayout
         android:layout_width="0dp"
-        android:layout_weight="0.1"
-        android:gravity="center"
-        android:orientation="vertical">
-        <Button
-            android:id="@+id/btn_change_seat"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:visibility="invisible"
-            android:background="@drawable/ic_repeat_black_24dp"/>
-    </LinearLayout>
+        android:layout_height="match_parent"
+        android:layout_weight="0.1">
+        <LinearLayout
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:orientation="vertical">
+            <Button
+                android:id="@+id/btn_change_seat"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:visibility="invisible"
+                android:background="@drawable/ic_repeat_black_24dp"/>
+            <Button
+                android:id="@+id/btn_vacate_seat"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:visibility="invisible"
+                android:background="@drawable/"/>
+        </LinearLayout>
+    </RelativeLayout>
     <RelativeLayout
         android:layout_width="0dp"
         android:layout_weight="0.45"

@@ -14,41 +14,81 @@
         android:minHeight="?attr/actionBarSize"
         app:theme="@style/ThemeOverlay.AppCompat.ActionBar" />
 
-    <LinearLayout
-        android:id="@+id/linearlayout_onseatclick_inflated"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/recyclerview_singleline_top_padding">
-
-    </LinearLayout>
-
-    <RelativeLayout
+    <android.support.v4.widget.DrawerLayout
+        android:id="@+id/addseatplanactivity_drawerlayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="@dimen/activity_horizontal_margin"
-        android:orientation="vertical">
+        tools:context="com.iceru.classinhand.MainActivity" >
 
-        <GridView
-            android:id="@+id/gridview_newseatplan"
+        <FrameLayout
+            android:id="@+id/addseatplanactivity_mainframe"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:horizontalSpacing="1dp"
-            android:verticalSpacing="1dp"
-            android:numColumns="6"
-            tools:listitem="@layout/seat"/>
+            android:layout_height="match_parent">
 
-        <com.shamanland.fab.FloatingActionButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_margin="@dimen/activity_horizontal_margin"
-            android:src="@drawable/ic_shuffle_white_24dp"
-            android:onClick="assignRandom"
-            app:floatingActionButtonColor="@color/fab_color"
-            app:floatingActionButtonSize="normal"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="@dimen/activity_horizontal_margin"
+                android:orientation="vertical">
 
-    </RelativeLayout>
+                <LinearLayout
+                    android:id="@+id/linearlayout_onseatclick_inflated"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <GridView
+                        android:id="@+id/gridview_newseatplan"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        android:horizontalSpacing="1dp"
+                        android:verticalSpacing="1dp"
+                        android:numColumns="6"
+                        tools:listitem="@layout/seat"/>
+
+                    <com.shamanland.fab.FloatingActionButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_margin="@dimen/activity_horizontal_margin"
+                        android:src="@drawable/ic_shuffle_white_24dp"
+                        android:onClick="assignRandom"
+                        app:floatingActionButtonColor="@color/fab_color"
+                        app:floatingActionButtonSize="normal"/>
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+        </FrameLayout>
+
+        <ListView
+            android:id="@+id/addseatplanactivity_left_drawer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="left"
+            android:background="#FFFFFF"
+            android:choiceMode="singleChoice"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="0dp" />
+
+        <ListView
+            android:id="@+id/addseatplanactivity_right_drawer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="right"
+            android:background="#FFFFFF"
+            android:choiceMode="singleChoice"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="0dp" />
+
+    </android.support.v4.widget.DrawerLayout>
 
 </LinearLayout>
