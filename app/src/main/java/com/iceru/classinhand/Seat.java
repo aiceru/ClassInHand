@@ -8,6 +8,7 @@ public class Seat implements Cloneable {
 	private Student itsStudent;
     private int pairSeatId;
     private int recentSeated;
+    private int selected;
 
 	public Seat(int id, Student st) {
 		this.id = id;
@@ -47,5 +48,11 @@ public class Seat implements Cloneable {
 
     public void setRecentSeatedLev(int lev) {
         this.recentSeated = lev;
+    }
+
+    public int getSelected() { return selected; }
+
+    public void setSelected(int where) {
+        this.selected = where;
     }
 }

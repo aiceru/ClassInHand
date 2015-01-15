@@ -38,14 +38,16 @@
                 android:id="@+id/btn_change_seat"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
+                android:gravity="center"
                 android:visibility="invisible"
                 android:background="@drawable/ic_repeat_black_24dp"/>
             <Button
                 android:id="@+id/btn_vacate_seat"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
+                android:gravity="center"
                 android:visibility="invisible"
-                android:background="@drawable/"/>
+                android:background="@drawable/ic_highlight_remove_black_24dp"/>
         </LinearLayout>
     </RelativeLayout>
     <RelativeLayout

@@ -54,6 +54,7 @@
     <string name="showcase_title_history">이전 자리배치를 조회할 수 있습니다</string>
     <string name="showcase_detail_history">날짜를 탭하여 과거 자리배치도를 조회하세요</string>
     <string name="sorry_developing">기능 추가 예정입니다</string>
+    <string name="text_empty_seat">빈 자리</string>
 
     <string-array name="roleconsume_array">
         <item>1</item>

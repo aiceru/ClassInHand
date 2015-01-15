@@ -39,6 +39,7 @@ public class ClassInHandApplication extends Application {
     public static final int SEATED_NOT = 0;
     public static final int SEATED_LEFT = 1;
     public static final int SEATED_RIGHT = 2;
+    public static final int SEATED_BOTH = 3;
     public static int       NEXT_ID;
 
     private static ClassInHandApplication appInstance;

@@ -61,17 +61,31 @@ public class SeatGridAdapter extends BaseAdapter {
         else {
             tv_num.setText(null);
             tv_name.setText(null);
+            iv_gender.setImageDrawable(null);
         }
 
-        switch(seat.getRecentSeatedLev()) {
+        switch(seat.getSelected()) {
             case ClassInHandApplication.SEATED_LEFT:
-                rlayout.setBackgroundColor(mContext.getResources().getColor(R.color.red_300));
+                rlayout.setBackgroundColor(mContext.getResources().getColor(R.color.pink_200));
                 break;
             case ClassInHandApplication.SEATED_RIGHT:
-                rlayout.setBackgroundColor(mContext.getResources().getColor(R.color.orange_300));
+                rlayout.setBackgroundColor(mContext.getResources().getColor(R.color.light_blue_200));
                 break;
             default:
-                rlayout.setBackgroundColor(mContext.getResources().getColor(R.color.grey_300));
+                switch(seat.getRecentSeatedLev()) {
+                    case ClassInHandApplication.SEATED_LEFT:
+                        rlayout.setBackgroundColor(mContext.getResources().getColor(R.color.pink_100));
+                        break;
+                    case ClassInHandApplication.SEATED_RIGHT:
+                        rlayout.setBackgroundColor(mContext.getResources().getColor(R.color.light_blue_100));
+                        break;
+                    case ClassInHandApplication.SEATED_BOTH:
+                        rlayout.setBackgroundColor(mContext.getResources().getColor(R.color.purple_100));
+                        break;
+                    default:
+                        rlayout.setBackgroundColor(mContext.getResources().getColor(R.color.grey_300));
+                        break;
+                }
                 break;
         }
 
