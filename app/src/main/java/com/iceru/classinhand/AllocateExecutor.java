@@ -52,15 +52,20 @@ public class AllocateExecutor extends Allocator {
             currentAllocatable.add(new Integer(s.getId()));
         }
 
-        ArrayList<Integer> tmpAllocatable;
+        ArrayList<Integer> newAllocatable;
+        //  임시 좌석과 필터 결과, 이미 할당된 학생들의 할당 현황 세가지 변수간에 관계를
+        //  좀 더 확실하게 잡은 뒤에 구현할 것
         for(Map.Entry<Double, Student> e : pointedTreeMap.entrySet())
         {
-            for(Map.Entry<Integer, Rule> r : mRules.entrySet())
-            {
-                tmpAllocatable = r.getValue().filterSeats(e.getValue().getId(), currentAllocatable,mSeatplans);
-                if(tmpAllocatable.size() == 0)
-                    tmpAllocatable = currentAllocatable;
-            }
+            newAllocatable = allocateStudent(e.getValue().getId(), currentAllocatable);
+            // 현재 할당 가능한 자리 기준으로 랜덤하게 하나를 골라서 seatArray에 반영해 주고
+            // currentAllocatable에서 좌석을 삭제한다.
+            // newAllocatable은 한 학생의 자리 배치에만 관여한다.
+            int seatIndex = (int) (Math.random()*19717)% newAllocatable.size();
+            Student s = e.getValue();
+            seatArray.get(seatIndex).setItsStudent(s);
+            currentAllocatable.remove(seatArray.get(seatIndex).getId());
+            pointedTreeMap.remove(e.getKey());
         }
 /*
         for(Seat seat : seatArray) {
@@ -73,4 +78,21 @@ public class AllocateExecutor extends Allocator {
 */
         return seatArray;
     }
+    private ArrayList<Integer> allocateStudent(int studentID, ArrayList<Integer> currentAllocatable)
+    {
+        ArrayList<Integer> oldAllocatable = currentAllocatable;
+        ArrayList<Integer> newAllocatable = null;
+        for(Map.Entry<Integer, Rule> r : mRules.entrySet())
+        {
+            newAllocatable = r.getValue().filterSeats(studentID , oldAllocatable,mSeatplans);
+            if(newAllocatable.size() == 0) {
+                newAllocatable = oldAllocatable;
+                break;
+            }
+            else
+                oldAllocatable = newAllocatable;
+        }
+        return newAllocatable;
+    }
 }
+
