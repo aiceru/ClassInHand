@@ -32,4 +32,20 @@
         android:singleLine="true"
         android:layout_centerHorizontal="true"/>
 
+    <ImageView
+        android:id="@+id/imageview_recently_seated_left"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:visibility="invisible"/>
+
+    <ImageView
+        android:id="@+id/imageview_recently_seated_right"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:visibility="invisible"/>
+
 </RelativeLayout>

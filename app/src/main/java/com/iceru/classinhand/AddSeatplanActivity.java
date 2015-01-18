@@ -114,8 +114,14 @@ public class AddSeatplanActivity extends ActionBarActivity {
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
-                mLeftSelectedSeat = null;
-                mRightSelectedSeat = null;
+                if(mLeftSelectedSeat != null) {
+                    mLeftSelectedSeat.setSelected(ClassInHandApplication.SEATED_NOT);
+                    mLeftSelectedSeat = null;
+                }
+                if(mRightSelectedSeat != null) {
+                    mRightSelectedSeat.setSelected(ClassInHandApplication.SEATED_NOT);
+                    mRightSelectedSeat = null;
+                }
 
                 mVacateSeatButton.setVisibility(View.GONE);
 
@@ -125,6 +131,8 @@ public class AddSeatplanActivity extends ActionBarActivity {
                 mRightCancelButton.setVisibility(View.GONE);
 
                 layout_onseatclick_inflated.setVisibility(View.GONE);
+
+                mSeatGridAdapter.notifyDataSetChanged();
             }
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
@@ -320,6 +328,7 @@ public class AddSeatplanActivity extends ActionBarActivity {
                     for (Seat seat : victim.getItsPastSeats()) { // BOTH인 경우는 없음! 이유는 아래와 동일
                         seat.setRecentSeatedLev(ClassInHandApplication.SEATED_NOT);
                     }
+                    victim.getItsPastSeats().clear();
                 }
                 // Vacate 버튼이 Visible 한 경우는, 왼쪽 오른쪽 중 하나만 선택된 상황이고, 거기서 자리비움 버튼을 누르면
                 // 왼쪽 오른쪽 양쪽을 모두 null 로 초기화해도 무방함. (어차피 다른 한쪽은 원래 null 이었으므로)

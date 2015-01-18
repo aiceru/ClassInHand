@@ -50,6 +50,8 @@ public class SeatGridAdapter extends BaseAdapter {
         TextView tv_num = (TextView)convertView.findViewById(R.id.textview_seated_num);
         ImageView iv_gender = (ImageView)convertView.findViewById(R.id.imageview_seated_boygirl);
         TextView tv_name = (TextView)convertView.findViewById(R.id.textview_seated_name);
+        ImageView iv_seated_left = (ImageView)convertView.findViewById(R.id.imageview_recently_seated_left);
+        ImageView iv_seated_right = (ImageView)convertView.findViewById(R.id.imageview_recently_seated_right);
 
         Student student = seat.getItsStudent();
         if(student != null) {
@@ -72,20 +74,30 @@ public class SeatGridAdapter extends BaseAdapter {
                 rlayout.setBackgroundColor(mContext.getResources().getColor(R.color.light_blue_200));
                 break;
             default:
-                switch(seat.getRecentSeatedLev()) {
-                    case ClassInHandApplication.SEATED_LEFT:
-                        rlayout.setBackgroundColor(mContext.getResources().getColor(R.color.pink_100));
-                        break;
-                    case ClassInHandApplication.SEATED_RIGHT:
-                        rlayout.setBackgroundColor(mContext.getResources().getColor(R.color.light_blue_100));
-                        break;
-                    case ClassInHandApplication.SEATED_BOTH:
-                        rlayout.setBackgroundColor(mContext.getResources().getColor(R.color.purple_100));
-                        break;
-                    default:
-                        rlayout.setBackgroundColor(mContext.getResources().getColor(R.color.grey_300));
-                        break;
-                }
+                rlayout.setBackgroundColor(mContext.getResources().getColor(R.color.grey_300));
+                break;
+        }
+
+        switch(seat.getRecentSeatedLev()) {
+            case ClassInHandApplication.SEATED_LEFT:
+                iv_seated_left.setImageResource(R.drawable.ic_error_pink_500_24px);
+                iv_seated_left.setVisibility(View.VISIBLE);
+                iv_seated_right.setVisibility(View.GONE);
+                break;
+            case ClassInHandApplication.SEATED_RIGHT:
+                iv_seated_right.setImageResource(R.drawable.ic_error_custom_24px);
+                iv_seated_right.setVisibility(View.VISIBLE);
+                iv_seated_left.setVisibility(View.GONE);
+                break;
+            case ClassInHandApplication.SEATED_BOTH:
+                iv_seated_left.setImageResource(R.drawable.ic_error_pink_500_24px);
+                iv_seated_left.setVisibility(View.VISIBLE);
+                iv_seated_right.setImageResource(R.drawable.ic_error_custom_24px);
+                iv_seated_right.setVisibility(View.VISIBLE);
+                break;
+            default:
+                iv_seated_left.setVisibility(View.GONE);
+                iv_seated_right.setVisibility(View.GONE);
                 break;
         }
 
