@@ -13,7 +13,7 @@ public abstract class Rule {
         this.priority = priority;
     }
 
-    public abstract ArrayList<Integer> filterSeats(int studentID, ArrayList<Integer> allocatable, ArrayList<Seatplan> oldPlans);
+    public abstract ArrayList<Integer> filterSeats(Student st, ArrayList<Integer> allocatable, ArrayList<Seatplan> oldPlans, ArrayList<Seat> seatArray);
 
     public boolean getDefaultFlag()
     {

@@ -57,7 +57,7 @@ public class AllocateExecutor extends Allocator {
         //  좀 더 확실하게 잡은 뒤에 구현할 것
         for(Map.Entry<Double, Student> e : pointedTreeMap.entrySet())
         {
-            newAllocatable = allocateStudent(e.getValue().getId(), currentAllocatable);
+            newAllocatable = allocateStudent(e.getValue(), currentAllocatable, seatArray);
             // 현재 할당 가능한 자리 기준으로 랜덤하게 하나를 골라서 seatArray에 반영해 주고
             // currentAllocatable에서 좌석을 삭제한다.
             // newAllocatable은 한 학생의 자리 배치에만 관여한다.
@@ -66,6 +66,7 @@ public class AllocateExecutor extends Allocator {
             seatArray.get(seatIndex).setItsStudent(s);
             currentAllocatable.remove(seatArray.get(seatIndex).getId());
             pointedTreeMap.remove(e.getKey());
+
         }
 /*
         for(Seat seat : seatArray) {
@@ -78,13 +79,13 @@ public class AllocateExecutor extends Allocator {
 */
         return seatArray;
     }
-    private ArrayList<Integer> allocateStudent(int studentID, ArrayList<Integer> currentAllocatable)
+    private ArrayList<Integer> allocateStudent(Student st, ArrayList<Integer> currentAllocatable, ArrayList<Seat> seatArray)
     {
         ArrayList<Integer> oldAllocatable = currentAllocatable;
         ArrayList<Integer> newAllocatable = null;
         for(Map.Entry<Integer, Rule> r : mRules.entrySet())
         {
-            newAllocatable = r.getValue().filterSeats(studentID , oldAllocatable,mSeatplans);
+            newAllocatable = r.getValue().filterSeats(st , oldAllocatable,mSeatplans, seatArray);
             if(newAllocatable.size() == 0) {
                 newAllocatable = oldAllocatable;
                 break;
