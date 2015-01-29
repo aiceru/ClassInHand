@@ -18,6 +18,9 @@ public class Seatplan {
         mApplyDate.clear(Calendar.SECOND);
         mApplyDate.clear(Calendar.MILLISECOND);
         this.mSeats = seats;
+        for(Seat s : seats) {
+            s.setBelongingPlan(this);
+        }
     }
 
     public void setmApplyDate(GregorianCalendar cal) {

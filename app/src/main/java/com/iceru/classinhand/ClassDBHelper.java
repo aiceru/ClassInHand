@@ -170,7 +170,10 @@ public class ClassDBHelper extends SQLiteOpenHelper {
     }
 
     public Cursor getHistory(int studentId) {
-
+        String[] projection = {
+                ClassDBContract.SeatHistory.COLUMN_NAME_APPLY_DATE,
+                ClassDBContract.SeatHistory.COLUMN_NAME_ID
+        };
         String selection =
                 ClassDBContract.SeatHistory.COLUMN_NAME_STUDENT_ID + " = ?";
         String[] selectionArgs = {
@@ -179,7 +182,7 @@ public class ClassDBHelper extends SQLiteOpenHelper {
 
         return rDB.query(
         /* TABLE        */  ClassDBContract.SeatHistory.TABLE_NAME,
-        /* COLUMNS      */  null,
+        /* COLUMNS      */  projection,
         /* SELECTION    */  selection,
         /* SELECTARGS   */  selectionArgs,
         /* GROUP BY     */  null,

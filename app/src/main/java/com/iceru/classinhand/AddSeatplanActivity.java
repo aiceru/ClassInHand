@@ -1,6 +1,5 @@
 package com.iceru.classinhand;
 
-import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
@@ -18,19 +17,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.Map;
 import java.util.TreeMap;
@@ -115,11 +110,11 @@ public class AddSeatplanActivity extends ActionBarActivity {
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
                 if(mLeftSelectedSeat != null) {
-                    mLeftSelectedSeat.setSelected(ClassInHandApplication.SEATED_NOT);
+                    mLeftSelectedSeat.setSelectedFlag(ClassInHandApplication.SEATED_NOT);
                     mLeftSelectedSeat = null;
                 }
                 if(mRightSelectedSeat != null) {
-                    mRightSelectedSeat.setSelected(ClassInHandApplication.SEATED_NOT);
+                    mRightSelectedSeat.setSelectedFlag(ClassInHandApplication.SEATED_NOT);
                     mRightSelectedSeat = null;
                 }
 
@@ -145,7 +140,7 @@ public class AddSeatplanActivity extends ActionBarActivity {
                     mLeftSelectedSeat.setItsStudent(candidate);
 
                     mRemainStudents.remove(candidate.getAttendNum());
-                    mLeftSelectedSeat.setSelected(ClassInHandApplication.SEATED_NOT);
+                    mLeftSelectedSeat.setSelectedFlag(ClassInHandApplication.SEATED_NOT);
                     layout_onseatclick_inflated.setVisibility(View.GONE);
 
                     mRemainStudentListAdapter.notifyDataSetChanged();
@@ -281,26 +276,27 @@ public class AddSeatplanActivity extends ActionBarActivity {
         mChangeSeatButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Seat seat;
                 if(mLeftSelectedSeat.getItsStudent() != null) {
-                    for (Seat seat : mLeftSelectedSeat.getItsStudent().getItsPastSeats()) {
-                        seat.setRecentSeatedLev(ClassInHandApplication.SEATED_NOT);
+                    for (PersonalHistory p : mLeftSelectedSeat.getItsStudent().getHistories()) {
+                        seat = mNewPlan.getmSeats().get(p.seatId);
+                        seat.setRecentSeatedFlag(ClassInHandApplication.SEATED_NOT);
                     }
-                    mLeftSelectedSeat.getItsStudent().getItsPastSeats().clear();
                 }
                 if(mRightSelectedSeat.getItsStudent() != null) {
-                    for (Seat seat : mRightSelectedSeat.getItsStudent().getItsPastSeats()) {
-                        seat.setRecentSeatedLev(ClassInHandApplication.SEATED_NOT);
+                    for (PersonalHistory p : mRightSelectedSeat.getItsStudent().getHistories()) {
+                        seat = mNewPlan.getmSeats().get(p.seatId);
+                        seat.setRecentSeatedFlag(ClassInHandApplication.SEATED_NOT);
                     }
-                    mRightSelectedSeat.getItsStudent().getItsPastSeats().clear();
                 }
 
                 Student tempStd = mLeftSelectedSeat.getItsStudent();
                 mLeftSelectedSeat.setItsStudent(mRightSelectedSeat.getItsStudent());
                 mRightSelectedSeat.setItsStudent(tempStd);
 
-                mLeftSelectedSeat.setSelected(ClassInHandApplication.SEATED_NOT);
+                mLeftSelectedSeat.setSelectedFlag(ClassInHandApplication.SEATED_NOT);
                 mLeftSelectedSeat = null;
-                mRightSelectedSeat.setSelected(ClassInHandApplication.SEATED_NOT);
+                mRightSelectedSeat.setSelectedFlag(ClassInHandApplication.SEATED_NOT);
                 mRightSelectedSeat = null;
 
                 layout_onseatclick_left.removeAllViews();
@@ -319,24 +315,25 @@ public class AddSeatplanActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 Seat selectedSeat = mLeftSelectedSeat == null ? mRightSelectedSeat : mLeftSelectedSeat;
+                Seat seat;
 
                 Student victim = selectedSeat.getItsStudent();
                 if(victim != null) {
                     selectedSeat.setItsStudent(null);
                     mRemainStudents.put(victim.getAttendNum(), victim);
 
-                    for (Seat seat : victim.getItsPastSeats()) { // BOTH인 경우는 없음! 이유는 아래와 동일
-                        seat.setRecentSeatedLev(ClassInHandApplication.SEATED_NOT);
+                    for (PersonalHistory p : victim.getHistories()) { // BOTH인 경우는 없음! 이유는 아래와 동일
+                        seat = mNewPlan.getmSeats().get(p.seatId);
+                        seat.setRecentSeatedFlag(ClassInHandApplication.SEATED_NOT);
                     }
-                    victim.getItsPastSeats().clear();
                 }
                 // Vacate 버튼이 Visible 한 경우는, 왼쪽 오른쪽 중 하나만 선택된 상황이고, 거기서 자리비움 버튼을 누르면
                 // 왼쪽 오른쪽 양쪽을 모두 null 로 초기화해도 무방함. (어차피 다른 한쪽은 원래 null 이었으므로)
                 if(mLeftSelectedSeat != null) {
-                    mLeftSelectedSeat.setSelected(ClassInHandApplication.SEATED_NOT);
+                    mLeftSelectedSeat.setSelectedFlag(ClassInHandApplication.SEATED_NOT);
                 }
                 if(mRightSelectedSeat != null) {
-                    mRightSelectedSeat.setSelected(ClassInHandApplication.SEATED_NOT);
+                    mRightSelectedSeat.setSelectedFlag(ClassInHandApplication.SEATED_NOT);
                 }
                 mLeftSelectedSeat = null;
                 mRightSelectedSeat = null;
@@ -357,17 +354,19 @@ public class AddSeatplanActivity extends ActionBarActivity {
         mLeftCancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Seat seat;
                 if(mLeftSelectedSeat.getItsStudent() != null) {
-                    for (Seat seat : mLeftSelectedSeat.getItsStudent().getItsPastSeats()) {
-                        if (seat.getRecentSeatedLev() == ClassInHandApplication.SEATED_LEFT) {
-                            seat.setRecentSeatedLev(ClassInHandApplication.SEATED_NOT);
-                        } else {  // SEATED_BOTH
-                            seat.setRecentSeatedLev(ClassInHandApplication.SEATED_RIGHT);
+                    for (PersonalHistory p : mLeftSelectedSeat.getItsStudent().getHistories()) {
+                        seat = mNewPlan.getmSeats().get(p.seatId);
+                        if(seat.getRecentSeatedFlag() == ClassInHandApplication.SEATED_BOTH) {
+                            seat.setRecentSeatedFlag(ClassInHandApplication.SEATED_RIGHT);
+                        }
+                        else if(seat.getRecentSeatedFlag() == ClassInHandApplication.SEATED_LEFT) {
+                            seat.setRecentSeatedFlag(ClassInHandApplication.SEATED_NOT);
                         }
                     }
-                    mLeftSelectedSeat.getItsStudent().getItsPastSeats().clear();
                 }
-                mLeftSelectedSeat.setSelected(ClassInHandApplication.SEATED_NOT);
+                mLeftSelectedSeat.setSelectedFlag(ClassInHandApplication.SEATED_NOT);
                 mLeftSelectedSeat = null;
                 layout_onseatclick_left.removeAllViews();
                 mLeftCancelButton.setVisibility(View.INVISIBLE);
@@ -385,17 +384,19 @@ public class AddSeatplanActivity extends ActionBarActivity {
         mRightCancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Seat seat;
                 if(mRightSelectedSeat.getItsStudent() != null) {
-                    for (Seat seat : mRightSelectedSeat.getItsStudent().getItsPastSeats()) {
-                        if (seat.getRecentSeatedLev() == ClassInHandApplication.SEATED_RIGHT) {
-                            seat.setRecentSeatedLev(ClassInHandApplication.SEATED_NOT);
-                        } else {      // SEATED_BOTH
-                            seat.setRecentSeatedLev(ClassInHandApplication.SEATED_LEFT);
+                    for (PersonalHistory p : mRightSelectedSeat.getItsStudent().getHistories()) {
+                        seat = mNewPlan.getmSeats().get(p.seatId);
+                        if (seat.getRecentSeatedFlag() == ClassInHandApplication.SEATED_BOTH) {
+                            seat.setRecentSeatedFlag(ClassInHandApplication.SEATED_LEFT);
+                        }
+                        else if (seat.getRecentSeatedFlag() == ClassInHandApplication.SEATED_RIGHT) {
+                            seat.setRecentSeatedFlag(ClassInHandApplication.SEATED_NOT);
                         }
                     }
-                    mRightSelectedSeat.getItsStudent().getItsPastSeats().clear();
                 }
-                mRightSelectedSeat.setSelected(ClassInHandApplication.SEATED_NOT);
+                mRightSelectedSeat.setSelectedFlag(ClassInHandApplication.SEATED_NOT);
                 mRightSelectedSeat = null;
                 layout_onseatclick_right.removeAllViews();
                 mRightCancelButton.setVisibility(View.INVISIBLE);
@@ -418,7 +419,7 @@ public class AddSeatplanActivity extends ActionBarActivity {
                 return;
             }
             selectedStudent = mLeftSelectedSeat.getItsStudent();
-            mLeftSelectedSeat.setSelected(ClassInHandApplication.SEATED_LEFT);
+            mLeftSelectedSeat.setSelectedFlag(ClassInHandApplication.SEATED_LEFT);
             /* 선택한 자리가 빈자리일 경우 */
             if(selectedStudent == null) {
                 if(mRightSelectedSeat == null) {    // 오른쪽 선택된자리 없음 : 첫 선택이 빈자리일 경우임
@@ -446,33 +447,27 @@ public class AddSeatplanActivity extends ActionBarActivity {
                 ViewGroup.LayoutParams params = tv.getLayoutParams();
                 params.width = ViewGroup.LayoutParams.WRAP_CONTENT;
                 tv.setLayoutParams(params);
-                historyCursor = dbHelper.getHistory(selectedStudent.getId());
-                if (historyCursor.moveToFirst()) {
-                    int historyCount = 0;
-                    while (!historyCursor.isAfterLast() && historyCount < 3) {
-                        where = historyCursor.getInt(historyCursor.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_ID));
-                        selectedStudent.getItsPastSeats().add(mNewPlan.getmSeats().get(where));
-                        when = historyCursor.getLong(historyCursor.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_APPLY_DATE));
-                        cal.setTimeInMillis(when);
-                        String whenStr = String.format("%02d.%02d ~\n", cal.get(Calendar.MONTH) + 1, cal.get(Calendar.DAY_OF_MONTH));
-                        String whereStr = ConvertAbsSeatToSegAndRow(where) + ", ";
-                        Student pairStudent = application.findStudent(dbHelper.getSeatedStudent(where % 2 == 0 ? where + 1 : where - 1, when));
-                        String pairStr = pairStudent == null ? "" : pairStudent.getName();
-                        tv = new TextView(this);
-                        tv.setText(whenStr + whereStr + pairStr);
-                        tv.setTextSize(14);
-                        layout_onseatclick_left.addView(tv);
-                        historyCursor.moveToNext();
-                        historyCount++;
+
+                int historyCount = 1;
+                for(PersonalHistory p : selectedStudent.getHistories()) {
+                    String whenStr = String.format("%02d.%02d ~\n", p.applyDate.get(Calendar.MONTH) + 1, p.applyDate.get(Calendar.DAY_OF_MONTH));
+                    String whereStr = ConvertAbsSeatToSegAndRow(p.seatId) + ", ";
+                    Student pairStudent = application.findStudent(p.pairId);
+                    String pairStr = pairStudent == null ? "" : pairStudent.getName();
+                    tv = new TextView(this);
+                    tv.setText(whenStr + whereStr + pairStr);
+                    tv.setTextSize(14);
+                    layout_onseatclick_left.addView(tv);
+
+                    Seat seat = mNewPlan.getmSeats().get(p.seatId);
+                    if(seat.getRecentSeatedFlag() == 0) {
+                        seat.setRecentSeatedFlag(ClassInHandApplication.SEATED_LEFT);
                     }
-                    for (Seat seat : selectedStudent.getItsPastSeats()) {
-                        if(seat.getRecentSeatedLev() == 0) {
-                            seat.setRecentSeatedLev(ClassInHandApplication.SEATED_LEFT);
-                        }
-                        else {
-                            seat.setRecentSeatedLev(ClassInHandApplication.SEATED_BOTH);
-                        }
+                    else {
+                        seat.setRecentSeatedFlag(ClassInHandApplication.SEATED_BOTH);
                     }
+
+                    if(++historyCount > ClassInHandApplication.NUM_HISTORY) break;
                 }
                 mLeftCancelButton.setVisibility(View.VISIBLE);
             }
@@ -486,7 +481,7 @@ public class AddSeatplanActivity extends ActionBarActivity {
                 return;
             }
             selectedStudent = mRightSelectedSeat.getItsStudent();
-            mRightSelectedSeat.setSelected(ClassInHandApplication.SEATED_RIGHT);
+            mRightSelectedSeat.setSelectedFlag(ClassInHandApplication.SEATED_RIGHT);
             /* 선택한 자리가 빈자리일 경우 */
             if(selectedStudent == null) {
                 if(mLeftSelectedSeat == null) {     // 일어날 수 없는 경우임.
@@ -510,33 +505,27 @@ public class AddSeatplanActivity extends ActionBarActivity {
                 ViewGroup.LayoutParams params = tv.getLayoutParams();
                 params.width = ViewGroup.LayoutParams.WRAP_CONTENT;
                 tv.setLayoutParams(params);
-                historyCursor = dbHelper.getHistory(selectedStudent.getId());
-                if (historyCursor.moveToFirst()) {
-                    int historyCount = 0;
-                    while (!historyCursor.isAfterLast() && historyCount < 3) {
-                        where = historyCursor.getInt(historyCursor.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_ID));
-                        selectedStudent.getItsPastSeats().add(mNewPlan.getmSeats().get(where));
-                        when = historyCursor.getLong(historyCursor.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_APPLY_DATE));
-                        cal.setTimeInMillis(when);
-                        String whenStr = String.format("%02d.%02d ~\n", cal.get(Calendar.MONTH) + 1, cal.get(Calendar.DAY_OF_MONTH));
-                        String whereStr = ConvertAbsSeatToSegAndRow(where) + ", ";
-                        Student pairStudent = application.findStudent(dbHelper.getSeatedStudent(where % 2 == 0 ? where + 1 : where - 1, when));
-                        String pairStr = pairStudent == null ? "" : pairStudent.getName();
-                        tv = new TextView(this);
-                        tv.setText(whenStr + whereStr + pairStr);
-                        tv.setTextSize(14);
-                        layout_onseatclick_right.addView(tv);
-                        historyCursor.moveToNext();
-                        historyCount++;
+
+                int historyCount = 1;
+                for(PersonalHistory p : selectedStudent.getHistories()) {
+                    String whenStr = String.format("%02d.%02d ~\n", p.applyDate.get(Calendar.MONTH) + 1, p.applyDate.get(Calendar.DAY_OF_MONTH));
+                    String whereStr = ConvertAbsSeatToSegAndRow(p.seatId) + ", ";
+                    Student pairStudent = application.findStudent(p.pairId);
+                    String pairStr = pairStudent == null ? "" : pairStudent.getName();
+                    tv = new TextView(this);
+                    tv.setText(whenStr + whereStr + pairStr);
+                    tv.setTextSize(14);
+                    layout_onseatclick_right.addView(tv);
+
+                    Seat seat = mNewPlan.getmSeats().get(p.seatId);
+                    if(seat.getRecentSeatedFlag() == 0) {
+                        seat.setRecentSeatedFlag(ClassInHandApplication.SEATED_RIGHT);
                     }
-                    for (Seat seat : selectedStudent.getItsPastSeats()) {
-                        if(seat.getRecentSeatedLev() == 0) {
-                            seat.setRecentSeatedLev(ClassInHandApplication.SEATED_RIGHT);
-                        }
-                        else {
-                            seat.setRecentSeatedLev(ClassInHandApplication.SEATED_BOTH);
-                        }
+                    else {
+                        seat.setRecentSeatedFlag(ClassInHandApplication.SEATED_BOTH);
                     }
+
+                    if(++historyCount > ClassInHandApplication.NUM_HISTORY) break;
                 }
                 mRightCancelButton.setVisibility(View.VISIBLE);
             }

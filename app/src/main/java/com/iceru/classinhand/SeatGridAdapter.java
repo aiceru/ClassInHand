@@ -66,7 +66,7 @@ public class SeatGridAdapter extends BaseAdapter {
             iv_gender.setImageDrawable(null);
         }
 
-        switch(seat.getSelected()) {
+        switch(seat.getSelectedFlag()) {
             case ClassInHandApplication.SEATED_LEFT:
                 rlayout.setBackgroundColor(mContext.getResources().getColor(R.color.pink_200));
                 break;
@@ -78,7 +78,7 @@ public class SeatGridAdapter extends BaseAdapter {
                 break;
         }
 
-        switch(seat.getRecentSeatedLev()) {
+        switch(seat.getRecentSeatedFlag()) {
             case ClassInHandApplication.SEATED_LEFT:
                 iv_seated_left.setImageResource(R.drawable.ic_error_pink_500_24px);
                 iv_seated_left.setVisibility(View.VISIBLE);

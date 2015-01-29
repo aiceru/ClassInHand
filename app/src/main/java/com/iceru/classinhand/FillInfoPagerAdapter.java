@@ -10,7 +10,6 @@ import android.view.View;
  * Created by iceru on 14. 8. 9.
  */
 public class FillInfoPagerAdapter extends FragmentPagerAdapter{
-	private FillStudentInfoFragment mFillStudentInfoFragment;
 	private FillRoleInfoFragment mFillRoleInfoFragment;
     private StudentListFragment mStudentListFragment;
 	private Context mContext;

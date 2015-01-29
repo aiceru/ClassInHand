@@ -57,28 +57,6 @@ public class StudentListFragment extends Fragment {
                     }
                 }));
 
-        /*SwipeDismissRecyclerViewTouchListener touchListener =
-                new SwipeDismissRecyclerViewTouchListener(
-                        mStudentListRecyclerView,
-                        new SwipeDismissRecyclerViewTouchListener.DismissCallbacks() {
-                            @Override
-                            public boolean canDismiss(int position) {
-                                return true;
-                            }
-
-                            @Override
-                            public void onDismiss(RecyclerView recyclerView, int[] reverseSortedPositions) {
-                                for(int position : reverseSortedPositions) {
-                                    application.removeStudent((Student)mStudentListAdapter.getItem(position));
-                                }
-                                mStudentListAdapter.notifyDataSetChanged();
-                            }
-                        }
-                );
-
-        mStudentListRecyclerView.setOnTouchListener(touchListener);
-        mStudentListRecyclerView.setOnScrollListener(touchListener.makeScrollListener());*/
-
         return rootView;
     }
 }

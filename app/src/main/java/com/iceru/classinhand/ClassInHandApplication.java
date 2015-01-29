@@ -34,13 +34,16 @@ import java.util.TreeMap;
 )
 public class ClassInHandApplication extends Application {
 
-    /* Public Constants */
+    /* Global Constants */
     public static final int MAX_STUDENTS = 99;
     public static final int SEATED_NOT = 0;
     public static final int SEATED_LEFT = 1;
     public static final int SEATED_RIGHT = 2;
     public static final int SEATED_BOTH = 3;
+
+    /* Global Variables */
     public static int       NEXT_ID;
+    public static int       NUM_HISTORY = 3;        // 임시로 3. 추후 설정 Activity에서 유저가 바꿀수 있게.
 
     private static ClassInHandApplication appInstance;
 
@@ -74,56 +77,9 @@ public class ClassInHandApplication extends Application {
             }
         };
 
-        Cursor c = dbHelper.getStudentsList();
-        while (c.moveToNext()) {
-            int id = c.getInt(c.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_ID));
-            int attendNum = c.getInt(c.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_ATTEND_NUM));
-            String name = c.getString(c.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_NAME));
-            boolean isBoy = (c.getInt(c.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_GENDER)) == 1);
-            long inDate = c.getInt(c.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_IN_DATE));
-            long outDate = c.getInt(c.getColumnIndexOrThrow(ClassDBContract.StudentInfo.ColUMN_NAME_OUT_DATE));
-
-            Student s = new Student(id, attendNum, name, isBoy, inDate, outDate);
-
-            mIdMap.put(id, attendNum);
-            mStudents.put(attendNum, s);
-
-            NEXT_ID = s.getId() + 1;
-        }
-        c.close();
-
-        mSeatplans = new ArrayList<>();
-        c = dbHelper.getSavedDateList();
-        while(c.moveToNext()) {
-            long date = c.getLong(c.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_APPLY_DATE));
-            Cursor cursorForDate = dbHelper.getSeatplan(date);
-
-            ArrayList<Seat> aSeats = new ArrayList<>();
-            while (cursorForDate.moveToNext()) {
-                int seatId = cursorForDate.getInt(cursorForDate.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_ID));
-                int studentId = cursorForDate.getInt(cursorForDate.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_STUDENT_ID));
-                aSeats.add(new Seat(seatId, mStudents.get(mIdMap.get(studentId))));
-            }
-
-            GregorianCalendar cal = new GregorianCalendar();
-            cal.setTimeInMillis(date);
-            mSeatplans.add(new Seatplan(cal, aSeats));
-
-            cursorForDate.close();
-        }
-        c.close();
-        /*ArrayList<Seat> temparray = new ArrayList<>();
-        ArrayList<Seat> temparray2 = new ArrayList<>();
-        int i = 0;
-        for(Map.Entry<Integer, Student> entry : mStudents.entrySet()) {
-            Seat s = new Seat(i++, entry.getValue());
-            temparray.add(s);
-            temparray2.add(s);
-        }
-        Seatplan sp = new Seatplan(new GregorianCalendar(2014, 12, 12), temparray);
-        Seatplan sp2 = new Seatplan(new GregorianCalendar(2014, 12, 25), temparray2);
-        mSeatplans.add(sp);
-        mSeatplans.add(sp2);*/
+        initStudentList();
+        initSeatplanList();
+        initHistories();
     }
 
     public static ClassInHandApplication getInstance() {
@@ -142,13 +98,6 @@ public class ClassInHandApplication extends Application {
         return dbHelper;
     }
 
-    public void addStudentAll(TreeMap<Integer, Student> addingStudents) {
-        for(Map.Entry<Integer, Student> entry : addingStudents.entrySet()) {
-            Student student = entry.getValue();
-            addStudent(student);
-        }
-    }
-
     public boolean addStudent(Student student) {
         boolean exist = null != mStudents.get(student.getAttendNum());
         if(!exist) {
@@ -159,9 +108,16 @@ public class ClassInHandApplication extends Application {
         return !exist;
     }
 
-    public Student findStudent(int Id) {
-        if(mIdMap.containsKey(Id)) return mStudents.get(mIdMap.get(Id));
-        else return mPastStudents.get(Id);
+    public void addStudentAll(TreeMap<Integer, Student> addingStudents) {
+        for(Map.Entry<Integer, Student> entry : addingStudents.entrySet()) {
+            Student student = entry.getValue();
+            addStudent(student);
+        }
+    }
+
+    public Student findStudent(int id) {
+        if(mIdMap.containsKey(id)) return mStudents.get(mIdMap.get(id));
+        else return mPastStudents.get(id);
     }
 
     public boolean removeStudent(Student student) {
@@ -183,12 +139,14 @@ public class ClassInHandApplication extends Application {
         mSeatplans.add(plan);
         Collections.sort(mSeatplans, mSeatplanComparator);
         dbHelper.insert(plan);
+        initHistories();
     }
 
     public void removeSeatplan(Seatplan plan) {
         mSeatplans.remove(plan);
         Collections.sort(mSeatplans, mSeatplanComparator);
         dbHelper.deleteSeatPlan(plan.getmApplyDate().getTimeInMillis());
+        initHistories();
     }
 
     public void removeSeatplan(GregorianCalendar cal) {
@@ -203,6 +161,91 @@ public class ClassInHandApplication extends Application {
     public void removeAllSeatplans() {
         mSeatplans.clear();
         dbHelper.deleteAllSeatplans();
+    }
+
+    /**
+     * DB에서 학생 리스트를 읽어 mStudents 트리맵을 구성한다.
+     */
+    private void initStudentList() {
+        int id, attendNum;
+        String name;
+        boolean isBoy;
+        long inDate, outDate;
+
+        Cursor studentCursor = dbHelper.getStudentsList();
+        while (studentCursor.moveToNext()) {
+            id = studentCursor.getInt(studentCursor.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_ID));
+            attendNum = studentCursor.getInt(studentCursor.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_ATTEND_NUM));
+            name = studentCursor.getString(studentCursor.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_NAME));
+            isBoy = (studentCursor.getInt(studentCursor.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_GENDER)) == 1);
+            inDate = studentCursor.getInt(studentCursor.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_IN_DATE));
+            outDate = studentCursor.getInt(studentCursor.getColumnIndexOrThrow(ClassDBContract.StudentInfo.ColUMN_NAME_OUT_DATE));
+
+            Student s = new Student(id, attendNum, name, isBoy, inDate, outDate);
+
+            mIdMap.put(id, attendNum);
+            mStudents.put(attendNum, s);
+
+            NEXT_ID = s.getId() + 1;
+        }
+        studentCursor.close();
+    }
+
+    /**
+     * DB에서 Seatplan history를 읽어 mSeatplans 리스트를 구성한다.
+     */
+    private void initSeatplanList() {
+        mSeatplans = new ArrayList<>();
+        Cursor c = dbHelper.getSavedDateList();
+        while(c.moveToNext()) {
+            long date = c.getLong(c.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_APPLY_DATE));
+            Cursor cursorForDate = dbHelper.getSeatplan(date);
+
+            ArrayList<Seat> aSeats = new ArrayList<>();
+            while (cursorForDate.moveToNext()) {
+                int seatId = cursorForDate.getInt(cursorForDate.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_ID));
+                int studentId = cursorForDate.getInt(cursorForDate.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_STUDENT_ID));
+                aSeats.add(new Seat(seatId, mStudents.get(mIdMap.get(studentId))));
+            }
+
+            GregorianCalendar cal = new GregorianCalendar();
+            cal.setTimeInMillis(date);
+            mSeatplans.add(new Seatplan(cal, aSeats));
+
+            cursorForDate.close();
+        }
+        c.close();
+    }
+
+    /**
+     * 각 Student의 과거 앉았던 자리 List 를 구성한다.
+     */
+    private void initHistories() {
+        Cursor historyCursor;
+        GregorianCalendar cal;
+        int studentId, seatId, pairId;
+        Student student;
+        long date;
+
+        for(TreeMap.Entry<Integer, Student> entry : mStudents.entrySet()) {
+            student = entry.getValue();
+            student.getHistories().clear();
+
+            studentId = student.getId();
+            historyCursor = dbHelper.getHistory(studentId);
+
+            while(historyCursor.moveToNext()) {
+                cal = new GregorianCalendar();
+                date = historyCursor.getLong(historyCursor.getColumnIndexOrThrow(
+                        ClassDBContract.SeatHistory.COLUMN_NAME_APPLY_DATE));
+                cal.setTimeInMillis(date);
+                seatId = historyCursor.getInt(historyCursor.getColumnIndexOrThrow(
+                        ClassDBContract.SeatHistory.COLUMN_NAME_ID));
+                pairId = dbHelper.getSeatedStudent(seatId % 2 == 0? seatId+1 : seatId-1, date);
+                student.getHistories().add(new PersonalHistory(cal, seatId, pairId));
+            }
+            historyCursor.close();
+        }
     }
 
     /* For Test only... create test dummy data */

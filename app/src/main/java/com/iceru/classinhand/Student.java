@@ -1,34 +1,27 @@
 package com.iceru.classinhand;
 
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.TreeMap;
 
 /**
  * Created by iceru on 14. 8. 13.
  */
-public class Student implements Cloneable {
+public class Student {
 
     private int     id;
 	private int		attendNum;
 	private String	name;
 	private boolean isBoy;		// true -> boy, false -> girl... T/F has no meaning. :)
-	//private Seat    itsCurrentSeat;
-    private ArrayList<Seat> itsPastSeats;
+    private ArrayList<PersonalHistory> histories;
 
     private long    inDate;
     private long    outDate;
-
-    private double     seatPoint = 0;  // 자리 배치할 때 사용
-    private double     pairPoint = 0;  // 짝 배치할 때 사용
 
 	public Student(int id, int attendNum, String name, boolean isBoy, long inDate, long outDate) {
         this.id = id;
 		this.attendNum = attendNum;
 		this.name = name;
 		this.isBoy = isBoy;
-		//this.itsCurrentSeat = null;
-        this.itsPastSeats = new ArrayList<>();
+        this.histories = new ArrayList<>();
 
         this.inDate = inDate;
         this.outDate = outDate;
@@ -50,14 +43,6 @@ public class Student implements Cloneable {
 		return isBoy;
 	}
 
-	/*public Seat getItsCurrentSeat() {
-		return itsCurrentSeat;
-	}*/
-
-	/*public void setItsCurrentSeat(Seat itsCurrentSeat) {
-		this.itsCurrentSeat = itsCurrentSeat;
-	}*/
-
     public long getInDate() {
         return inDate;
     }
@@ -66,23 +51,7 @@ public class Student implements Cloneable {
         return outDate;
     }
 
-    public double getSeatPoint() {
-        return seatPoint;
-    }
-
-    public double getPairPoint() {
-        return pairPoint;
-    }
-
-    public void setSeatPoint(double seatPoint) {
-        this.seatPoint = seatPoint;
-    }
-
-    public void setPairPoint(double pairPoint) {
-        this.pairPoint = pairPoint;
-    }
-
-    public ArrayList<Seat> getItsPastSeats() {
-        return itsPastSeats;
+    public ArrayList<PersonalHistory> getHistories() {
+        return histories;
     }
 }
