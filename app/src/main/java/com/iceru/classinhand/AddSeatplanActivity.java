@@ -252,6 +252,76 @@ public class AddSeatplanActivity extends ActionBarActivity {
         dialog.show();
     }
 
+    private void changeSeat() {
+        Seat seat;
+        if(mLeftSelectedSeat.getItsStudent() != null) {
+            for (PersonalHistory p : mLeftSelectedSeat.getItsStudent().getHistories()) {
+                seat = mNewPlan.getmSeats().get(p.seatId);
+                seat.setRecentSeatedFlag(ClassInHandApplication.SEATED_NOT);
+            }
+        }
+        if(mRightSelectedSeat.getItsStudent() != null) {
+            for (PersonalHistory p : mRightSelectedSeat.getItsStudent().getHistories()) {
+                seat = mNewPlan.getmSeats().get(p.seatId);
+                seat.setRecentSeatedFlag(ClassInHandApplication.SEATED_NOT);
+            }
+        }
+
+        Student tempStd = mLeftSelectedSeat.getItsStudent();
+        mLeftSelectedSeat.setItsStudent(mRightSelectedSeat.getItsStudent());
+        mRightSelectedSeat.setItsStudent(tempStd);
+
+        mLeftSelectedSeat.setSelectedFlag(ClassInHandApplication.SEATED_NOT);
+        mLeftSelectedSeat = null;
+        mRightSelectedSeat.setSelectedFlag(ClassInHandApplication.SEATED_NOT);
+        mRightSelectedSeat = null;
+
+        layout_onseatclick_left.removeAllViews();
+        layout_onseatclick_right.removeAllViews();
+        mLeftCancelButton.setVisibility(View.GONE);
+        mRightCancelButton.setVisibility(View.GONE);
+
+        layout_onseatclick_inflated.setVisibility(View.GONE);
+
+        mSeatGridAdapter.notifyDataSetChanged();
+    }
+
+    private void vacateSeat() {
+        Seat selectedSeat = mLeftSelectedSeat == null ? mRightSelectedSeat : mLeftSelectedSeat;
+        Seat seat;
+
+        Student victim = selectedSeat.getItsStudent();
+        if(victim != null) {
+            selectedSeat.setItsStudent(null);
+            mRemainStudents.put(victim.getAttendNum(), victim);
+
+            for (PersonalHistory p : victim.getHistories()) { // BOTH인 경우는 없음!
+                seat = mNewPlan.getmSeats().get(p.seatId);
+                seat.setRecentSeatedFlag(ClassInHandApplication.SEATED_NOT);
+            }
+        }
+        // Vacate 버튼이 Visible 한 경우는, 왼쪽 오른쪽 중 하나만 선택된 상황이고, 거기서 자리비움 버튼을 누르면
+        // 왼쪽 오른쪽 양쪽을 모두 null 로 초기화해도 무방함. (어차피 다른 한쪽은 원래 null 이었으므로)
+        if(mLeftSelectedSeat != null) {
+            mLeftSelectedSeat.setSelectedFlag(ClassInHandApplication.SEATED_NOT);
+        }
+        if(mRightSelectedSeat != null) {
+            mRightSelectedSeat.setSelectedFlag(ClassInHandApplication.SEATED_NOT);
+        }
+        mLeftSelectedSeat = null;
+        mRightSelectedSeat = null;
+
+        layout_onseatclick_left.removeAllViews();
+        layout_onseatclick_right.removeAllViews();
+        mLeftCancelButton.setVisibility(View.GONE);
+        mRightCancelButton.setVisibility(View.GONE);
+
+        layout_onseatclick_inflated.setVisibility(View.GONE);
+
+        mSeatGridAdapter.notifyDataSetChanged();
+        mRemainStudentListAdapter.notifyDataSetChanged();
+    }
+
     private void onSeatClick(int position) {
         final LayoutInflater inflater =  (LayoutInflater)this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         layout_onseatclick_inflated.setVisibility(View.VISIBLE);
@@ -276,79 +346,19 @@ public class AddSeatplanActivity extends ActionBarActivity {
         mChangeSeatButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Seat seat;
-                if(mLeftSelectedSeat.getItsStudent() != null) {
-                    for (PersonalHistory p : mLeftSelectedSeat.getItsStudent().getHistories()) {
-                        seat = mNewPlan.getmSeats().get(p.seatId);
-                        seat.setRecentSeatedFlag(ClassInHandApplication.SEATED_NOT);
-                    }
-                }
-                if(mRightSelectedSeat.getItsStudent() != null) {
-                    for (PersonalHistory p : mRightSelectedSeat.getItsStudent().getHistories()) {
-                        seat = mNewPlan.getmSeats().get(p.seatId);
-                        seat.setRecentSeatedFlag(ClassInHandApplication.SEATED_NOT);
-                    }
-                }
-
-                Student tempStd = mLeftSelectedSeat.getItsStudent();
-                mLeftSelectedSeat.setItsStudent(mRightSelectedSeat.getItsStudent());
-                mRightSelectedSeat.setItsStudent(tempStd);
-
-                mLeftSelectedSeat.setSelectedFlag(ClassInHandApplication.SEATED_NOT);
-                mLeftSelectedSeat = null;
-                mRightSelectedSeat.setSelectedFlag(ClassInHandApplication.SEATED_NOT);
-                mRightSelectedSeat = null;
-
-                layout_onseatclick_left.removeAllViews();
-                layout_onseatclick_right.removeAllViews();
-                mLeftCancelButton.setVisibility(View.GONE);
-                mRightCancelButton.setVisibility(View.GONE);
-
-                layout_onseatclick_inflated.setVisibility(View.GONE);
-
-                mSeatGridAdapter.notifyDataSetChanged();
+                changeSeat();
             }
         });
+
         /* 선택된 자리 비우기 버튼 (왼쪽 또는 오른쪽 한쪽만 선택되었을 때만 보임) */
         mVacateSeatButton = (Button)layout_onseatclick_inflated.findViewById(R.id.btn_vacate_seat);
         mVacateSeatButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Seat selectedSeat = mLeftSelectedSeat == null ? mRightSelectedSeat : mLeftSelectedSeat;
-                Seat seat;
-
-                Student victim = selectedSeat.getItsStudent();
-                if(victim != null) {
-                    selectedSeat.setItsStudent(null);
-                    mRemainStudents.put(victim.getAttendNum(), victim);
-
-                    for (PersonalHistory p : victim.getHistories()) { // BOTH인 경우는 없음! 이유는 아래와 동일
-                        seat = mNewPlan.getmSeats().get(p.seatId);
-                        seat.setRecentSeatedFlag(ClassInHandApplication.SEATED_NOT);
-                    }
-                }
-                // Vacate 버튼이 Visible 한 경우는, 왼쪽 오른쪽 중 하나만 선택된 상황이고, 거기서 자리비움 버튼을 누르면
-                // 왼쪽 오른쪽 양쪽을 모두 null 로 초기화해도 무방함. (어차피 다른 한쪽은 원래 null 이었으므로)
-                if(mLeftSelectedSeat != null) {
-                    mLeftSelectedSeat.setSelectedFlag(ClassInHandApplication.SEATED_NOT);
-                }
-                if(mRightSelectedSeat != null) {
-                    mRightSelectedSeat.setSelectedFlag(ClassInHandApplication.SEATED_NOT);
-                }
-                mLeftSelectedSeat = null;
-                mRightSelectedSeat = null;
-
-                layout_onseatclick_left.removeAllViews();
-                layout_onseatclick_right.removeAllViews();
-                mLeftCancelButton.setVisibility(View.GONE);
-                mRightCancelButton.setVisibility(View.GONE);
-
-                layout_onseatclick_inflated.setVisibility(View.GONE);
-
-                mSeatGridAdapter.notifyDataSetChanged();
-                mRemainStudentListAdapter.notifyDataSetChanged();
+                vacateSeat();
             }
         });
+
         /* 왼쪽 선택된 자리 선택취소 버튼 */
         mLeftCancelButton = (Button)layout_onseatclick_inflated.findViewById(R.id.btn_left_cancel);
         mLeftCancelButton.setOnClickListener(new View.OnClickListener() {
@@ -413,6 +423,7 @@ public class AddSeatplanActivity extends ActionBarActivity {
         /* 선택된 seat 가 없거나, 오른쪽 자리만 선택되어 있는 상태 */
         if(mLeftSelectedSeat == null) {
             mLeftSelectedSeat = mNewPlan.getmSeats().get(position);
+
             /* 중복 선택 검사! */
             if(mLeftSelectedSeat == mRightSelectedSeat) {
                 mLeftSelectedSeat = null;
