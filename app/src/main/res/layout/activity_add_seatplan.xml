@@ -53,6 +53,7 @@
                         tools:listitem="@layout/seat"/>
 
                     <com.shamanland.fab.FloatingActionButton
+                        android:id="@+id/btn_random_assign"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentBottom="true"

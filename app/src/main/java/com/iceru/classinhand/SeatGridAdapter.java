@@ -66,39 +66,30 @@ public class SeatGridAdapter extends BaseAdapter {
             iv_gender.setImageDrawable(null);
         }
 
-        switch(seat.getSelectedFlag()) {
-            case ClassInHandApplication.SEATED_LEFT:
-                rlayout.setBackgroundColor(mContext.getResources().getColor(R.color.pink_200));
-                break;
-            case ClassInHandApplication.SEATED_RIGHT:
-                rlayout.setBackgroundColor(mContext.getResources().getColor(R.color.light_blue_200));
-                break;
-            default:
-                rlayout.setBackgroundColor(mContext.getResources().getColor(R.color.grey_300));
-                break;
+        byte selectedFlag = seat.getSelectedFlag();
+        if((selectedFlag & ClassInHandApplication.SEATED_LEFT) != 0) {
+            rlayout.setBackgroundColor(mContext.getResources().getColor(R.color.pink_200));
+        }
+        else if((selectedFlag & ClassInHandApplication.SEATED_RIGHT) != 0) {
+            rlayout.setBackgroundColor(mContext.getResources().getColor(R.color.light_blue_200));
+        }
+        else {
+            rlayout.setBackgroundColor(mContext.getResources().getColor(R.color.grey_300));
         }
 
-        switch(seat.getRecentSeatedFlag()) {
-            case ClassInHandApplication.SEATED_LEFT:
-                iv_seated_left.setImageResource(R.drawable.ic_error_pink_500_24px);
-                iv_seated_left.setVisibility(View.VISIBLE);
-                iv_seated_right.setVisibility(View.GONE);
-                break;
-            case ClassInHandApplication.SEATED_RIGHT:
-                iv_seated_right.setImageResource(R.drawable.ic_error_custom_24px);
-                iv_seated_right.setVisibility(View.VISIBLE);
-                iv_seated_left.setVisibility(View.GONE);
-                break;
-            case ClassInHandApplication.SEATED_BOTH:
-                iv_seated_left.setImageResource(R.drawable.ic_error_pink_500_24px);
-                iv_seated_left.setVisibility(View.VISIBLE);
-                iv_seated_right.setImageResource(R.drawable.ic_error_custom_24px);
-                iv_seated_right.setVisibility(View.VISIBLE);
-                break;
-            default:
-                iv_seated_left.setVisibility(View.GONE);
-                iv_seated_right.setVisibility(View.GONE);
-                break;
+        byte seatedFlag = seat.getRecentSeatedFlag();
+        if((seatedFlag & ClassInHandApplication.SEATED_LEFT) != 0) {
+            iv_seated_left.setVisibility(View.VISIBLE);
+        }
+        else {
+            iv_seated_left.setVisibility(View.GONE);
+        }
+
+        if((seatedFlag & ClassInHandApplication.SEATED_RIGHT) != 0) {
+            iv_seated_right.setVisibility(View.VISIBLE);
+        }
+        else {
+            iv_seated_right.setVisibility(View.GONE);
         }
 
         return convertView;

@@ -24,6 +24,8 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.shamanland.fab.FloatingActionButton;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -50,6 +52,7 @@ public class AddSeatplanActivity extends ActionBarActivity {
 
     private LinearLayout                    layout_onseatclick_inflated, layout_onseatclick_left, layout_onseatclick_right;
     private Button                          mLeftCancelButton, mRightCancelButton, mChangeSeatButton, mVacateSeatButton;
+    private FloatingActionButton            mRandomAssignButton;
 
     private ListView                        mLeftDrawerListView, mRightDrawerListView;
     private TreeMapListViewAdapter          mRemainStudentListAdapter;
@@ -110,24 +113,28 @@ public class AddSeatplanActivity extends ActionBarActivity {
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
                 if(mLeftSelectedSeat != null) {
-                    mLeftSelectedSeat.setSelectedFlag(ClassInHandApplication.SEATED_NOT);
+                    mLeftSelectedSeat.clrSelectedFlag(ClassInHandApplication.SEATED_LEFT);
                     mLeftSelectedSeat = null;
                 }
-                if(mRightSelectedSeat != null) {
-                    mRightSelectedSeat.setSelectedFlag(ClassInHandApplication.SEATED_NOT);
-                    mRightSelectedSeat = null;
-                }
+                // drawer opens only when the selected (empty) seat is mLeftSelectedSeat
 
                 mVacateSeatButton.setVisibility(View.GONE);
 
                 layout_onseatclick_left.removeAllViews();
-                layout_onseatclick_right.removeAllViews();
+                //layout_onseatclick_right.removeAllViews();
                 mLeftCancelButton.setVisibility(View.GONE);
-                mRightCancelButton.setVisibility(View.GONE);
+                //mRightCancelButton.setVisibility(View.GONE);
 
                 layout_onseatclick_inflated.setVisibility(View.GONE);
+                mRandomAssignButton.setVisibility(View.VISIBLE);
 
                 mSeatGridAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                mVacateSeatButton.setVisibility(View.GONE);
             }
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
@@ -140,7 +147,7 @@ public class AddSeatplanActivity extends ActionBarActivity {
                     mLeftSelectedSeat.setItsStudent(candidate);
 
                     mRemainStudents.remove(candidate.getAttendNum());
-                    mLeftSelectedSeat.setSelectedFlag(ClassInHandApplication.SEATED_NOT);
+                    mLeftSelectedSeat.clrSelectedFlag(ClassInHandApplication.SEATED_LEFT);
                     layout_onseatclick_inflated.setVisibility(View.GONE);
 
                     mRemainStudentListAdapter.notifyDataSetChanged();
@@ -165,6 +172,8 @@ public class AddSeatplanActivity extends ActionBarActivity {
                 onSeatClick(position);
             }
         });
+
+        mRandomAssignButton = (FloatingActionButton)findViewById(R.id.btn_random_assign);
     }
 
     public void assignRandom(View view) {
@@ -257,13 +266,13 @@ public class AddSeatplanActivity extends ActionBarActivity {
         if(mLeftSelectedSeat.getItsStudent() != null) {
             for (PersonalHistory p : mLeftSelectedSeat.getItsStudent().getHistories()) {
                 seat = mNewPlan.getmSeats().get(p.seatId);
-                seat.setRecentSeatedFlag(ClassInHandApplication.SEATED_NOT);
+                seat.clrRecentSeatedFlag(ClassInHandApplication.SEATED_LEFT);
             }
         }
         if(mRightSelectedSeat.getItsStudent() != null) {
             for (PersonalHistory p : mRightSelectedSeat.getItsStudent().getHistories()) {
                 seat = mNewPlan.getmSeats().get(p.seatId);
-                seat.setRecentSeatedFlag(ClassInHandApplication.SEATED_NOT);
+                seat.clrRecentSeatedFlag(ClassInHandApplication.SEATED_RIGHT);
             }
         }
 
@@ -271,17 +280,20 @@ public class AddSeatplanActivity extends ActionBarActivity {
         mLeftSelectedSeat.setItsStudent(mRightSelectedSeat.getItsStudent());
         mRightSelectedSeat.setItsStudent(tempStd);
 
-        mLeftSelectedSeat.setSelectedFlag(ClassInHandApplication.SEATED_NOT);
+        mLeftSelectedSeat.clrSelectedFlag(ClassInHandApplication.SEATED_LEFT);
         mLeftSelectedSeat = null;
-        mRightSelectedSeat.setSelectedFlag(ClassInHandApplication.SEATED_NOT);
+        mRightSelectedSeat.clrSelectedFlag(ClassInHandApplication.SEATED_RIGHT);
         mRightSelectedSeat = null;
 
+        mChangeSeatButton.setVisibility(View.GONE);
         layout_onseatclick_left.removeAllViews();
         layout_onseatclick_right.removeAllViews();
         mLeftCancelButton.setVisibility(View.GONE);
         mRightCancelButton.setVisibility(View.GONE);
 
         layout_onseatclick_inflated.setVisibility(View.GONE);
+
+        mRandomAssignButton.setVisibility(View.VISIBLE);
 
         mSeatGridAdapter.notifyDataSetChanged();
     }
@@ -295,28 +307,32 @@ public class AddSeatplanActivity extends ActionBarActivity {
             selectedSeat.setItsStudent(null);
             mRemainStudents.put(victim.getAttendNum(), victim);
 
-            for (PersonalHistory p : victim.getHistories()) { // BOTH인 경우는 없음!
+            for (PersonalHistory p : victim.getHistories()) {
                 seat = mNewPlan.getmSeats().get(p.seatId);
-                seat.setRecentSeatedFlag(ClassInHandApplication.SEATED_NOT);
+                seat.clrRecentSeatedFlag(ClassInHandApplication.SEATED_LEFT);
+                seat.clrRecentSeatedFlag(ClassInHandApplication.SEATED_RIGHT);
             }
         }
         // Vacate 버튼이 Visible 한 경우는, 왼쪽 오른쪽 중 하나만 선택된 상황이고, 거기서 자리비움 버튼을 누르면
         // 왼쪽 오른쪽 양쪽을 모두 null 로 초기화해도 무방함. (어차피 다른 한쪽은 원래 null 이었으므로)
         if(mLeftSelectedSeat != null) {
-            mLeftSelectedSeat.setSelectedFlag(ClassInHandApplication.SEATED_NOT);
+            mLeftSelectedSeat.clrSelectedFlag(ClassInHandApplication.SEATED_LEFT);
         }
         if(mRightSelectedSeat != null) {
-            mRightSelectedSeat.setSelectedFlag(ClassInHandApplication.SEATED_NOT);
+            mRightSelectedSeat.clrSelectedFlag(ClassInHandApplication.SEATED_RIGHT);
         }
         mLeftSelectedSeat = null;
         mRightSelectedSeat = null;
 
+        mVacateSeatButton.setVisibility(View.GONE);
         layout_onseatclick_left.removeAllViews();
         layout_onseatclick_right.removeAllViews();
         mLeftCancelButton.setVisibility(View.GONE);
         mRightCancelButton.setVisibility(View.GONE);
 
         layout_onseatclick_inflated.setVisibility(View.GONE);
+
+        mRandomAssignButton.setVisibility(View.VISIBLE);
 
         mSeatGridAdapter.notifyDataSetChanged();
         mRemainStudentListAdapter.notifyDataSetChanged();
@@ -334,12 +350,11 @@ public class AddSeatplanActivity extends ActionBarActivity {
 
         ClassDBHelper dbHelper = ClassInHandApplication.getInstance().getDbHelper();
 
-        int where;
-        long when;
-        GregorianCalendar cal = new GregorianCalendar();
-        Cursor historyCursor;
         final Student selectedStudent;
         TextView tv;
+
+        /* First of all, disable RANDOM ASSIGN while selected seat exists */
+        mRandomAssignButton.setVisibility(View.GONE);
 
         /* 자리교환 버튼, 왼쪽/오른쪽 선택된 자리가 있을 경우 (null이 아닐 때)에만 보임 */
         mChangeSeatButton = (Button)layout_onseatclick_inflated.findViewById(R.id.btn_change_seat);
@@ -368,21 +383,17 @@ public class AddSeatplanActivity extends ActionBarActivity {
                 if(mLeftSelectedSeat.getItsStudent() != null) {
                     for (PersonalHistory p : mLeftSelectedSeat.getItsStudent().getHistories()) {
                         seat = mNewPlan.getmSeats().get(p.seatId);
-                        if(seat.getRecentSeatedFlag() == ClassInHandApplication.SEATED_BOTH) {
-                            seat.setRecentSeatedFlag(ClassInHandApplication.SEATED_RIGHT);
-                        }
-                        else if(seat.getRecentSeatedFlag() == ClassInHandApplication.SEATED_LEFT) {
-                            seat.setRecentSeatedFlag(ClassInHandApplication.SEATED_NOT);
-                        }
+                        seat.clrRecentSeatedFlag(ClassInHandApplication.SEATED_LEFT);
                     }
                 }
-                mLeftSelectedSeat.setSelectedFlag(ClassInHandApplication.SEATED_NOT);
+                mLeftSelectedSeat.clrSelectedFlag(ClassInHandApplication.SEATED_LEFT);
                 mLeftSelectedSeat = null;
                 layout_onseatclick_left.removeAllViews();
                 mLeftCancelButton.setVisibility(View.INVISIBLE);
                 mChangeSeatButton.setVisibility(View.INVISIBLE);
                 if (mRightSelectedSeat == null) {
                     layout_onseatclick_inflated.setVisibility(View.GONE);
+                    mRandomAssignButton.setVisibility(View.VISIBLE);
                 } else {
                     mVacateSeatButton.setVisibility(View.VISIBLE);
                 }
@@ -398,21 +409,17 @@ public class AddSeatplanActivity extends ActionBarActivity {
                 if(mRightSelectedSeat.getItsStudent() != null) {
                     for (PersonalHistory p : mRightSelectedSeat.getItsStudent().getHistories()) {
                         seat = mNewPlan.getmSeats().get(p.seatId);
-                        if (seat.getRecentSeatedFlag() == ClassInHandApplication.SEATED_BOTH) {
-                            seat.setRecentSeatedFlag(ClassInHandApplication.SEATED_LEFT);
-                        }
-                        else if (seat.getRecentSeatedFlag() == ClassInHandApplication.SEATED_RIGHT) {
-                            seat.setRecentSeatedFlag(ClassInHandApplication.SEATED_NOT);
-                        }
+                        seat.clrRecentSeatedFlag(ClassInHandApplication.SEATED_RIGHT);
                     }
                 }
-                mRightSelectedSeat.setSelectedFlag(ClassInHandApplication.SEATED_NOT);
+                mRightSelectedSeat.clrSelectedFlag(ClassInHandApplication.SEATED_RIGHT);
                 mRightSelectedSeat = null;
                 layout_onseatclick_right.removeAllViews();
                 mRightCancelButton.setVisibility(View.INVISIBLE);
                 mChangeSeatButton.setVisibility(View.INVISIBLE);
                 if (mLeftSelectedSeat == null) {
                     layout_onseatclick_inflated.setVisibility(View.GONE);
+                    mRandomAssignButton.setVisibility(View.VISIBLE);
                 } else {
                     mVacateSeatButton.setVisibility(View.VISIBLE);
                 }
@@ -471,12 +478,7 @@ public class AddSeatplanActivity extends ActionBarActivity {
                     layout_onseatclick_left.addView(tv);
 
                     Seat seat = mNewPlan.getmSeats().get(p.seatId);
-                    if(seat.getRecentSeatedFlag() == 0) {
-                        seat.setRecentSeatedFlag(ClassInHandApplication.SEATED_LEFT);
-                    }
-                    else {
-                        seat.setRecentSeatedFlag(ClassInHandApplication.SEATED_BOTH);
-                    }
+                    seat.setRecentSeatedFlag(ClassInHandApplication.SEATED_LEFT);
 
                     if(++historyCount > ClassInHandApplication.NUM_HISTORY) break;
                 }
@@ -529,12 +531,7 @@ public class AddSeatplanActivity extends ActionBarActivity {
                     layout_onseatclick_right.addView(tv);
 
                     Seat seat = mNewPlan.getmSeats().get(p.seatId);
-                    if(seat.getRecentSeatedFlag() == 0) {
-                        seat.setRecentSeatedFlag(ClassInHandApplication.SEATED_RIGHT);
-                    }
-                    else {
-                        seat.setRecentSeatedFlag(ClassInHandApplication.SEATED_BOTH);
-                    }
+                    seat.setRecentSeatedFlag(ClassInHandApplication.SEATED_RIGHT);
 
                     if(++historyCount > ClassInHandApplication.NUM_HISTORY) break;
                 }

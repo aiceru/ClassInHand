@@ -7,15 +7,16 @@ public class Seat {
 	private int id;
 	private Student itsStudent;
     private int pairSeatId;
-    private int recentSeatedFlag;
-    private int selectedFlag;
+    private byte recentSeatedFlag;
+    private byte selectedFlag;
     private Seatplan belongingPlan;
 
 	public Seat(int id, Student st) {
 		this.id = id;
 		this.itsStudent = st;
         this.pairSeatId = this.id % 2 == 0? this.id + 1 : this.id - 1;
-        this.recentSeatedFlag = ClassInHandApplication.SEATED_NOT;
+        this.recentSeatedFlag = 0x00;
+        this.selectedFlag = 0x00;
 	}
 
 	public Seat(int id) {
@@ -34,11 +35,11 @@ public class Seat {
         return pairSeatId;
     }
 
-    public int getRecentSeatedFlag() {
+    public byte getRecentSeatedFlag() {
         return recentSeatedFlag;
     }
 
-    public int getSelectedFlag() { return selectedFlag; }
+    public byte getSelectedFlag() { return selectedFlag; }
 
     public Seatplan getBelongingPlan() {
         return belongingPlan;
@@ -48,12 +49,20 @@ public class Seat {
 		this.itsStudent = itsStudent;
 	}
 
-    public void setRecentSeatedFlag(int lev) {
-        this.recentSeatedFlag = lev;
+    public void setRecentSeatedFlag(byte flag) {
+        this.recentSeatedFlag |= flag;
     }
 
-    public void setSelectedFlag(int where) {
-        this.selectedFlag = where;
+    public void clrRecentSeatedFlag(byte flag) {
+        this.recentSeatedFlag &= (~flag);
+    }
+
+    public void setSelectedFlag(byte flag) {
+        this.selectedFlag |= flag;
+    }
+
+    public void clrSelectedFlag(byte flag) {
+        this.selectedFlag &= (~flag);
     }
 
     public void setBelongingPlan(Seatplan p) {

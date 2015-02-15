@@ -36,10 +36,8 @@ public class ClassInHandApplication extends Application {
 
     /* Global Constants */
     public static final int MAX_STUDENTS = 99;
-    public static final int SEATED_NOT = 0;
-    public static final int SEATED_LEFT = 1;
-    public static final int SEATED_RIGHT = 2;
-    public static final int SEATED_BOTH = 3;
+    public static final byte SEATED_LEFT = 0x01;     // bit flag : 0000 0001
+    public static final byte SEATED_RIGHT = 0x02;    // bit flag : 0000 0010
 
     /* Global Variables */
     public static int       NEXT_ID;
