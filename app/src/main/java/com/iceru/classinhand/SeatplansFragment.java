@@ -19,6 +19,7 @@ import java.util.TreeMap;
  * Created by iceru on 14. 11. 13..
  */
 public class SeatplansFragment extends Fragment{
+    private static SeatplansFragment    thisObject = null;
     private ClassInHandApplication      application;
     private MainActivity                mainActivity;
 
@@ -28,9 +29,9 @@ public class SeatplansFragment extends Fragment{
     private RecyclerView.LayoutManager  mSeatplanLayoutManager;
     private SeatplansAdapter            mSeatplansAdapter;
 
-    public static SeatplansFragment newInstance() {
-        SeatplansFragment fragment = new SeatplansFragment();
-        return fragment;
+    public static SeatplansFragment getInstance() {
+        if(thisObject == null) thisObject = new SeatplansFragment();
+        return thisObject;
     }
 
     @Override

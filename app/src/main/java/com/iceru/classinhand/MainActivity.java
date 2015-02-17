@@ -165,10 +165,12 @@ public class MainActivity extends ActionBarActivity {
         FragmentManager fragmentManager = getFragmentManager();
         switch(position+1) {
             case 1:
-                fragmentManager.beginTransaction().replace(R.id.main_contents, SeatplansFragment.newInstance()).commit();
+                fragmentManager.beginTransaction().add(R.id.main_contents, SeatplansFragment.getInstance())
+                        .addToBackStack("seatplan_fragment").commit();
                 break;
             case 3:
-                fragmentManager.beginTransaction().replace(R.id.main_contents, FillInfoPagerFragment.newInstance()).commit();
+                fragmentManager.beginTransaction().replace(R.id.main_contents, FillInfoPagerFragment.getInstance())
+                        .addToBackStack("fillinfopager_fragment").commit();
                 break;
             case 4:
                 exportDB();

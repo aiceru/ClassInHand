@@ -17,12 +17,13 @@ import android.app.Fragment;
  */
 public class FillInfoPagerFragment extends Fragment {
 
+    private static FillInfoPagerFragment   thisObject = null;
     private SlidingTabLayout    mSlidingTabLayout;
     private ViewPager           mViewPager;
 
-	public static FillInfoPagerFragment newInstance() {
-		FillInfoPagerFragment fragment = new FillInfoPagerFragment();
-		return fragment;
+	public static FillInfoPagerFragment getInstance() {
+        if(thisObject == null) thisObject = new FillInfoPagerFragment();
+		return thisObject;
 	}
 
     @Override
