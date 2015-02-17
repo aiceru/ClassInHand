@@ -7,7 +7,7 @@
     android:background="#FFFFFF">
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/addseatplanactivity_toolbar"
+        android:id="@+id/seatplanactivity_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
@@ -15,13 +15,13 @@
         app:theme="@style/ThemeOverlay.AppCompat.ActionBar" />
 
     <android.support.v4.widget.DrawerLayout
-        android:id="@+id/addseatplanactivity_drawerlayout"
+        android:id="@+id/seatplanactivity_drawerlayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context="com.iceru.classinhand.MainActivity" >
 
         <FrameLayout
-            android:id="@+id/addseatplanactivity_mainframe"
+            android:id="@+id/seatplanactivity_mainframe"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -71,7 +71,7 @@
         </FrameLayout>
 
         <ListView
-            android:id="@+id/addseatplanactivity_left_drawer"
+            android:id="@+id/seatplanactivity_left_drawer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="left"
@@ -81,7 +81,7 @@
             android:dividerHeight="0dp" />
 
         <ListView
-            android:id="@+id/addseatplanactivity_right_drawer"
+            android:id="@+id/seatplanactivity_right_drawer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="right"

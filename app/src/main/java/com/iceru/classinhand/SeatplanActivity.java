@@ -34,7 +34,7 @@ import java.util.TreeMap;
 /**
  * Created by iceru on 14. 12. 19..
  */
-public class AddSeatplanActivity extends ActionBarActivity {
+public class SeatplanActivity extends ActionBarActivity {
     /* Application Class */
     private ClassInHandApplication          application;
 
@@ -64,7 +64,7 @@ public class AddSeatplanActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
 
         application = ClassInHandApplication.getInstance();
-        mStudents = application.getmStudents();
+        /*mStudents = application.getmStudents();
         mRemainStudents = new TreeMap<>(mStudents);
 
         mNewDate = new GregorianCalendar();
@@ -77,15 +77,15 @@ public class AddSeatplanActivity extends ActionBarActivity {
         for (int i = 0; i < mStudents.size(); i++) {
             Seat s = new Seat(i);
             mNewPlan.getmSeats().add(s);
-        }
+        }*/
 
         /* initialize Views */
         setContentView(R.layout.activity_seatplan);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.addseatplanactivity_toolbar);
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.addseatplanactivity_drawerlayout);
-        mLeftDrawerListView = (ListView) findViewById(R.id.addseatplanactivity_left_drawer);
-        mRightDrawerListView = (ListView) findViewById(R.id.addseatplanactivity_right_drawer);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.seatplanactivity_toolbar);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.seatplanactivity_drawerlayout);
+        mLeftDrawerListView = (ListView) findViewById(R.id.seatplanactivity_left_drawer);
+        mRightDrawerListView = (ListView) findViewById(R.id.seatplanactivity_right_drawer);
 
         toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
         setSupportActionBar(toolbar);
@@ -94,10 +94,10 @@ public class AddSeatplanActivity extends ActionBarActivity {
 
         int width = getResources().getDisplayMetrics().widthPixels / 2;
         DrawerLayout.LayoutParams params;
-        params = (android.support.v4.widget.DrawerLayout.LayoutParams) mLeftDrawerListView.getLayoutParams();
+        params = (DrawerLayout.LayoutParams) mLeftDrawerListView.getLayoutParams();
         params.width = width;
         mLeftDrawerListView.setLayoutParams(params);
-        params = (android.support.v4.widget.DrawerLayout.LayoutParams) mRightDrawerListView.getLayoutParams();
+        params = (DrawerLayout.LayoutParams) mRightDrawerListView.getLayoutParams();
         params.width = width;
         mRightDrawerListView.setLayoutParams(params);
 
