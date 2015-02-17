@@ -41,7 +41,7 @@ public class SeatplanActivity extends ActionBarActivity {
     /* Data Structures */
     private TreeMap<Integer, Student>       mStudents;
     private TreeMap<Integer, Student>       mRemainStudents;
-    private Seatplan                        mNewPlan;
+    private Seatplan                        mNewPlan, mOldPlan;
     private GregorianCalendar               mNewDate;
     private Seat                            mLeftSelectedSeat, mRightSelectedSeat;
 
@@ -65,9 +65,9 @@ public class SeatplanActivity extends ActionBarActivity {
 
         application = ClassInHandApplication.getInstance();
         /*mStudents = application.getmStudents();
-        mRemainStudents = new TreeMap<>(mStudents);
+        mRemainStudents = new TreeMap<>(mStudents);*/
 
-        mNewDate = new GregorianCalendar();
+        /*mNewDate = new GregorianCalendar();
         mNewDate.clear(Calendar.HOUR);
         mNewDate.clear(Calendar.MINUTE);
         mNewDate.clear(Calendar.SECOND);
@@ -101,9 +101,9 @@ public class SeatplanActivity extends ActionBarActivity {
         params.width = width;
         mRightDrawerListView.setLayoutParams(params);
 
-        mRemainStudentListAdapter = new TreeMapListViewAdapter(this, mRemainStudents);
+        /*mRemainStudentListAdapter = new TreeMapListViewAdapter(this, mRemainStudents);
         mLeftDrawerListView.setAdapter(mRemainStudentListAdapter);
-        mRightDrawerListView.setAdapter(mRemainStudentListAdapter);
+        mRightDrawerListView.setAdapter(mRemainStudentListAdapter);*/
 
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, null, R.string.drawer_open, R.string.drawer_close) {
             @Override
@@ -118,9 +118,7 @@ public class SeatplanActivity extends ActionBarActivity {
                 mVacateSeatButton.setVisibility(View.GONE);
 
                 layout_onseatclick_left.removeAllViews();
-                //layout_onseatclick_right.removeAllViews();
                 mLeftCancelButton.setVisibility(View.GONE);
-                //mRightCancelButton.setVisibility(View.GONE);
 
                 layout_onseatclick_inflated.setVisibility(View.GONE);
                 mRandomAssignButton.setVisibility(View.VISIBLE);
@@ -161,16 +159,39 @@ public class SeatplanActivity extends ActionBarActivity {
         gv_seats = (GridView) findViewById(R.id.gridview_newseatplan);
         layout_onseatclick_inflated = (LinearLayout) findViewById(R.id.linearlayout_onseatclick_inflated);
 
-        mSeatGridAdapter = new SeatGridAdapter(mNewPlan.getmSeats(), this);
-        gv_seats.setAdapter(mSeatGridAdapter);
-        gv_seats.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        //mSeatGridAdapter = new SeatGridAdapter(mNewPlan.getmSeats(), this);
+        //gv_seats.setAdapter(mSeatGridAdapter);
+        /*gv_seats.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 onSeatClick(position);
             }
-        });
+        });*/
 
         mRandomAssignButton = (FloatingActionButton) findViewById(R.id.btn_random_assign);
+
+        /*mNewDate = new GregorianCalendar();
+        DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                //if(view.isShown()) {
+                mNewDate.clear();
+                mNewDate.set(year, monthOfYear, dayOfMonth);
+
+                if (dateAlreadyExist(mNewDate)) {
+                    askOverwriteOrNot();
+                } else {
+                    application.addSeatplan(mNewPlan);
+                    finish();
+                }
+
+                // TODO : mStudents, mRemainStudents, mNewPlan 생성
+
+                //}
+            }
+        };
+        new DatePickerDialog(this, dateSetListener, mNewDate.get(Calendar.YEAR),
+                mNewDate.get(Calendar.MONTH), mNewDate.get(Calendar.DAY_OF_MONTH)).show();*/
     }
 
     public void assignRandom(View view) {
@@ -208,24 +229,7 @@ public class SeatplanActivity extends ActionBarActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_done) {
-            GregorianCalendar today = new GregorianCalendar();
-            DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
-                @Override
-                public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                    //if(view.isShown()) {
-                        mNewDate.clear();
-                        mNewDate.set(year, monthOfYear, dayOfMonth);
-                        mNewPlan.setmApplyDate(mNewDate);
-                        if (dateAlreadyExist(mNewDate)) {
-                            askOverwriteOrNot();
-                        } else {
-                            application.addSeatplan(mNewPlan);
-                            finish();
-                        }
-                    //}
-                }
-            };
-            new DatePickerDialog(this, dateSetListener, today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH)).show();
+
         }
         return super.onOptionsItemSelected(item);
     }
