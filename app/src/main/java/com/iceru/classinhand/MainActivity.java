@@ -162,13 +162,12 @@ public class MainActivity extends ActionBarActivity {
         }
         mCurrentSelectedPosition = position;
 
-        FragmentManager fragmentManager = getFragmentManager();
         switch(position+1) {
             case 1:
-                fragmentManager.beginTransaction().replace(R.id.main_contents, SeatplansFragment.newInstance()).commit();
+                getFragmentManager().beginTransaction().replace(R.id.main_contents, SeatplansFragment.getInstance()).commit();
                 break;
             case 3:
-                fragmentManager.beginTransaction().replace(R.id.main_contents, FillInfoPagerFragment.newInstance()).commit();
+                getFragmentManager().beginTransaction().replace(R.id.main_contents, FillInfoPagerFragment.getInstance()).commit();
                 break;
             case 4:
                 exportDB();
