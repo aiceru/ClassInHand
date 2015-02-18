@@ -55,6 +55,12 @@ public class MainActivity extends ActionBarActivity {
     private ActionBarDrawerToggle   mDrawerToggle;
 
     private int     mCurrentSelectedPosition = 0;
+
+    public void setmFragmentDepth(int mFragmentDepth) {
+        this.mFragmentDepth = mFragmentDepth;
+    }
+
+    private int     mFragmentDepth = 1;
     private boolean mFromSavedInstanceState;
     private boolean mUserLearnedDrawer;
 
@@ -165,12 +171,10 @@ public class MainActivity extends ActionBarActivity {
         FragmentManager fragmentManager = getFragmentManager();
         switch(position+1) {
             case 1:
-                fragmentManager.beginTransaction().add(R.id.main_contents, SeatplansFragment.getInstance())
-                        .addToBackStack("seatplan_fragment").commit();
+                fragmentManager.beginTransaction().replace(R.id.main_contents, SeatplansFragment.getInstance()).commit();
                 break;
             case 3:
-                fragmentManager.beginTransaction().replace(R.id.main_contents, FillInfoPagerFragment.getInstance())
-                        .addToBackStack("fillinfopager_fragment").commit();
+                fragmentManager.beginTransaction().replace(R.id.main_contents, FillInfoPagerFragment.getInstance()).commit();
                 break;
             case 4:
                 exportDB();
@@ -184,6 +188,17 @@ public class MainActivity extends ActionBarActivity {
                 break;
             default:
                 break;
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(mFragmentDepth > 1) {
+            getFragmentManager().popBackStackImmediate();
+            mFragmentDepth--;
+        }
+        else {
+            super.onBackPressed();
         }
     }
 

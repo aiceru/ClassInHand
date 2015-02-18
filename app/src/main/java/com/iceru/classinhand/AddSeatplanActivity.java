@@ -82,10 +82,10 @@ public class AddSeatplanActivity extends ActionBarActivity {
         /* initialize Views */
         setContentView(R.layout.activity_seatplan);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.addseatplanactivity_toolbar);
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.addseatplanactivity_drawerlayout);
-        mLeftDrawerListView = (ListView) findViewById(R.id.addseatplanactivity_left_drawer);
-        mRightDrawerListView = (ListView) findViewById(R.id.addseatplanactivity_right_drawer);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.seatplanactivity_toolbar);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.seatplanactivity_drawerlayout);
+        mLeftDrawerListView = (ListView) findViewById(R.id.seatplanactivity_left_drawer);
+        mRightDrawerListView = (ListView) findViewById(R.id.seatplanactivity_right_drawer);
 
         toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
         setSupportActionBar(toolbar);

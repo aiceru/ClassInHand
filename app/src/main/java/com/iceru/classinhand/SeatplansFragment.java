@@ -1,19 +1,15 @@
 package com.iceru.classinhand;
 
 import android.app.Fragment;
-import android.content.Intent;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.GregorianCalendar;
-import java.util.TreeMap;
 
 /**
  * Created by iceru on 14. 11. 13..
@@ -55,9 +51,13 @@ public class SeatplansFragment extends Fragment{
                 new RecyclerItemClickListener(mainActivity, new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        Intent intent = new Intent(mainActivity, DetailedSeatplanActivity.class);
+                        /*Intent intent = new Intent(mainActivity, SeatplanDetailFragment.class);
                         intent.putExtra(MainActivity.SEATPLAN_SELECTED_POSITION, position);
-                        startActivity(intent);
+                        startActivity(intent);*/
+                        mainActivity.getFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                                .add(R.id.main_contents, SeatplanDetailFragment.newInstance(position))
+                                .addToBackStack(null).commit();
+                        mainActivity.setmFragmentDepth(2);
                     }
                 })
         );
