@@ -7,6 +7,7 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 
 import org.acra.annotation.ReportsCrashes;
@@ -55,6 +56,8 @@ public class MainActivity extends ActionBarActivity {
     private ActionBarDrawerToggle   mDrawerToggle;
 
     private int     mCurrentSelectedPosition = 0;
+    private String  mDrawerTitle;
+    private String  mTitle;
 
     public void setmFragmentDepth(int mFragmentDepth) {
         this.mFragmentDepth = mFragmentDepth;
@@ -80,6 +83,7 @@ public class MainActivity extends ActionBarActivity {
             mCurrentSelectedPosition = savedInstanceState.getInt(STATE_SELECTED_POSITION);
             mFromSavedInstanceState = true;
         }
+        mDrawerTitle = getString(R.string.app_name);
 
         setContentView(R.layout.activity_main);
         initViews();
@@ -125,7 +129,7 @@ public class MainActivity extends ActionBarActivity {
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
                 //mDrawerToggle.syncState();
-                //getActionBar().setTitle(mTitle);
+                getSupportActionBar().setTitle(mTitle);
                 //invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
 
@@ -146,7 +150,7 @@ public class MainActivity extends ActionBarActivity {
                     sp.edit().putBoolean(PREF_USER_LEARNED_DRAWER, true).apply();
                 }
                 //mDrawerToggle.syncState();
-                //getActionBar().setTitle(mDrawerTitle);
+                getSupportActionBar().setTitle(mDrawerTitle);
                 //invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
         };
@@ -171,9 +175,11 @@ public class MainActivity extends ActionBarActivity {
         FragmentManager fragmentManager = getFragmentManager();
         switch(position+1) {
             case 1:
+                mTitle = getString(R.string.title_seatplan);
                 fragmentManager.beginTransaction().replace(R.id.main_contents, SeatplansFragment.getInstance()).commit();
                 break;
             case 3:
+                mTitle = getString(R.string.title_fillinfo);
                 fragmentManager.beginTransaction().replace(R.id.main_contents, FillInfoPagerFragment.getInstance()).commit();
                 break;
             case 4:
@@ -189,18 +195,26 @@ public class MainActivity extends ActionBarActivity {
             default:
                 break;
         }
+        getSupportActionBar().setTitle(mTitle);
     }
 
     @Override
+    public void onResume() {
+        this.selectItem(mCurrentSelectedPosition);
+        super.onResume();
+    }
+
+    /*@Override
     public void onBackPressed() {
         if(mFragmentDepth > 1) {
             getFragmentManager().popBackStackImmediate();
             mFragmentDepth--;
+            getSupportActionBar().setTitle(mTitle);
         }
         else {
             super.onBackPressed();
         }
-    }
+    }*/
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
@@ -296,19 +310,7 @@ public class MainActivity extends ActionBarActivity {
         }
         return super.onCreateOptionsMenu(menu);
     }
-    
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }*/
+    */
 
     private void exportDB() {
         File sd = Environment.getExternalStorageDirectory();

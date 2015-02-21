@@ -45,7 +45,7 @@
                 android:value="com.iceru.classinhand.MainActivity" />
         </activity>
         <activity
-            android:name=".SeatplanDetailFragment"
+            android:name=".SeatplanDetailActivity"
             android:label="@string/title_activity_detailed_seatplan"
             android:parentActivityName=".MainActivity" >
             <meta-data

@@ -1,7 +1,7 @@
 package com.iceru.classinhand;
 
 import android.app.Fragment;
-import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -51,13 +51,13 @@ public class SeatplansFragment extends Fragment{
                 new RecyclerItemClickListener(mainActivity, new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        /*Intent intent = new Intent(mainActivity, SeatplanDetailFragment.class);
+                        Intent intent = new Intent(mainActivity, SeatplanDetailActivity.class);
                         intent.putExtra(MainActivity.SEATPLAN_SELECTED_POSITION, position);
-                        startActivity(intent);*/
-                        mainActivity.getFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                        startActivity(intent);
+                        /*mainActivity.getFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                                 .add(R.id.main_contents, SeatplanDetailFragment.newInstance(position))
                                 .addToBackStack(null).commit();
-                        mainActivity.setmFragmentDepth(2);
+                        mainActivity.setmFragmentDepth(2);*/
                     }
                 })
         );
