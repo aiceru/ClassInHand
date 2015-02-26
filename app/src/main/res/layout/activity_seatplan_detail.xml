@@ -45,7 +45,7 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
             android:src="@drawable/ic_edit_white_24dp"
-            android:onClick="openModifySeatplanActivity"
+            android:onClick="onClickEditButton"
             app:floatingActionButtonColor="@color/fab_color"
             app:floatingActionButtonSize="normal"/>
 

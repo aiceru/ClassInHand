@@ -1,5 +1,8 @@
 package com.iceru.classinhand;
 
+import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -7,7 +10,6 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Gravity;
-import android.view.MenuItem;
 import android.view.View;
 
 import org.acra.annotation.ReportsCrashes;
@@ -19,6 +21,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import android.app.FragmentManager;
@@ -26,6 +30,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.widget.AdapterView;
+import android.widget.DatePicker;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -39,11 +44,7 @@ import android.widget.Toast;
 )
 public class MainActivity extends ActionBarActivity {
 
-    private static final String STATE_SELECTED_POSITION = "selected_navigation_drawer_position";
-    private static final String PREF_USER_LEARNED_DRAWER = "navigation_drawer_learned";
-
-    public static final String SEATPLAN_SELECTED_POSITION = "com.iceru.classinhand.SEATPLAN_SELECTED_POSITION";
-
+    private ClassInHandApplication application;
 	private ArrayList<Role> mRoles;
 	private int num_roleConsume;
 
@@ -59,13 +60,16 @@ public class MainActivity extends ActionBarActivity {
     private String  mDrawerTitle;
     private String  mTitle;
 
-    public void setmFragmentDepth(int mFragmentDepth) {
-        this.mFragmentDepth = mFragmentDepth;
-    }
-
     private int     mFragmentDepth = 1;
     private boolean mFromSavedInstanceState;
     private boolean mUserLearnedDrawer;
+
+    private GregorianCalendar mNewDate;
+    private GregorianCalendar mOldDate;
+
+    public void setmFragmentDepth(int mFragmentDepth) {
+        this.mFragmentDepth = mFragmentDepth;
+    }
 
     /**
      * Used to store the last screen title. For use in {link #restoreActionBar()}.
@@ -76,11 +80,13 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        application = ClassInHandApplication.getInstance();
+
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-        mUserLearnedDrawer = sp.getBoolean(PREF_USER_LEARNED_DRAWER, false);
+        mUserLearnedDrawer = sp.getBoolean(ClassInHandApplication.PREF_USER_LEARNED_DRAWER, false);
 
         if (savedInstanceState != null) {
-            mCurrentSelectedPosition = savedInstanceState.getInt(STATE_SELECTED_POSITION);
+            mCurrentSelectedPosition = savedInstanceState.getInt(ClassInHandApplication.STATE_SELECTED_POSITION);
             mFromSavedInstanceState = true;
         }
         mDrawerTitle = getString(R.string.app_name);
@@ -147,7 +153,7 @@ public class MainActivity extends ActionBarActivity {
                     mUserLearnedDrawer = true;
                     SharedPreferences sp = PreferenceManager
                             .getDefaultSharedPreferences(getApplicationContext());
-                    sp.edit().putBoolean(PREF_USER_LEARNED_DRAWER, true).apply();
+                    sp.edit().putBoolean(ClassInHandApplication.PREF_USER_LEARNED_DRAWER, true).apply();
                 }
                 //mDrawerToggle.syncState();
                 getSupportActionBar().setTitle(mDrawerTitle);
@@ -278,13 +284,58 @@ public class MainActivity extends ActionBarActivity {
 		return success;
 	}*/
 
-    public void openAddPersonActivity(View view) {
+    public void onClickNewPersonButton(View view) {
         Intent intent = new Intent(this, AddPersonActivity.class);
         startActivity(intent);
     }
 
-    public void openAddSeatplanActivity(View view) {
-        Intent intent = new Intent(this, AddSeatplanActivity.class);
+    public void onClickNewPlanButton(View view) {
+        mNewDate = new GregorianCalendar();
+
+        DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                mNewDate.clear();
+                mNewDate.set(year, monthOfYear, dayOfMonth);
+                if(application.findSeatplan(mNewDate) != null) {
+                    confirmOverwrite();
+                }
+                else {
+                    runSeatplanActivity();
+                }
+            }
+        };
+        DatePickerDialog dateDialog = new DatePickerDialog(this,
+                dateSetListener, mNewDate.get(Calendar.YEAR), mNewDate.get(Calendar.MONTH),
+                mNewDate.get(Calendar.DAY_OF_MONTH));
+        dateDialog.show();
+    }
+
+    private void confirmOverwrite() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.title_dialog_warning);
+        builder.setMessage(R.string.contents_dialog_seatplan_already_exists);
+        builder.setPositiveButton(R.string.action_overwrite, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked OK button
+                mOldDate = mNewDate;
+                runSeatplanActivity();
+            }
+        });
+        builder.setNegativeButton(R.string.action_cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User cancelled the dialog, Do nothing
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void runSeatplanActivity() {
+        Intent intent = new Intent(this, SeatplanEditActivity.class);
+        intent.putExtra(ClassInHandApplication.SEATPLAN_EDIT_NEWDATE, mNewDate.getTimeInMillis());
+        intent.putExtra(ClassInHandApplication.SEATPLAN_EDIT_OLDDATE,
+                mOldDate == null? 0 : mOldDate.getTimeInMillis());
         startActivity(intent);
     }
 

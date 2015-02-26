@@ -52,7 +52,7 @@ public class SeatplansFragment extends Fragment{
                     @Override
                     public void onItemClick(View view, int position) {
                         Intent intent = new Intent(mainActivity, SeatplanDetailActivity.class);
-                        intent.putExtra(MainActivity.SEATPLAN_SELECTED_POSITION, position);
+                        intent.putExtra(ClassInHandApplication.SEATPLAN_SELECTED_POSITION, position);
                         startActivity(intent);
                         /*mainActivity.getFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                                 .add(R.id.main_contents, SeatplanDetailFragment.newInstance(position))

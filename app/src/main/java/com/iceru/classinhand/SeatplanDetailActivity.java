@@ -1,13 +1,13 @@
 package com.iceru.classinhand;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.GridView;
 
@@ -27,7 +27,7 @@ public class SeatplanDetailActivity extends ActionBarActivity {
     /* Data Structures */
     private TreeMap<Integer, Student> mStudents;
     private Seatplan mSeatplan;
-    private GregorianCalendar mDate;
+    private GregorianCalendar mDate, mNewDate;
     private SeatGridAdapter mSeatGridAdapter;
 
     /* Views */
@@ -66,20 +66,81 @@ public class SeatplanDetailActivity extends ActionBarActivity {
         gv_seats.setAdapter(mSeatGridAdapter);
     }
 
-    public void openModifySeatplanActivity(View view) {
-        final GregorianCalendar newDate = new GregorianCalendar();
+    public void onClickEditButton(View view) {
+        /* Ask if changes ApplyDate or not */
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.contents_dialog_if_change_applydate);
+        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // YES, display datepicker to get new ApplyDate
+                displayDatepicker();
+            }
+        });
+        builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // No, set mNewDate to mDate (same)
+                mNewDate = mDate;
+                runSeatplanActivity();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void displayDatepicker() {
         DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                newDate.clear();
-                newDate.set(year, monthOfYear, dayOfMonth);
-
+                // TODO : 선택한 날짜의 중복처리!!
+                mNewDate = new GregorianCalendar();
+                mNewDate.clear();
+                mNewDate.set(year, monthOfYear, dayOfMonth);
+                if(mNewDate.compareTo(mDate) != 0 && application.findSeatplan(mNewDate) != null) {
+                    confirmEditExistingPlan();
+                }
+                else {
+                    runSeatplanActivity();
+                }
             }
         };
-        new DatePickerDialog(this, dateSetListener, mDate.get(Calendar.YEAR), mDate.get(Calendar.MONTH),
-                mDate.get(Calendar.DAY_OF_MONTH)).show();
+        DatePickerDialog dateDialog = new DatePickerDialog(this,
+                dateSetListener, mDate.get(Calendar.YEAR), mDate.get(Calendar.MONTH),
+                mDate.get(Calendar.DAY_OF_MONTH));
+        dateDialog.show();
+    }
 
-        Intent intent = new Intent(this, AddSeatplanActivity.class);
+    private void confirmEditExistingPlan() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        String dateStr = String.valueOf(mNewDate.get(Calendar.YEAR)) + "년 " +
+                String.valueOf(mNewDate.get(Calendar.MONTH)+1) + "월 " +
+                String.valueOf(mNewDate.get(Calendar.DAY_OF_MONTH)) + "일" +
+                getString(R.string.contents_dialog_if_edit_existing_plan);
+        builder.setMessage(dateStr);
+        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                mDate = mNewDate;
+                runSeatplanActivity();
+            }
+        });
+        builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void runSeatplanActivity() {
+        long newDateLong = mNewDate.getTimeInMillis();
+        long oldDateLong = mDate == null? 0 : mDate.getTimeInMillis();
+
+        Intent intent = new Intent(this, SeatplanEditActivity.class);
+        intent.putExtra(ClassInHandApplication.SEATPLAN_EDIT_NEWDATE, newDateLong);
+        intent.putExtra(ClassInHandApplication.SEATPLAN_EDIT_OLDDATE, oldDateLong);
         startActivity(intent);
+
+        finish();
     }
 }

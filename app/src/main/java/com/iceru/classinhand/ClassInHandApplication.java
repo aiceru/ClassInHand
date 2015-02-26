@@ -39,6 +39,13 @@ public class ClassInHandApplication extends Application {
     public static final byte SEATED_LEFT = 0x01;     // bit flag : 0000 0001
     public static final byte SEATED_RIGHT = 0x02;    // bit flag : 0000 0010
 
+    public static final String STATE_SELECTED_POSITION = "selected_navigation_drawer_position";
+    public static final String PREF_USER_LEARNED_DRAWER = "navigation_drawer_learned";
+
+    public static final String SEATPLAN_SELECTED_POSITION = "com.iceru.classinhand.SEATPLAN_SELECTED_POSITION";
+    public static final String SEATPLAN_EDIT_NEWDATE = "com.iceru.classinhand.SEATPLAN_EDIT_NEWDATE";
+    public static final String SEATPLAN_EDIT_OLDDATE = "com.iceru.classinhand.SEATPLAN_EDIT_OLDDATE";
+
     /* Global Variables */
     public static int       NEXT_ID;
     public static int       NUM_HISTORY = 3;        // 임시로 3. 추후 설정 Activity에서 유저가 바꿀수 있게.
@@ -159,6 +166,13 @@ public class ClassInHandApplication extends Application {
     public void removeAllSeatplans() {
         mSeatplans.clear();
         dbHelper.deleteAllSeatplans();
+    }
+
+    public Seatplan findSeatplan(GregorianCalendar cal) {
+        for(Seatplan plan : mSeatplans) {
+            if(plan.getmApplyDate().equals(cal)) return plan;
+        }
+        return null;
     }
 
     /**
