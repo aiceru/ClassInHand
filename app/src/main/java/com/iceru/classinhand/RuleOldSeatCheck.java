@@ -11,7 +11,7 @@ public class RuleOldSeatCheck extends Rule {
     {
         super(isDefault,priority);
     }
-    public ArrayList<Integer> filterSeats(int studentID, ArrayList<Integer> allocatable, ArrayList<Seatplan> oldPlans)
+    public ArrayList<Integer> filterSeats(Student st, ArrayList<Integer> allocatable, ArrayList<Seatplan> oldPlans, ArrayList<Seat> seatArray)
     {
         Seatplan tmpSeatplan;
 
@@ -35,7 +35,7 @@ public class RuleOldSeatCheck extends Rule {
             for(int numSeats = 0 ; numSeats < tmpSeatplan.getmSeats().size() ; numSeats++)
             {
                 Seat curSeat = tmpSeatplan.getmSeats().get(numSeats);
-                if(studentID == curSeat.getItsStudent().getId()) {
+                if(st.getId() == curSeat.getItsStudent().getId()) {
                     newAllocatable.remove(new Integer(curSeat.getId()));
                     break;
                 }
