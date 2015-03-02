@@ -5,10 +5,10 @@ import java.util.ArrayList;
 /**
  * Created by Hongjoong on 2015-01-12.
  */
-public class RuleOldSeatCheck extends Rule {
+public class RuleOldPairCheck extends Rule {
 
     private static final int MaxHistoryLookup = 3;
-    public RuleOldSeatCheck(boolean isDefault, int priority)
+    public RuleOldPairCheck(boolean isDefault, int priority)
     {
         super(isDefault,priority);
     }
