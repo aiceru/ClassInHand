@@ -29,6 +29,17 @@ public class RuleOldSeatCheck extends Rule {
         else
             maxHistory = MaxHistoryLookup;
 
+        // 학생 별로 앉았던 자리의 히스토리를 들고 있으므로 해당 값을 할당 가능한 자리에서 제거함
+        int historyCount = 1;
+        for(PersonalHistory p : st.getHistories()) {
+            newAllocatable.remove(p.seatId);
+            if(++historyCount > maxHistory)
+                break;
+            if(newAllocatable.size() <= 0)
+                break;
+        }
+
+        /*
         for(int numHistory = 0 ; numHistory < maxHistory ; numHistory++)
         {
             Integer removeSeatId;
@@ -44,6 +55,7 @@ public class RuleOldSeatCheck extends Rule {
             if(newAllocatable.size() <= 0)
                 break;
         }
+        */
 
         return newAllocatable;
     }

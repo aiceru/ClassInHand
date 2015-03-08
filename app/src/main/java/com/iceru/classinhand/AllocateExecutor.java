@@ -28,6 +28,8 @@ public class AllocateExecutor extends Allocator {
         그에 따른 default여부와 우선순위를 함께 넘겨줘야함.
          */
         mRules.put(new Integer(1),new RuleOldSeatCheck(true, 1));
+        mRules.put(new Integer(2),new RuleOldPairCheck(true, 2));
+        mRules.put(new Integer(3),new RuleSideCheck(true, 3));
         return 1;
     }
 

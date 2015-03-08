@@ -29,22 +29,22 @@ public class RuleOldPairCheck extends Rule {
         else
             maxHistory = MaxHistoryLookup;
 
-        for(int numHistory = 0 ; numHistory < maxHistory ; numHistory++)
-        {
-            Integer removeSeatId;
-            tmpSeatplan = oldPlans.get(numHistory);
-            for(int numSeats = 0 ; numSeats < tmpSeatplan.getmSeats().size() ; numSeats++)
+        // 과거에 짝이었던 학생이 현재 할당된 자리의 옆자리를 제거함
+        int historyCount = 1;
+        for(PersonalHistory p : st.getHistories()) {
+            for(Seat seat:seatArray)
             {
-                Seat curSeat = tmpSeatplan.getmSeats().get(numSeats);
-                if(st.getId() == curSeat.getItsStudent().getId()) {
-                    newAllocatable.remove(new Integer(curSeat.getId()));
+                if(seat.getItsStudent().getId() == p.pairId)
+                {
+                    newAllocatable.remove(seat.getPairSeatId());
                     break;
                 }
             }
+            if(++historyCount > maxHistory)
+                break;
             if(newAllocatable.size() <= 0)
                 break;
         }
-
         return newAllocatable;
     }
 }
