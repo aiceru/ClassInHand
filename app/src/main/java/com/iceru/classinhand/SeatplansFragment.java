@@ -54,10 +54,6 @@ public class SeatplansFragment extends Fragment{
                         Intent intent = new Intent(mainActivity, SeatplanDetailActivity.class);
                         intent.putExtra(ClassInHandApplication.SEATPLAN_SELECTED_POSITION, position);
                         startActivity(intent);
-                        /*mainActivity.getFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                                .add(R.id.main_contents, SeatplanDetailFragment.newInstance(position))
-                                .addToBackStack(null).commit();
-                        mainActivity.setmFragmentDepth(2);*/
                     }
                 })
         );
