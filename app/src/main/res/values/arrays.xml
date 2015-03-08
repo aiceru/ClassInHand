@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="sharedpref_entries_num_histories">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
+    <string-array name="sharedpref_entryvalues_num_histories">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
+
+    <string-array name="sharedpref_entries_is_boy_right">
+        <item>남학생 : 우측 / 여학생 : 좌측</item>
+        <item>여학생 : 좌측 / 남학생 : 우측</item>
+    </string-array>
+    <string-array name="sharedpref_entryvalues_is_boy_right">
+        <item>true</item>
+        <item>false</item>
+    </string-array>
+
+    <string-array name="sharedpref_entries_columns">
+        <item>3분단</item>
+        <item>4분단</item>
+    </string-array>
+    <string-array name="sharedpref_entryvalues_columns">
+        <item>6</item>
+        <item>8</item>
+    </string-array>
+</resources>

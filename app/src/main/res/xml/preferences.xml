@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <ListPreference
+        android:key="@string/sharedpref_key_num_histories"
+        android:title="@string/sharedpref_title_num_histories"
+        android:entries="@array/sharedpref_entries_num_histories"
+        android:entryValues="@array/sharedpref_entryvalues_num_histories"
+        android:defaultValue="3"/>
+    <ListPreference
+        android:key="@string/sharedpref_key_is_boy_right"
+        android:title="@string/sharedpref_title_is_boy_right"
+        android:entries="@array/sharedpref_entries_is_boy_right"
+        android:entryValues="@array/sharedpref_entryvalues_is_boy_right"
+        android:defaultValue="true"/>
+    <ListPreference
+        android:key="@string/sharedpref_key_columns"
+        android:title="@string/sharedpref_title_columns"
+        android:entries="@array/sharedpref_entries_columns"
+        android:entryValues="@array/sharedpref_entryvalues_columns"
+        android:defaultValue="6"/>
+</PreferenceScreen>

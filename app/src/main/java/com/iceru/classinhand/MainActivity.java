@@ -114,6 +114,7 @@ public class MainActivity extends ActionBarActivity {
         //drawerContentList.add(DrawerItem.create(103, getString(R.string.title_classtime), "ic_action_alarm_clock", true, this.getActivity()));
         mDrawerList.add(DrawerSection.create(200, "Settings"));
         mDrawerList.add(DrawerSubItem.create(201, getString(R.string.title_fillinfo), "ic_edit_grey600_24dp", true, this));
+        mDrawerList.add(DrawerSubItem.create(301, getString(R.string.title_setting), "ic_settings_grey600_24dp", true, this));
 
         // TODO : Delete this!!
         mDrawerList.add(DrawerSubItem.create(901, "DB추출(개발자용)", "ic_settings_grey600_24dp", false, this));
@@ -189,13 +190,17 @@ public class MainActivity extends ActionBarActivity {
                 fragmentManager.beginTransaction().replace(R.id.main_contents, FillInfoPagerFragment.getInstance()).commit();
                 break;
             case 4:
-                exportDB();
+                mTitle = getString(R.string.title_setting);
+                fragmentManager.beginTransaction().replace(R.id.main_contents, SettingsFragment.getInstance()).commit();
                 break;
             case 5:
+                exportDB();
+                break;
+            case 6:
                 ClassInHandApplication.getInstance().removeAllStudents();
                 ClassInHandApplication.getInstance().removeAllSeatplans();
                 break;
-            case 6:
+            case 7:
                 ClassInHandApplication.getInstance().createTestData();
                 break;
             default:

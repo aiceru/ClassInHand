@@ -59,7 +59,6 @@
                         android:background="@color/white"
                         android:horizontalSpacing="1dp"
                         android:verticalSpacing="1dp"
-                        android:numColumns="6"
                         tools:listitem="@layout/seat"/>
 
                     <com.shamanland.fab.FloatingActionButton

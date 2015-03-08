@@ -1,7 +1,9 @@
 package com.iceru.classinhand;
 
 import android.app.Application;
+import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.preference.PreferenceManager;
 
 import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
@@ -47,8 +49,8 @@ public class ClassInHandApplication extends Application {
     public static final String SEATPLAN_EDIT_OLDDATE = "com.iceru.classinhand.SEATPLAN_EDIT_OLDDATE";
 
     /* Global Variables */
+    public GlobalProperties globalProperties;
     public static int       NEXT_ID;
-    public static int       NUM_HISTORY = 3;        // 임시로 3. 추후 설정 Activity에서 유저가 바꿀수 있게.
 
     private static ClassInHandApplication appInstance;
 
@@ -81,6 +83,11 @@ public class ClassInHandApplication extends Application {
                 return diff > 0 ? -1 : 1;
             }
         };
+
+        globalProperties = new GlobalProperties();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        globalProperties.num_histories = Integer.parseInt(prefs.getString(getString(R.string.sharedpref_key_num_histories), "-1"));
+        globalProperties.columns = Integer.parseInt(prefs.getString(getString(R.string.sharedpref_key_columns), "-1"));
 
         initStudentList();
         initSeatplanList();
@@ -211,7 +218,13 @@ public class ClassInHandApplication extends Application {
         Cursor c = dbHelper.getSavedDateList();
         while(c.moveToNext()) {
             long date = c.getLong(c.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_APPLY_DATE));
-            Cursor cursorForDate = dbHelper.getSeatplan(date);
+
+            Cursor cursorForDate = dbHelper.getSeatplanInfo(date);
+            if(!cursorForDate.moveToFirst()) ;      // ERROR!!
+            int columnsInThisPlan = cursorForDate.getInt(cursorForDate.getColumnIndexOrThrow(ClassDBContract.SeatplanInfo.COLUMN_NAME_COLUMNS));
+            cursorForDate.close();
+
+            cursorForDate = dbHelper.getSeatplan(date);
 
             ArrayList<Seat> aSeats = new ArrayList<>();
             while (cursorForDate.moveToNext()) {
@@ -222,7 +235,7 @@ public class ClassInHandApplication extends Application {
 
             GregorianCalendar cal = new GregorianCalendar();
             cal.setTimeInMillis(date);
-            mSeatplans.add(new Seatplan(cal, aSeats));
+            mSeatplans.add(new Seatplan(cal, aSeats, columnsInThisPlan));
 
             cursorForDate.close();
         }

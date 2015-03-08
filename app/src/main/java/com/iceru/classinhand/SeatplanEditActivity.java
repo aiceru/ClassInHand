@@ -1,9 +1,6 @@
 package com.iceru.classinhand;
 
-import android.app.AlertDialog;
-import android.app.DatePickerDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
@@ -18,15 +15,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.shamanland.fab.FloatingActionButton;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -87,21 +81,21 @@ public class SeatplanEditActivity extends ActionBarActivity {
             mOldPlan = application.findSeatplan(mOldDate);
         }
 
-        mNewPlan = new Seatplan(mNewDate, new ArrayList<Seat>());
+        mNewPlan = new Seatplan(mNewDate, new ArrayList<Seat>(), application.globalProperties.columns);
         for (int i = 0; i < mStudents.size(); i++) {
             Seat s = new Seat(i);
             mNewPlan.getmSeats().add(s);
         }
 
         /* initialize Views */
-        setContentView(R.layout.activity_seatplan);
+        setContentView(R.layout.activity_seatplan_edit);
 
         // TEMP!!!!
         TextView tv1 = (TextView)findViewById(R.id.tempStr1);
         TextView tv2 = (TextView)findViewById(R.id.tempStr2);
-        tv1.setText(mNewDate.get(Calendar.YEAR) + "." + mNewDate.get(Calendar.MONTH) + "." + mNewDate.get(Calendar.DAY_OF_MONTH));
+        tv1.setText("NEW: " + mNewDate.get(Calendar.YEAR) + "." + String.valueOf(mNewDate.get(Calendar.MONTH)+1) + "." + mNewDate.get(Calendar.DAY_OF_MONTH));
         if(mOldDate != null) {
-            tv2.setText(mOldDate.get(Calendar.YEAR) + "." + mOldDate.get(Calendar.MONTH) + "." + mOldDate.get(Calendar.DAY_OF_MONTH));
+            tv2.setText(mOldDate.get(Calendar.YEAR) + "." + String.valueOf(mOldDate.get(Calendar.MONTH)+1) + "." + mOldDate.get(Calendar.DAY_OF_MONTH));
         }
         else {
             tv2.setText("NULL");
@@ -187,8 +181,9 @@ public class SeatplanEditActivity extends ActionBarActivity {
         gv_seats = (GridView) findViewById(R.id.gridview_newseatplan);
         layout_onseatclick_inflated = (LinearLayout) findViewById(R.id.linearlayout_onseatclick_inflated);
 
-        mSeatGridAdapter = new SeatGridAdapter(mNewPlan.getmSeats(), this);
+        mSeatGridAdapter = new SeatGridAdapter(mNewPlan.getmSeats(), this, mNewPlan.getmColumns());
         gv_seats.setAdapter(mSeatGridAdapter);
+        gv_seats.setNumColumns(mNewPlan.getmColumns());
         gv_seats.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -234,7 +229,9 @@ public class SeatplanEditActivity extends ActionBarActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_done) {
-            //TODO: SAVE!!
+            if(mOldPlan != null) application.removeSeatplan(mOldPlan);
+            application.addSeatplan(mNewPlan);
+            finish();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -458,7 +455,7 @@ public class SeatplanEditActivity extends ActionBarActivity {
                     Seat seat = mNewPlan.getmSeats().get(p.seatId);
                     seat.setRecentSeatedFlag(ClassInHandApplication.SEATED_LEFT);
 
-                    if(++historyCount > ClassInHandApplication.NUM_HISTORY) break;
+                    if(++historyCount > application.globalProperties.num_histories) break;
                 }
                 mLeftCancelButton.setVisibility(View.VISIBLE);
             }
@@ -511,7 +508,7 @@ public class SeatplanEditActivity extends ActionBarActivity {
                     Seat seat = mNewPlan.getmSeats().get(p.seatId);
                     seat.setRecentSeatedFlag(ClassInHandApplication.SEATED_RIGHT);
 
-                    if(++historyCount > ClassInHandApplication.NUM_HISTORY) break;
+                    if(++historyCount > application.globalProperties.num_histories) break;
                 }
                 mRightCancelButton.setVisibility(View.VISIBLE);
             }

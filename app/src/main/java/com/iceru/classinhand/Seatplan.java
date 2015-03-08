@@ -10,13 +10,15 @@ import java.util.GregorianCalendar;
 public class Seatplan {
     private GregorianCalendar       mApplyDate;
     private ArrayList<Seat>         mSeats;
+    private int                     mColumns;
 
-    public Seatplan(GregorianCalendar applyDate, ArrayList<Seat> seats) {
+    public Seatplan(GregorianCalendar applyDate, ArrayList<Seat> seats, int columns) {
         this.mApplyDate = applyDate;
         mApplyDate.clear(Calendar.HOUR);
         mApplyDate.clear(Calendar.MINUTE);
         mApplyDate.clear(Calendar.SECOND);
         mApplyDate.clear(Calendar.MILLISECOND);
+        this.mColumns = columns;
         this.mSeats = seats;
         for(Seat s : seats) {
             s.setBelongingPlan(this);
@@ -33,5 +35,9 @@ public class Seatplan {
 
     public ArrayList<Seat> getmSeats() {
         return mSeats;
+    }
+
+    public int getmColumns() {
+        return mColumns;
     }
 }

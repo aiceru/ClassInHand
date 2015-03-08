@@ -23,6 +23,12 @@ public final class ClassDBContract {
 		public static final String COLUMN_NAME_APPLY_DATE = "apply_date";
 	}
 
+    public static abstract class SeatplanInfo {
+        public static final String TABLE_NAME = "seatplan_info";
+        public static final String COLUMN_NAME_APPLY_DATE = "apply_date";
+        public static final String COLUMN_NAME_COLUMNS = "columns";
+    }
+
 	private static final String TEXT_TYPE = " TEXT";
 	private static final String INTEGER_TYPE = " INTEGER";
 	private static final String COMMA_SEP = ",";
@@ -45,9 +51,18 @@ public final class ClassDBContract {
 					SeatHistory.COLUMN_NAME_APPLY_DATE + INTEGER_TYPE +
 			" )";
 
+    public static final String SQL_CREATE_TABLE_SEAPLANINFO =
+            "CREATE TABLE " + SeatplanInfo.TABLE_NAME + " (" +
+                    SeatplanInfo.COLUMN_NAME_APPLY_DATE + INTEGER_TYPE + COMMA_SEP +
+                    SeatplanInfo.COLUMN_NAME_COLUMNS + INTEGER_TYPE +
+            " )";
+
 	public static final String SQL_DELETE_TABLE_STUDENTINFO =
 			"DROP TABLE IF EXISTS " + StudentInfo.TABLE_NAME;
 
 	public static final String SQL_DELETE_TABLE_SEATHISTORY =
 			"DROP TABLE IF EXISTS " + SeatHistory.TABLE_NAME;
+
+    public static final String SQL_DELETE_TABLE_SEATPLANINFO =
+            "DROP TABLE IF EXISTS " + SeatplanInfo.TABLE_NAME;
 }

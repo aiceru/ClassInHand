@@ -25,6 +25,7 @@ public class ClassDBHelper extends SQLiteOpenHelper {
 	public void onCreate(SQLiteDatabase db) {
         db.execSQL(ClassDBContract.SQL_CREATE_TABLE_STUDENTINFO);
         db.execSQL(ClassDBContract.SQL_CREATE_TABLE_SEATHISTORY);
+        db.execSQL(ClassDBContract.SQL_CREATE_TABLE_SEAPLANINFO);
 	}
 
 	@Override
@@ -48,6 +49,11 @@ public class ClassDBHelper extends SQLiteOpenHelper {
         long ret = 0;
         long applyDate = plan.getmApplyDate().getTimeInMillis();
         ContentValues values = new ContentValues();
+        values.put(ClassDBContract.SeatplanInfo.COLUMN_NAME_APPLY_DATE, applyDate);
+        values.put(ClassDBContract.SeatplanInfo.COLUMN_NAME_COLUMNS, plan.getmColumns());
+        ret |= wDB.insert(ClassDBContract.SeatplanInfo.TABLE_NAME, null, values);
+        values.clear();
+
         for(Seat seat : plan.getmSeats()) {
             values.put(ClassDBContract.SeatHistory.COLUMN_NAME_ID, seat.getId());
             values.put(ClassDBContract.SeatHistory.COLUMN_NAME_STUDENT_ID, seat.getItsStudent().getId());
@@ -169,6 +175,13 @@ public class ClassDBHelper extends SQLiteOpenHelper {
         return rDB.rawQuery(query, null);
     }
 
+    public Cursor getSeatplanInfo(long date) {
+        String query = "SELECT * FROM " + ClassDBContract.SeatplanInfo.TABLE_NAME
+                + " WHERE " + ClassDBContract.SeatHistory.COLUMN_NAME_APPLY_DATE
+                + " = " + String.valueOf(date) + ";";
+        return rDB.rawQuery(query, null);
+    }
+
     public Cursor getHistory(int studentId) {
         String[] projection = {
                 ClassDBContract.SeatHistory.COLUMN_NAME_APPLY_DATE,
@@ -270,15 +283,22 @@ public class ClassDBHelper extends SQLiteOpenHelper {
 	*/
 
     public int deleteSeatPlan(long date) {
+        int ret = 0;
         String selection = ClassDBContract.SeatHistory.COLUMN_NAME_APPLY_DATE + " LIKE ?";
         String[] selectionArgs = {
                 String.valueOf(date)
         };
-        return wDB.delete(
+        ret |= wDB.delete(
+                ClassDBContract.SeatplanInfo.TABLE_NAME,
+                selection,
+                selectionArgs
+        );
+        ret |= wDB.delete(
                 ClassDBContract.SeatHistory.TABLE_NAME,
                 selection,
                 selectionArgs
         );
+        return ret;
     }
 
 	public int deleteAllStudents() {
@@ -290,10 +310,17 @@ public class ClassDBHelper extends SQLiteOpenHelper {
 	}
 
 	public int deleteAllSeatplans() {
-		return wDB.delete(
+        int ret = 0;
+        ret |= wDB.delete(
+                ClassDBContract.SeatplanInfo.TABLE_NAME,
+                null,
+                null
+        );
+		ret |= wDB.delete(
 				ClassDBContract.SeatHistory.TABLE_NAME,
 				null,
 				null
 		);
+        return ret;
 	}
 }

@@ -62,7 +62,8 @@ public class SeatplanDetailActivity extends ActionBarActivity {
         getSupportActionBar().setTitle(dateString);
 
         gv_seats = (GridView) findViewById(R.id.gridview_seatplan_detail);
-        mSeatGridAdapter = new SeatGridAdapter(mSeatplan.getmSeats(), this);
+        gv_seats.setNumColumns(mSeatplan.getmColumns());
+        mSeatGridAdapter = new SeatGridAdapter(mSeatplan.getmSeats(), this, mSeatplan.getmColumns());
         gv_seats.setAdapter(mSeatGridAdapter);
     }
 
@@ -70,13 +71,13 @@ public class SeatplanDetailActivity extends ActionBarActivity {
         /* Ask if changes ApplyDate or not */
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(R.string.contents_dialog_if_change_applydate);
-        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(R.string.edit_date_either, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 // YES, display datepicker to get new ApplyDate
                 displayDatepicker();
             }
         });
-        builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(R.string.edit_location_only, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 // No, set mNewDate to mDate (same)
                 mNewDate = mDate;
