@@ -16,8 +16,8 @@
     </string-array>
 
     <string-array name="sharedpref_entries_is_boy_right">
-        <item>남학생 : 우측 / 여학생 : 좌측</item>
-        <item>여학생 : 좌측 / 남학생 : 우측</item>
+        <item>@string/sharedpref_summary_boy_is_right</item>
+        <item>@string/sharedpref_summary_boy_is_left</item>
     </string-array>
     <string-array name="sharedpref_entryvalues_is_boy_right">
         <item>true</item>

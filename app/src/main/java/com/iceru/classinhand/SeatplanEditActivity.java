@@ -69,22 +69,37 @@ public class SeatplanEditActivity extends ActionBarActivity {
         long oldDatelong = intent.getLongExtra(ClassInHandApplication.SEATPLAN_EDIT_OLDDATE, 0);
 
         if(newDatelong == 0) finish();
+
         mNewDate = new GregorianCalendar();
         mNewDate.setTimeInMillis(newDatelong);
         if(oldDatelong == 0) {
             mOldDate = null;
             mOldPlan = null;
+
+            mNewPlan = new Seatplan(
+                    mNewDate,
+                    new ArrayList<Seat>(),
+                    application.globalProperties.columns,
+                    application.globalProperties.isBoyRight);
+            for (int i = 0; i < mStudents.size(); i++) {
+                Seat s = new Seat(i);
+                mNewPlan.getmSeats().add(s);
+            }
         }
         else {
             mOldDate = new GregorianCalendar();
             mOldDate.setTimeInMillis(oldDatelong);
             mOldPlan = application.findSeatplan(mOldDate);
-        }
 
-        mNewPlan = new Seatplan(mNewDate, new ArrayList<Seat>(), application.globalProperties.columns);
-        for (int i = 0; i < mStudents.size(); i++) {
-            Seat s = new Seat(i);
-            mNewPlan.getmSeats().add(s);
+            mNewPlan = new Seatplan(
+                    mNewDate,
+                    new ArrayList<Seat>(),
+                    mOldPlan.getmColumns(),
+                    mOldPlan.isBoyRight());
+            for(Seat oldseat : mOldPlan.getmSeats()) {
+                Seat s = new Seat(oldseat.getId(), oldseat.getItsStudent());
+                mNewPlan.getmSeats().add(s);
+            }
         }
 
         /* initialize Views */
@@ -203,10 +218,10 @@ public class SeatplanEditActivity extends ActionBarActivity {
             pointedTreeMap.put(Math.random(), s);
         }
 
-        AllocateExecutor AE = new AllocateExecutor();
+        /*AllocateExecutor AE = new AllocateExecutor();
         AE.createRuleList();
-        AE.allocateAllStudent(seatArray);
-        /*
+        AE.allocateAllStudent(seatArray);*/
+
         for(Seat seat : seatArray) {
             Map.Entry<Double, Student> e = pointedTreeMap.firstEntry();
             Student s = e.getValue();
@@ -214,7 +229,7 @@ public class SeatplanEditActivity extends ActionBarActivity {
             mRemainStudents.remove(s.getAttendNum());
             pointedTreeMap.remove(e.getKey());
         }
-        */
+
         mSeatGridAdapter.notifyDataSetChanged();
         mRemainStudentListAdapter.notifyDataSetChanged();
     }

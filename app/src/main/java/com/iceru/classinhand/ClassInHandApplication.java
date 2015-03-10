@@ -86,8 +86,9 @@ public class ClassInHandApplication extends Application {
 
         globalProperties = new GlobalProperties();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        globalProperties.num_histories = Integer.parseInt(prefs.getString(getString(R.string.sharedpref_key_num_histories), "-1"));
-        globalProperties.columns = Integer.parseInt(prefs.getString(getString(R.string.sharedpref_key_columns), "-1"));
+        globalProperties.num_histories = Integer.parseInt(prefs.getString(getString(R.string.sharedpref_key_num_histories), "3"));
+        globalProperties.columns = Integer.parseInt(prefs.getString(getString(R.string.sharedpref_key_columns), "6"));
+        globalProperties.isBoyRight = Boolean.parseBoolean(prefs.getString(getString(R.string.sharedpref_key_is_boy_right), "true"));
 
         initStudentList();
         initSeatplanList();
@@ -221,7 +222,10 @@ public class ClassInHandApplication extends Application {
 
             Cursor cursorForDate = dbHelper.getSeatplanInfo(date);
             if(!cursorForDate.moveToFirst()) ;      // ERROR!!
-            int columnsInThisPlan = cursorForDate.getInt(cursorForDate.getColumnIndexOrThrow(ClassDBContract.SeatplanInfo.COLUMN_NAME_COLUMNS));
+            int columnsInThisPlan = cursorForDate.getInt(
+                    cursorForDate.getColumnIndexOrThrow(ClassDBContract.SeatplanInfo.COLUMN_NAME_COLUMNS));
+            boolean isBoyRightInThisPlan = (cursorForDate.getInt(
+                    cursorForDate.getColumnIndexOrThrow(ClassDBContract.SeatplanInfo.COLUMN_NAME_IS_BOY_RIGHT)) == 1);
             cursorForDate.close();
 
             cursorForDate = dbHelper.getSeatplan(date);
@@ -235,7 +239,7 @@ public class ClassInHandApplication extends Application {
 
             GregorianCalendar cal = new GregorianCalendar();
             cal.setTimeInMillis(date);
-            mSeatplans.add(new Seatplan(cal, aSeats, columnsInThisPlan));
+            mSeatplans.add(new Seatplan(cal, aSeats, columnsInThisPlan, isBoyRightInThisPlan));
 
             cursorForDate.close();
         }

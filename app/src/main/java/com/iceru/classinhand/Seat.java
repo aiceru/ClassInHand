@@ -9,7 +9,7 @@ public class Seat {
     private int pairSeatId;
     private byte recentSeatedFlag;
     private byte selectedFlag;
-    private Seatplan belongingPlan;
+    //private Seatplan belongingPlan;
 
 	public Seat(int id, Student st) {
 		this.id = id;
@@ -41,9 +41,9 @@ public class Seat {
 
     public byte getSelectedFlag() { return selectedFlag; }
 
-    public Seatplan getBelongingPlan() {
+    /*public Seatplan getBelongingPlan() {
         return belongingPlan;
-    }
+    }*/
 
     public void setItsStudent(Student itsStudent) {
 		this.itsStudent = itsStudent;
@@ -65,7 +65,7 @@ public class Seat {
         this.selectedFlag &= (~flag);
     }
 
-    public void setBelongingPlan(Seatplan p) {
+    /*public void setBelongingPlan(Seatplan p) {
         this.belongingPlan = p;
-    }
+    }*/
 }
