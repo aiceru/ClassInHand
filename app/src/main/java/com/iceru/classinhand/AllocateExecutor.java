@@ -36,7 +36,7 @@ public class AllocateExecutor extends Allocator {
     public ArrayList<Seat> allocateAllStudent(ArrayList<Seat> seatArray)
     {
         application = ClassInHandApplication.getInstance();
-        mStudents = application.getmCurrentStudents();
+        mStudents = application.getmStudents();
         mRemainStudents = new TreeMap<>(mStudents);
         mSeatplans = application.getmSeatplans();
 

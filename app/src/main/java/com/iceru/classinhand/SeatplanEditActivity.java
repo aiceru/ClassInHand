@@ -36,7 +36,6 @@ public class SeatplanEditActivity extends ActionBarActivity {
     private ClassInHandApplication          application;
 
     /* Data Structures */
-    private TreeMap<Integer, Student>       mStudents;
     private TreeMap<Integer, Student>       mRemainStudents;
     private Seatplan                        mNewPlan, mOldPlan;
     private GregorianCalendar               mNewDate, mOldDate;
@@ -61,14 +60,14 @@ public class SeatplanEditActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
 
         application = ClassInHandApplication.getInstance();
-        mStudents = application.getmCurrentStudents();
-        mRemainStudents = new TreeMap<>(mStudents);
 
         Intent intent = getIntent();
         long newDatelong = intent.getLongExtra(ClassInHandApplication.SEATPLAN_EDIT_NEWDATE, 0);
         long oldDatelong = intent.getLongExtra(ClassInHandApplication.SEATPLAN_EDIT_OLDDATE, 0);
 
         if(newDatelong == 0) finish();
+
+        mRemainStudents = application.getDatedStudentsTreeMapKeybyId(newDatelong);
 
         mNewDate = new GregorianCalendar();
         mNewDate.setTimeInMillis(newDatelong);
@@ -81,7 +80,7 @@ public class SeatplanEditActivity extends ActionBarActivity {
                     new ArrayList<Seat>(),
                     application.globalProperties.columns,
                     application.globalProperties.isBoyRight);
-            for (int i = 0; i < mStudents.size(); i++) {
+            for (int i = 0; i < mRemainStudents.size(); i++) {
                 Seat s = new Seat(i);
                 mNewPlan.getmSeats().add(s);
             }
@@ -96,8 +95,9 @@ public class SeatplanEditActivity extends ActionBarActivity {
                     new ArrayList<Seat>(),
                     mOldPlan.getmColumns(),
                     mOldPlan.isBoyRight());
-            for(Seat oldseat : mOldPlan.getmSeats()) {
-                Seat s = new Seat(oldseat.getId(), oldseat.getItsStudent());
+            for (int i = 0; i < mRemainStudents.size(); i++) {
+                Seat s = new Seat(i);
+                s.setItsStudent(mOldPlan.getmSeats().get(i).getItsStudent());
                 mNewPlan.getmSeats().add(s);
             }
         }
@@ -201,7 +201,7 @@ public class SeatplanEditActivity extends ActionBarActivity {
         ArrayList<Seat> seatArray = mNewPlan.getmSeats();
         TreeMap<Double, Student> pointedTreeMap = new TreeMap<>();
 
-        for(Map.Entry<Integer, Student> entry : mStudents.entrySet()) {
+        for(Map.Entry<Integer, Student> entry : mRemainStudents.entrySet()) {
             Student s = entry.getValue();
             pointedTreeMap.put(Math.random(), s);
         }

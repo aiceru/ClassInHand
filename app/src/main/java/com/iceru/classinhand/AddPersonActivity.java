@@ -44,13 +44,13 @@ public class AddPersonActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
 
         application = ClassInHandApplication.getInstance();
-        mStudents = application.getmCurrentStudents();
+        mStudents = application.getmStudents();
 
         mAddingStudents = new TreeMap<>();
 
         mAttendNumArray = new boolean[ClassInHandApplication.MAX_STUDENTS]; // initialized to false
         for(TreeMap.Entry<Integer, Student> entry : mStudents.entrySet()) {
-            mAttendNumArray[entry.getKey()] = true;
+            mAttendNumArray[entry.getValue().getAttendNum()] = true;
         }
 
         /*Student s;
@@ -109,6 +109,8 @@ public class AddPersonActivity extends ActionBarActivity {
         String name, numStr;
         int attendNum;
         boolean isboy;
+
+        //TODO : get inDate from user input form
         long inDate = new GregorianCalendar().getTimeInMillis();
 
         numStr = mAttendNumEditText.getText().toString();
