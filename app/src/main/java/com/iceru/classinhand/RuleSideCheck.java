@@ -25,10 +25,11 @@ public class RuleSideCheck extends Rule {
         else
             genderflag = 1;
         /* 실제 필터 로직 추가 */
-        for(Integer allocEntry:newAllocatable)
+        for(int allocEntry:allocatable)
         {
             if((allocEntry % 2) == genderflag)
-                newAllocatable.remove(allocEntry);
+                //newAllocatable.remove(allocEntry);
+                newAllocatable.remove(new Integer(allocEntry));
         }
 
         return newAllocatable;

@@ -20,7 +20,7 @@ public class AllocateExecutor extends Allocator {
 
     public AllocateExecutor()
     {
-
+        mRules = new TreeMap<>();
     }
     public int createRuleList()
     {
@@ -66,7 +66,7 @@ public class AllocateExecutor extends Allocator {
             int seatIndex = (int) (Math.random()*19717)% newAllocatable.size();
             Student s = e.getValue();
             seatArray.get(seatIndex).setItsStudent(s);
-            currentAllocatable.remove(seatArray.get(seatIndex).getId());
+            currentAllocatable.remove(new Integer(seatArray.get(seatIndex).getId()));
             pointedTreeMap.remove(e.getKey());
 
         }

@@ -6,8 +6,8 @@ import java.util.ArrayList;
  * Created by Hongjoong on 2015-01-12.
  */
 public class RuleOldPairCheck extends Rule {
-
-    private static final int MaxHistoryLookup = 3;
+    private ClassInHandApplication          application;
+   // private static final int MaxHistoryLookup = 3;
     public RuleOldPairCheck(boolean isDefault, int priority)
     {
         super(isDefault,priority);
@@ -15,6 +15,7 @@ public class RuleOldPairCheck extends Rule {
     public ArrayList<Integer> filterSeats(Student st, ArrayList<Integer> allocatable, ArrayList<Seatplan> oldPlans, ArrayList<Seat> seatArray)
     {
         Seatplan tmpSeatplan;
+        application = ClassInHandApplication.getInstance();
 
         if(allocatable.size() <= 1)
             return allocatable;
@@ -24,19 +25,26 @@ public class RuleOldPairCheck extends Rule {
         /* 실제 필터 로직 추가 */
 
         int maxHistory = 0;
-        if(oldPlans.size() < MaxHistoryLookup)
-            maxHistory = oldPlans.size();
+        if(st.getHistories().size() < application.globalProperties.num_histories)
+            maxHistory = st.getHistories().size();
         else
-            maxHistory = MaxHistoryLookup;
+            maxHistory = application.globalProperties.num_histories;
 
+        if(maxHistory == 0)
+            return newAllocatable;
         // 과거에 짝이었던 학생이 현재 할당된 자리의 옆자리를 제거함
         int historyCount = 1;
         for(PersonalHistory p : st.getHistories()) {
+            if(p == null)
+                break;
+
             for(Seat seat:seatArray)
             {
+                if(seat.getItsStudent() == null)
+                    continue;
                 if(seat.getItsStudent().getId() == p.pairId)
                 {
-                    newAllocatable.remove(seat.getPairSeatId());
+                    newAllocatable.remove(new Integer(seat.getPairSeatId()));
                     break;
                 }
             }
