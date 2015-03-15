@@ -15,7 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import java.util.Comparator;
+import java.util.GregorianCalendar;
 import java.util.TreeMap;
 
 
@@ -44,7 +44,7 @@ public class AddPersonActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
 
         application = ClassInHandApplication.getInstance();
-        mStudents = application.getmStudents();
+        mStudents = application.getmCurrentStudents();
 
         mAddingStudents = new TreeMap<>();
 
@@ -109,6 +109,7 @@ public class AddPersonActivity extends ActionBarActivity {
         String name, numStr;
         int attendNum;
         boolean isboy;
+        long inDate = new GregorianCalendar().getTimeInMillis();
 
         numStr = mAttendNumEditText.getText().toString();
         name = mNameEditText.getText().toString();
@@ -131,7 +132,7 @@ public class AddPersonActivity extends ActionBarActivity {
             return;
         }
 
-        student = new Student(ClassInHandApplication.NEXT_ID, attendNum, name, isboy, 0, 0);
+        student = new Student(ClassInHandApplication.NEXT_ID, attendNum, name, isboy, inDate, -1L);
         ClassInHandApplication.NEXT_ID++;
 
         mAddingStudents.put(student.getAttendNum(), student);

@@ -61,7 +61,7 @@ public class SeatplanEditActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
 
         application = ClassInHandApplication.getInstance();
-        mStudents = application.getmStudents();
+        mStudents = application.getmCurrentStudents();
         mRemainStudents = new TreeMap<>(mStudents);
 
         Intent intent = getIntent();
@@ -104,18 +104,6 @@ public class SeatplanEditActivity extends ActionBarActivity {
 
         /* initialize Views */
         setContentView(R.layout.activity_seatplan_edit);
-
-        // TEMP!!!!
-        TextView tv1 = (TextView)findViewById(R.id.tempStr1);
-        TextView tv2 = (TextView)findViewById(R.id.tempStr2);
-        tv1.setText("NEW: " + mNewDate.get(Calendar.YEAR) + "." + String.valueOf(mNewDate.get(Calendar.MONTH)+1) + "." + mNewDate.get(Calendar.DAY_OF_MONTH));
-        if(mOldDate != null) {
-            tv2.setText(mOldDate.get(Calendar.YEAR) + "." + String.valueOf(mOldDate.get(Calendar.MONTH)+1) + "." + mOldDate.get(Calendar.DAY_OF_MONTH));
-        }
-        else {
-            tv2.setText("NULL");
-        }
-        // TEMP END
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.seatplanactivity_toolbar);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.seatplanactivity_drawerlayout);
