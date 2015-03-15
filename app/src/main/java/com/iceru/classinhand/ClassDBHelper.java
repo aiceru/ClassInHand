@@ -205,7 +205,7 @@ public class ClassDBHelper extends SQLiteOpenHelper {
         );
     }
 
-    public int getSeatedStudent(int seatId, long date) {
+    public int getSeatedStudentId(int seatId, long date) {
         String selection =
                 ClassDBContract.SeatHistory.COLUMN_NAME_ID + " = ? AND " +
                 ClassDBContract.SeatHistory.COLUMN_NAME_APPLY_DATE + " = ?";

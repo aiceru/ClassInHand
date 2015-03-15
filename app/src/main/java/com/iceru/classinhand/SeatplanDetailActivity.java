@@ -43,7 +43,7 @@ public class SeatplanDetailActivity extends ActionBarActivity {
 
         if (position < 0) finish();
 
-        mStudents = application.getmStudents();
+        mStudents = application.getmCurrentStudents();
         mSeatplan = application.getmSeatplans().get(position);
         mDate = mSeatplan.getmApplyDate();
 

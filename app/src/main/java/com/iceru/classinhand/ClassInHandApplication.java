@@ -55,7 +55,7 @@ public class ClassInHandApplication extends Application {
     private static ClassInHandApplication appInstance;
 
     private TreeMap <Integer, Integer> mIdMap;          // ID-AttendNum pairs of "Current" students
-    private TreeMap <Integer, Student> mStudents;       // "Current" students, KEY : Attend Num
+    private TreeMap <Integer, Student> mCurrentStudents;       // "Current" students, KEY : Attend Num
     private TreeMap <Integer, Student> mPastStudents;   // "Past" students, KEY : ID
 
     private ArrayList<Seatplan>         mSeatplans;
@@ -73,7 +73,7 @@ public class ClassInHandApplication extends Application {
         dbHelper = new ClassDBHelper(this);
 
         mIdMap = new TreeMap<>();
-        mStudents = new TreeMap<>();
+        mCurrentStudents = new TreeMap<>();
         mPastStudents = new TreeMap<>();
 
         mSeatplanComparator = new Comparator<Seatplan>() {
@@ -99,8 +99,8 @@ public class ClassInHandApplication extends Application {
         return appInstance;
     }
 
-    public TreeMap<Integer, Student> getmStudents() {
-        return mStudents;
+    public TreeMap<Integer, Student> getmCurrentStudents() {
+        return mCurrentStudents;
     }
 
     public ArrayList<Seatplan> getmSeatplans() {
@@ -112,10 +112,10 @@ public class ClassInHandApplication extends Application {
     }
 
     public boolean addStudent(Student student) {
-        boolean exist = null != mStudents.get(student.getAttendNum());
+        boolean exist = null != mCurrentStudents.get(student.getAttendNum());
         if(!exist) {
             mIdMap.put(student.getId(), student.getAttendNum());
-            mStudents.put(student.getAttendNum(), student);
+            mCurrentStudents.put(student.getAttendNum(), student);
             dbHelper.insert(student);
         }
         return !exist;
@@ -129,12 +129,12 @@ public class ClassInHandApplication extends Application {
     }
 
     public Student findStudent(int id) {
-        if(mIdMap.containsKey(id)) return mStudents.get(mIdMap.get(id));
+        if(mIdMap.containsKey(id)) return mCurrentStudents.get(mIdMap.get(id));
         else return mPastStudents.get(id);
     }
 
     public boolean removeStudent(Student student) {
-        boolean success = null != mStudents.remove(student.getAttendNum());
+        boolean success = null != mCurrentStudents.remove(student.getAttendNum());
         if(success) {
             mIdMap.remove(student.getId());
             dbHelper.delete(student);
@@ -144,7 +144,7 @@ public class ClassInHandApplication extends Application {
 
     public void removeAllStudents() {
         mIdMap.clear();
-        mStudents.clear();
+        mCurrentStudents.clear();
         dbHelper.deleteAllStudents();
     }
 
@@ -184,13 +184,15 @@ public class ClassInHandApplication extends Application {
     }
 
     /**
-     * DB에서 학생 리스트를 읽어 mStudents 트리맵을 구성한다.
+     * DB에서 학생 리스트를 읽어 mCurrentStudents 트리맵을 구성한다.
      */
     private void initStudentList() {
         int id, attendNum;
         String name;
         boolean isBoy;
-        long inDate, outDate;
+        long inDate, outDate, today;
+
+        today = new GregorianCalendar().getTimeInMillis();
 
         Cursor studentCursor = dbHelper.getStudentsList();
         while (studentCursor.moveToNext()) {
@@ -202,11 +204,15 @@ public class ClassInHandApplication extends Application {
             outDate = studentCursor.getInt(studentCursor.getColumnIndexOrThrow(ClassDBContract.StudentInfo.ColUMN_NAME_OUT_DATE));
 
             Student s = new Student(id, attendNum, name, isBoy, inDate, outDate);
+            if( (inDate <= today && outDate > today) || outDate == -1 ) {     // currently registered student
+                mIdMap.put(id, attendNum);
+                mCurrentStudents.put(attendNum, s);
+            }
+            else if(outDate <= today) {                  // student already moved out
+                mPastStudents.put(id, s);
+            }
 
-            mIdMap.put(id, attendNum);
-            mStudents.put(attendNum, s);
-
-            NEXT_ID = s.getId() + 1;
+            NEXT_ID = id + 1;
         }
         studentCursor.close();
     }
@@ -234,7 +240,7 @@ public class ClassInHandApplication extends Application {
             while (cursorForDate.moveToNext()) {
                 int seatId = cursorForDate.getInt(cursorForDate.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_ID));
                 int studentId = cursorForDate.getInt(cursorForDate.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_STUDENT_ID));
-                aSeats.add(new Seat(seatId, mStudents.get(mIdMap.get(studentId))));
+                aSeats.add(new Seat(seatId, mCurrentStudents.get(mIdMap.get(studentId))));
             }
 
             GregorianCalendar cal = new GregorianCalendar();
@@ -256,7 +262,7 @@ public class ClassInHandApplication extends Application {
         Student student;
         long date;
 
-        for(TreeMap.Entry<Integer, Student> entry : mStudents.entrySet()) {
+        for(TreeMap.Entry<Integer, Student> entry : mCurrentStudents.entrySet()) {
             student = entry.getValue();
             student.getHistories().clear();
 
@@ -270,7 +276,7 @@ public class ClassInHandApplication extends Application {
                 cal.setTimeInMillis(date);
                 seatId = historyCursor.getInt(historyCursor.getColumnIndexOrThrow(
                         ClassDBContract.SeatHistory.COLUMN_NAME_ID));
-                pairId = dbHelper.getSeatedStudent(seatId % 2 == 0? seatId+1 : seatId-1, date);
+                pairId = dbHelper.getSeatedStudentId(seatId % 2 == 0 ? seatId + 1 : seatId - 1, date);
                 student.getHistories().add(new PersonalHistory(cal, seatId, pairId));
             }
             historyCursor.close();
@@ -279,42 +285,42 @@ public class ClassInHandApplication extends Application {
 
     /* For Test only... create test dummy data */
     public void createTestData() {
-        addStudent(new Student(0, 1, "연우진", true, 9999L, 9999L));
-        addStudent(new Student(1, 2, "이종석", true, 9999L, 9999L));
-        addStudent(new Student(2, 3, "송중기", true, 9999L, 9999L));
-        addStudent(new Student(3, 4, "여진구", true, 9999L, 9999L));
-        addStudent(new Student(4, 5, "유승호", true, 9999L, 9999L));
-        addStudent(new Student(5, 6, "하정우", true, 9999L, 9999L));
-        addStudent(new Student(6, 7, "유재석", true, 9999L, 9999L));
-        addStudent(new Student(7, 8, "김우빈", true, 9999L, 9999L));
-        addStudent(new Student(8, 9, "정우", true, 9999L, 9999L));
-        addStudent(new Student(9, 10, "유연석", true, 9999L, 9999L));
-        addStudent(new Student(10, 11, "임시완", true, 9999L, 9999L));
-        addStudent(new Student(11, 12, "신하균", true, 9999L, 9999L));
-        addStudent(new Student(12, 13, "이민호", true, 9999L, 9999L));
-        addStudent(new Student(13, 14, "정우성", true, 9999L, 9999L));
-        addStudent(new Student(14, 15, "원빈", true, 9999L, 9999L));
-        addStudent(new Student(15, 16, "강동원", true, 9999L, 9999L));
-        addStudent(new Student(16, 17, "이정재", true, 9999L, 9999L));
-        addStudent(new Student(17, 18, "설현", false, 9999L, 9999L));
-        addStudent(new Student(18, 19, "문채원", false, 9999L, 9999L));
-        addStudent(new Student(19, 20, "아이유", false, 9999L, 9999L));
-        addStudent(new Student(20, 21, "김태희", false, 9999L, 9999L));
-        addStudent(new Student(21, 22, "송혜교", false, 9999L, 9999L));
-        addStudent(new Student(22, 23, "한지민", false, 9999L, 9999L));
-        addStudent(new Student(23, 24, "손예진", false, 9999L, 9999L));
-        addStudent(new Student(24, 25, "이나영", false, 9999L, 9999L));
-        addStudent(new Student(25, 26, "신민아", false, 9999L, 9999L));
-        addStudent(new Student(26, 27, "이민정", false, 9999L, 9999L));
-        addStudent(new Student(27, 28, "신소율", false, 9999L, 9999L));
-        addStudent(new Student(28, 29, "한효주", false, 9999L, 9999L));
-        addStudent(new Student(29, 30, "수지", false, 9999L, 9999L));
-        addStudent(new Student(30, 31, "송지효", false, 9999L, 9999L));
-        addStudent(new Student(31, 32, "김소은", false, 9999L, 9999L));
-        addStudent(new Student(32, 33, "이정현", false, 9999L, 9999L));
-        addStudent(new Student(33, 34, "유진", false, 9999L, 9999L));
-        addStudent(new Student(34, 35, "한가인", false, 9999L, 9999L));
-        addStudent(new Student(35, 36, "박한별", false, 9999L, 9999L));
-        addStudent(new Student(36, 37, "심은경", false, 9999L, 9999L));
+        addStudent(new Student(0,   1, "연우진", true, 0L, -1L));
+        addStudent(new Student(1,   2, "이종석", true, 0L, -1L));
+        addStudent(new Student(2,   3, "송중기", true, 0L, -1L));
+        addStudent(new Student(3,   4, "여진구", true, 0L, -1L));
+        addStudent(new Student(4,   5, "유승호", true, 0L, -1L));
+        addStudent(new Student(5,   6, "하정우", true, 0L, -1L));
+        addStudent(new Student(6,   7, "유재석", true, 0L, -1L));
+        addStudent(new Student(7,   8, "김우빈", true, 0L, -1L));
+        addStudent(new Student(8,   9, "정우",  true, 0L, -1L));
+        addStudent(new Student(9,  10, "유연석", true, 0L, -1L));
+        addStudent(new Student(10, 11, "임시완", true, 0L, -1L));
+        addStudent(new Student(11, 12, "신하균", true, 0L, -1L));
+        addStudent(new Student(12, 13, "이민호", true, 0L, -1L));
+        addStudent(new Student(13, 14, "정우성", true, 0L, -1L));
+        addStudent(new Student(14, 15, "원빈",  true, 0L, -1L));
+        addStudent(new Student(15, 16, "강동원", true, 0L, -1L));
+        addStudent(new Student(16, 17, "이정재", true, 0L, -1L));
+        addStudent(new Student(17, 18, "설현",  false, 0L, -1L));
+        addStudent(new Student(18, 19, "문채원", false, 0L, -1L));
+        addStudent(new Student(19, 20, "아이유", false, 0L, -1L));
+        addStudent(new Student(20, 21, "김태희", false, 0L, -1L));
+        addStudent(new Student(21, 22, "송혜교", false, 0L, -1L));
+        addStudent(new Student(22, 23, "한지민", false, 0L, -1L));
+        addStudent(new Student(23, 24, "손예진", false, 0L, -1L));
+        addStudent(new Student(24, 25, "이나영", false, 0L, -1L));
+        addStudent(new Student(25, 26, "신민아", false, 0L, -1L));
+        addStudent(new Student(26, 27, "이민정", false, 0L, -1L));
+        addStudent(new Student(27, 28, "신소율", false, 0L, -1L));
+        addStudent(new Student(28, 29, "한효주", false, 0L, -1L));
+        addStudent(new Student(29, 30, "수지",  false, 0L, -1L));
+        addStudent(new Student(30, 31, "송지효", false, 0L, -1L));
+        addStudent(new Student(31, 32, "김소은", false, 0L, -1L));
+        addStudent(new Student(32, 33, "이정현", false, 0L, -1L));
+        addStudent(new Student(33, 34, "유진",  false, 0L, -1L));
+        addStudent(new Student(34, 35, "한가인", false, 0L, -1L));
+        addStudent(new Student(35, 36, "박한별", false, 0L, -1L));
+        addStudent(new Student(36, 37, "심은경", false, 0L, -1L));
     }
 }
