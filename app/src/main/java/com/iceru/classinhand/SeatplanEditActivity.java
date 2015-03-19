@@ -206,10 +206,10 @@ public class SeatplanEditActivity extends ActionBarActivity {
             pointedTreeMap.put(Math.random(), s);
         }
 
-        /*AllocateExecutor AE = new AllocateExecutor();
+        AllocateExecutor AE = new AllocateExecutor(mNewPlan);
         AE.createRuleList();
-        AE.allocateAllStudent(seatArray);*/
-
+        mNewPlan = AE.allocateAllStudent(seatArray);
+/*
         for(Seat seat : seatArray) {
             Map.Entry<Double, Student> e = pointedTreeMap.firstEntry();
             Student s = e.getValue();
@@ -217,6 +217,7 @@ public class SeatplanEditActivity extends ActionBarActivity {
             mRemainStudents.remove(s.getAttendNum());
             pointedTreeMap.remove(e.getKey());
         }
+*/
 
         mSeatGridAdapter.notifyDataSetChanged();
         mRemainStudentListAdapter.notifyDataSetChanged();

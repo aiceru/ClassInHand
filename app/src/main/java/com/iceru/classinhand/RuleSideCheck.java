@@ -8,13 +8,20 @@ import java.util.TreeMap;
  */
 public class RuleSideCheck extends Rule {
 
+    private int genderflag;
     public RuleSideCheck(boolean isDefault, int priority)
     {
-        super(isDefault,priority);
+        super(isDefault, priority);
+    }
+    public void setIsBoyFlag(boolean gf)
+    {
+        if(gf == true)
+            genderflag = 1;
+        else
+            genderflag = 0;
     }
     public ArrayList<Integer> filterSeats(Student st, ArrayList<Integer> allocatable, ArrayList<Seatplan> oldPlans, ArrayList<Seat> seatArray)
     {
-        int genderflag = 0;
         if(allocatable.size() <= 1)
             return allocatable;
 

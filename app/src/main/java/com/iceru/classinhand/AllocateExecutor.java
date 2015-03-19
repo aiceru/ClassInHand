@@ -17,9 +17,11 @@ public class AllocateExecutor extends Allocator {
 
     private TreeMap<Integer, Rule> mRules;
     private ArrayList<Seatplan> mSeatplans;
+    private Seatplan mNewSeatplan;
 
-    public AllocateExecutor()
+    public AllocateExecutor(Seatplan s)
     {
+        mNewSeatplan = s;
         mRules = new TreeMap<>();
     }
     public int createRuleList()
@@ -30,10 +32,13 @@ public class AllocateExecutor extends Allocator {
         mRules.put(new Integer(1),new RuleOldSeatCheck(true, 1));
         mRules.put(new Integer(2),new RuleOldPairCheck(true, 2));
         mRules.put(new Integer(3),new RuleSideCheck(true, 3));
+        // mNewSeatplan의 isboyRight를 전달해주기 위해서 별도의 함수를 선언하고 캐스팅으로 해결
+        // siceman 2015-03-15 TODO:다형성을 적용한 생성자로 후처리가 필요함
+        ((RuleSideCheck)mRules.get(3)).setIsBoyFlag(mNewSeatplan.isBoyRight());
         return 1;
     }
 
-    public ArrayList<Seat> allocateAllStudent(ArrayList<Seat> seatArray)
+    public Seatplan allocateAllStudent(ArrayList<Seat> seatArray)
     {
         application = ClassInHandApplication.getInstance();
         mStudents = application.getmCurrentStudents();
@@ -55,8 +60,6 @@ public class AllocateExecutor extends Allocator {
         }
 
         ArrayList<Integer> newAllocatable;
-        //  임시 좌석과 필터 결과, 이미 할당된 학생들의 할당 현황 세가지 변수간에 관계를
-        //  좀 더 확실하게 잡은 뒤에 구현할 것
         for(Map.Entry<Double, Student> e : pointedTreeMap.entrySet())
         {
             newAllocatable = allocateStudent(e.getValue(), currentAllocatable, seatArray);
@@ -64,11 +67,11 @@ public class AllocateExecutor extends Allocator {
             // currentAllocatable에서 좌석을 삭제한다.
             // newAllocatable은 한 학생의 자리 배치에만 관여한다.
             int seatIndex = (int) (Math.random()*19717)% newAllocatable.size();
-            Student s = e.getValue();
-            seatArray.get(seatIndex).setItsStudent(s);
-            currentAllocatable.remove(new Integer(seatArray.get(seatIndex).getId()));
-            pointedTreeMap.remove(e.getKey());
+            int selectedSeatID = newAllocatable.get(seatIndex);
 
+            Student s = e.getValue();
+            seatArray.get(new Integer(selectedSeatID)).setItsStudent(s);
+            currentAllocatable.remove(new Integer(selectedSeatID));
         }
 /*
         for(Seat seat : seatArray) {
@@ -79,7 +82,7 @@ public class AllocateExecutor extends Allocator {
             pointedTreeMap.remove(e.getKey());
         }
 */
-        return seatArray;
+        return mNewSeatplan;
     }
     private ArrayList<Integer> allocateStudent(Student st, ArrayList<Integer> currentAllocatable, ArrayList<Seat> seatArray)
     {
