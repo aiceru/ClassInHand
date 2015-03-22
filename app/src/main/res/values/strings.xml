@@ -92,9 +92,10 @@
     <string name="crash_dialog_ok_toast">에러 로그가 전송되었습니다</string>
 
 
-    <string name="title_activity_add_person">학생 정보 등록</string>
-    <string name="title_activity_add_seatplan">새로 만들기</string>
-    <string name="title_activity_detailed_seatplan">자리배치도</string>
+    <string name="title_activity_student_add">학생 정보 등록</string>
+    <string name="title_activity_seatplan_add">새로 만들기</string>
+    <string name="title_activity_seatplan_detail">자리배치도</string>
+    <string name="title_activity_student_detail"></string>
 
     <string-array name="gender_array">
         <item>남자</item>
@@ -103,5 +104,23 @@
 
     <string name="hint_edittext_name">이름</string>
     <string name="hint_edittext_attendnum">번호</string>
+    <string name="hint_edittext_indate">등록(전입)일자</string>
+    <string name="hint_edittext_outdate">삭제(전출)일자</string>
+
+    <string name="year_string">년</string>
+    <string name="month_string">월</string>
+    <string name="day_string">일</string>
+
+    <string-array name="dayofweek_array">
+        <item>일요일</item>
+        <item>월요일</item>
+        <item>화요일</item>
+        <item>수요일</item>
+        <item>목요일</item>
+        <item>금요일</item>
+        <item>토요일</item>
+    </string-array>
+
+    <string name="hello_world">Hello world!</string>
 
 </resources>

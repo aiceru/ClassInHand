@@ -1,6 +1,7 @@
 package com.iceru.classinhand;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -33,7 +34,7 @@ public class StudentListFragment extends Fragment {
 
         mainActivity = (MainActivity)getActivity();
         application = ClassInHandApplication.getInstance();
-        mCurrentStudents = application.getCurrentStudentsTreeMapKeybyAttendNum();
+        mCurrentStudents = application.getmCurrentStudents();
     }
 
     @Override
@@ -50,11 +51,19 @@ public class StudentListFragment extends Fragment {
                 new RecyclerItemClickListener(mainActivity, new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        // TODO : 학생 세부정보 보여주기 구현!
-                        // mStudentListAdapter.removeAt(position);
+                        Student s = (Student)mStudentListAdapter.getItem(position);
+                        Intent intent = new Intent(mainActivity, StudentDetailActivity.class);
+                        intent.putExtra(ClassInHandApplication.STUDENT_SELECTED_ID, s.getId());
+                        startActivity(intent);
                     }
                 }));
 
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mStudentListAdapter.notifyDataSetChanged();
     }
 }

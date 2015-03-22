@@ -20,7 +20,6 @@ import java.util.TreeMap;
  */
 public class SeatplanDetailActivity extends ActionBarActivity {
 
-    public static final String SEATPLAN_SELECTED_POSITION = "com.iceru.classinhand.SEATPLAN_SELECTED_POSITION";
     /* Application Class */
     private ClassInHandApplication application;
 
@@ -39,7 +38,7 @@ public class SeatplanDetailActivity extends ActionBarActivity {
         application = ClassInHandApplication.getInstance();
 
         Intent intent = getIntent();
-        int position = intent.getIntExtra(SEATPLAN_SELECTED_POSITION, -1);
+        int position = intent.getIntExtra(ClassInHandApplication.SEATPLAN_SELECTED_POSITION, -1);
 
         if (position < 0) finish();
 

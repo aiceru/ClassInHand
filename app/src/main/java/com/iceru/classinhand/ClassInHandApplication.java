@@ -46,6 +46,7 @@ public class ClassInHandApplication extends Application {
     public static final String PREF_USER_LEARNED_DRAWER = "navigation_drawer_learned";
 
     public static final String SEATPLAN_SELECTED_POSITION = "com.iceru.classinhand.SEATPLAN_SELECTED_POSITION";
+    public static final String STUDENT_SELECTED_ID = "com.iceru.classinhand.STUDENT_SELECTED_ID";
     public static final String SEATPLAN_EDIT_NEWDATE = "com.iceru.classinhand.SEATPLAN_EDIT_NEWDATE";
     public static final String SEATPLAN_EDIT_OLDDATE = "com.iceru.classinhand.SEATPLAN_EDIT_OLDDATE";
 
@@ -56,22 +57,31 @@ public class ClassInHandApplication extends Application {
     private static ClassInHandApplication appInstance;
 
     private TreeMap <Integer, Student> mStudents;        // KEY : ID
+    private TreeMap <Integer, Student> mCurrentStudents; // KEY : attendNum
 
     private ArrayList<Seatplan>         mSeatplans;
 
     private ClassDBHelper   dbHelper;
 
-    private Comparator<Seatplan> mSeatplanComparator;
+    private Comparator<Seatplan>    mSeatplanComparator;
+    private GregorianCalendar       mCalToday;
 
     @Override
     public final void onCreate() {
         super.onCreate();
         //ACRA.init(this);
 
+        mCalToday = new GregorianCalendar();
+        mCalToday.clear(Calendar.HOUR);
+        mCalToday.clear(Calendar.MINUTE);
+        mCalToday.clear(Calendar.SECOND);
+        mCalToday.clear(Calendar.MILLISECOND);
+
         appInstance = this;
         dbHelper = new ClassDBHelper(this);
 
         mStudents = new TreeMap<>();
+        mCurrentStudents = new TreeMap<>();
 
         mSeatplanComparator = new Comparator<Seatplan>() {
             @Override
@@ -100,6 +110,8 @@ public class ClassInHandApplication extends Application {
         return mStudents;
     }
 
+    public TreeMap<Integer, Student> getmCurrentStudents() { return mCurrentStudents; }
+
     public ArrayList<Seatplan> getmSeatplans() {
         return mSeatplans;
     }
@@ -108,10 +120,16 @@ public class ClassInHandApplication extends Application {
         return dbHelper;
     }
 
+    public GregorianCalendar getmCalToday() { return mCalToday; }
+
     public boolean addStudent(Student student) {
-        boolean exist = null != mStudents.get(student.getAttendNum());
+        boolean exist = null != mStudents.get(student.getId());
         if(!exist) {
-            mStudents.put(student.getAttendNum(), student);
+            long today = mCalToday.getTimeInMillis();
+            mStudents.put(student.getId(), student);
+            if(student.getInDate() <= today && student.getOutDate() > today) {
+                mCurrentStudents.put(student.getAttendNum(), student);
+            }
             dbHelper.insert(student);
         }
         return !exist;
@@ -129,7 +147,7 @@ public class ClassInHandApplication extends Application {
     }
 
     public boolean removeStudent(Student student) {
-        boolean success = null != mStudents.remove(student.getAttendNum());
+        boolean success = null != mStudents.remove(student.getId());
         if(success) {
             dbHelper.delete(student);
         }
@@ -183,8 +201,9 @@ public class ClassInHandApplication extends Application {
         int id, attendNum;
         String name;
         boolean isBoy;
-        long inDate, outDate;
+        long inDate, outDate, today;
 
+        today = mCalToday.getTimeInMillis();
         Cursor studentCursor = dbHelper.getStudentsList();
         while (studentCursor.moveToNext()) {
             id = studentCursor.getInt(studentCursor.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_ID));
@@ -195,6 +214,9 @@ public class ClassInHandApplication extends Application {
             outDate = studentCursor.getLong(studentCursor.getColumnIndexOrThrow(ClassDBContract.StudentInfo.ColUMN_NAME_OUT_DATE));
 
             Student s = new Student(id, attendNum, name, isBoy, inDate, outDate);
+            if(inDate <= today && outDate > today) {
+                mCurrentStudents.put(s.getAttendNum(), s);
+            }
             mStudents.put(id, s);
 
             NEXT_ID = id + 1;
@@ -266,26 +288,6 @@ public class ClassInHandApplication extends Application {
             }
             historyCursor.close();
         }
-    }
-
-    public TreeMap<Integer, Student> getCurrentStudentsTreeMapKeybyAttendNum() {
-        TreeMap<Integer, Student> map = new TreeMap<>();
-        GregorianCalendar todayCal = new GregorianCalendar();
-        todayCal.clear(Calendar.HOUR);
-        todayCal.clear(Calendar.MINUTE);
-        todayCal.clear(Calendar.SECOND);
-        todayCal.clear(Calendar.MILLISECOND);
-        long today = todayCal.getTimeInMillis();
-
-
-        for(Map.Entry<Integer, Student> e : mStudents.entrySet()) {
-            Student s = e.getValue();
-            if(s.getInDate() <= today && s.getOutDate() > today) {
-                map.put(s.getAttendNum(), s);
-            }
-        }
-
-        return map;
     }
 
     public TreeMap<Integer, Student> getDatedStudentsTreeMapKeybyId(long date) {
