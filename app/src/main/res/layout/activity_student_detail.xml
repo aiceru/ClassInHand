@@ -5,10 +5,124 @@
     android:layout_height="match_parent"
     tools:context="com.iceru.classinhand.StudentDetailActivity">
 
-    <com.iceru.classinhand.SquareImageView
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/green_100"/>
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:focusableInTouchMode="true">
+
+            <com.iceru.classinhand.SquareImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/darker_gray"
+                android:src="@drawable/ic_person_white_48dp"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingStart="@dimen/activity_horizontal_margin"
+                android:paddingEnd="@dimen/activity_horizontal_margin">
+
+                <ToggleButton
+                    android:id="@+id/tglbtn_student_detail_gender"
+                    style="@style/toggleButton"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerInParent="true"
+                    android:gravity="center"
+                    android:clickable="false"
+                    android:background="@drawable/tglbtn_boygirl_layerlist"/>
+
+                <EditText
+                    android:id="@+id/edittext_student_detail_attendnum"
+                    android:layout_width="52dp"
+                    android:layout_height="@dimen/recyclerview_singleline_tile_height"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerInParent="true"
+                    android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                    android:gravity="center"
+                    android:textColor="@color/text_secondary"
+                    android:enabled="false"/>
+
+                <EditText
+                    android:id="@+id/edittext_student_detail_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/recyclerview_singleline_tile_height"
+                    android:layout_centerInParent="true"
+                    android:layout_toEndOf="@id/edittext_student_detail_attendnum"
+                    android:layout_toStartOf="@id/tglbtn_student_detail_gender"
+                    android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                    android:gravity="center"
+                    android:textColor="@color/text_secondary"
+                    android:enabled="false"/>
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingStart="@dimen/activity_horizontal_margin"
+                android:paddingEnd="@dimen/activity_horizontal_margin">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="52dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textSize="16sp"
+                    android:text="@string/hint_edittext_indate"/>
+
+                <TextView
+                    android:id="@+id/textview_student_detail_indate"
+                    android:layout_width="0dp"
+                    android:layout_height="52dp"
+                    android:layout_weight="2"
+                    android:gravity="center"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="16sp"
+                    android:clickable="false"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingStart="@dimen/activity_horizontal_margin"
+                android:paddingEnd="@dimen/activity_horizontal_margin"
+                android:layout_gravity="center">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="52dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textSize="16sp"
+                    android:text="@string/hint_edittext_outdate"/>
+
+                <TextView
+                    android:id="@+id/textview_student_detail_outdate"
+                    android:layout_width="0dp"
+                    android:layout_height="52dp"
+                    android:layout_weight="2"
+                    android:gravity="center"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="16sp"
+                    android:clickable="false"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar_student_detail"
@@ -17,7 +131,5 @@
         android:background="@android:color/transparent"
         android:minHeight="?attr/actionBarSize"
         app:theme="@style/ThemeOverlay.AppCompat.ActionBar"/>
-
-
 
 </RelativeLayout>

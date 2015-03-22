@@ -107,7 +107,7 @@ public class AddPersonActivity extends ActionBarActivity {
         });
 
         mInDateTextView = (TextView)findViewById(R.id.textview_addperson_indate);
-        setInDateString(mInDate);
+        mInDateTextView.setText(getDateString(mInDate));
         mInDateTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -183,8 +183,8 @@ public class AddPersonActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void setInDateString(GregorianCalendar cal) {
-        mInDateTextView.setText(new StringBuilder().append(cal.get(Calendar.YEAR))
+    private String getDateString(GregorianCalendar cal) {
+        return (new StringBuilder().append(cal.get(Calendar.YEAR))
                 .append(getString(R.string.year_string)).append(" ").append(cal.get(Calendar.MONTH) + 1)
                 .append(getString(R.string.month_string)).append(" ").append(cal.get(Calendar.DAY_OF_MONTH))
                 .append(getString(R.string.day_string)).append(", ")
@@ -197,7 +197,7 @@ public class AddPersonActivity extends ActionBarActivity {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 mInDate.set(year, monthOfYear, dayOfMonth);
-                setInDateString(mInDate);
+                mInDateTextView.setText(getDateString(mInDate));
             }
         };
         DatePickerDialog dateDialog = new DatePickerDialog(this, dateSetListener,
