@@ -142,13 +142,18 @@ public class ClassInHandApplication extends Application {
         }
     }
 
-    public Student findStudent(int id) {
+    public Student findStudentById(int id) {
         return mStudents.get(id);
+    }
+
+    public Student findStudentByAttendNum(int attendNum) {
+        return mCurrentStudents.get(attendNum);
     }
 
     public boolean removeStudent(Student student) {
         boolean success = null != mStudents.remove(student.getId());
         if(success) {
+            mCurrentStudents.remove(student.getAttendNum());
             dbHelper.delete(student);
         }
         return success;
@@ -156,6 +161,7 @@ public class ClassInHandApplication extends Application {
 
     public void removeAllStudents() {
         mStudents.clear();
+        mCurrentStudents.clear();
         dbHelper.deleteAllStudents();
     }
 
@@ -341,5 +347,9 @@ public class ClassInHandApplication extends Application {
         addStudent(new Student(1034, 35, "한가인", false, indate, Long.MAX_VALUE));
         addStudent(new Student(1035, 36, "박한별", false, indate, Long.MAX_VALUE));
         addStudent(new Student(1036, 37, "심은경", false, indate, Long.MAX_VALUE));
+    }
+
+    public void updateStudent(Student student) {
+        dbHelper.update(student);
     }
 }

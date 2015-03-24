@@ -97,7 +97,7 @@
                 android:layout_height="52dp"
                 android:layout_columnSpan="3"
                 android:layout_gravity="fill"
-                android:paddingLeft="16dp"
+                android:paddingStart="16dp"
                 android:gravity="center_vertical"
                 android:textSize="16sp"
                 android:textColor="@color/text_secondary"

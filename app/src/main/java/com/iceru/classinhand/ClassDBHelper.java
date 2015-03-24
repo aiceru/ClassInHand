@@ -255,18 +255,44 @@ public class ClassDBHelper extends SQLiteOpenHelper {
         );
     }*/
 
-	public int delete(Student student) {
-		String selection = ClassDBContract.StudentInfo.COLUMN_NAME_ID + " LIKE ?";
+	public void delete(Student student) {
+		String selectionFromStudentInfo = ClassDBContract.StudentInfo.COLUMN_NAME_ID + " LIKE ?";
+        String selectionFromSeatHistory = ClassDBContract.SeatHistory.COLUMN_NAME_STUDENT_ID + " LIKE ?";
 		String[] selectionArgs = {
 				String.valueOf(student.getId())
 		};
 
-		return wDB.delete(
+		wDB.delete(
 				ClassDBContract.StudentInfo.TABLE_NAME,
-				selection,
+				selectionFromStudentInfo,
 				selectionArgs
 		);
+        wDB.delete(
+                ClassDBContract.SeatHistory.TABLE_NAME,
+                selectionFromSeatHistory,
+                selectionArgs
+        );
 	}
+
+    public void update(Student student) {
+        /* Student's ID should NOT change. */
+        String selection = ClassDBContract.StudentInfo.COLUMN_NAME_ID + " LIKE?";
+        String[] selectionArgs = {
+                String.valueOf(student.getId())
+        };
+        ContentValues values = new ContentValues();
+        values.put(ClassDBContract.StudentInfo.COLUMN_NAME_ATTEND_NUM, student.getAttendNum());
+        values.put(ClassDBContract.StudentInfo.COLUMN_NAME_NAME, student.getName());
+        values.put(ClassDBContract.StudentInfo.COLUMN_NAME_GENDER, student.isBoy()? 1:2);
+        values.put(ClassDBContract.StudentInfo.COLUMN_NAME_IN_DATE, student.getInDate());
+        values.put(ClassDBContract.StudentInfo.ColUMN_NAME_OUT_DATE, student.getOutDate());
+        wDB.update(
+                ClassDBContract.StudentInfo.TABLE_NAME,
+                values,
+                selection,
+                selectionArgs
+        );
+    }
 
     /*
 	public int delete(Seat seat) {

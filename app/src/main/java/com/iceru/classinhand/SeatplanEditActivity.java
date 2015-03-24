@@ -225,7 +225,7 @@ public class SeatplanEditActivity extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_add_person, menu);
+        getMenuInflater().inflate(R.menu.menu_oneitem_done, menu);
         return true;
     }
 
@@ -452,7 +452,7 @@ public class SeatplanEditActivity extends ActionBarActivity {
                 for(PersonalHistory p : selectedStudent.getHistories()) {
                     String whenStr = String.format("%02d.%02d ~\n", p.applyDate.get(Calendar.MONTH) + 1, p.applyDate.get(Calendar.DAY_OF_MONTH));
                     String whereStr = ConvertAbsSeatToSegAndRow(p.seatId) + ", ";
-                    Student pairStudent = application.findStudent(p.pairId);
+                    Student pairStudent = application.findStudentById(p.pairId);
                     String pairStr = pairStudent == null ? "" : pairStudent.getName();
                     tv = new TextView(this);
                     tv.setText(whenStr + whereStr + pairStr);
@@ -505,7 +505,7 @@ public class SeatplanEditActivity extends ActionBarActivity {
                 for(PersonalHistory p : selectedStudent.getHistories()) {
                     String whenStr = String.format("%02d.%02d ~\n", p.applyDate.get(Calendar.MONTH) + 1, p.applyDate.get(Calendar.DAY_OF_MONTH));
                     String whereStr = ConvertAbsSeatToSegAndRow(p.seatId) + ", ";
-                    Student pairStudent = application.findStudent(p.pairId);
+                    Student pairStudent = application.findStudentById(p.pairId);
                     String pairStr = pairStudent == null ? "" : pairStudent.getName();
                     tv = new TextView(this);
                     tv.setText(whenStr + whereStr + pairStr);

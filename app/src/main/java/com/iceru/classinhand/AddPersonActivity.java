@@ -146,7 +146,7 @@ public class AddPersonActivity extends ActionBarActivity {
         attendNum = Integer.valueOf(numStr);
 
         if(mAttendNumArray[attendNum]) {
-            Toast.makeText(this, R.string.warning_existing_num, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.warning_existing_attendnum, Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -166,7 +166,7 @@ public class AddPersonActivity extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_add_person, menu);
+        getMenuInflater().inflate(R.menu.menu_oneitem_done, menu);
         return true;
     }
 
