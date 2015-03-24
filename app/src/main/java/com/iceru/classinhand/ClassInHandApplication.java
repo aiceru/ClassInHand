@@ -1,6 +1,7 @@
 package com.iceru.classinhand;
 
 import android.app.Application;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.preference.PreferenceManager;
@@ -82,6 +83,7 @@ public class ClassInHandApplication extends Application {
 
         mStudents = new TreeMap<>();
         mCurrentStudents = new TreeMap<>();
+        mSeatplans = new ArrayList<>();
 
         mSeatplanComparator = new Comparator<Seatplan>() {
             @Override
@@ -97,9 +99,7 @@ public class ClassInHandApplication extends Application {
         globalProperties.columns = Integer.parseInt(prefs.getString(getString(R.string.sharedpref_key_columns), "6"));
         globalProperties.isBoyRight = Boolean.parseBoolean(prefs.getString(getString(R.string.sharedpref_key_is_boy_right), "true"));
 
-        initStudentList();
-        initSeatplanList();
-        initHistories();
+        rebuildAllData();
     }
 
     public static ClassInHandApplication getInstance() {
@@ -209,6 +209,9 @@ public class ClassInHandApplication extends Application {
         boolean isBoy;
         long inDate, outDate, today;
 
+        mStudents.clear();
+        mCurrentStudents.clear();
+
         today = mCalToday.getTimeInMillis();
         Cursor studentCursor = dbHelper.getStudentsList();
         while (studentCursor.moveToNext()) {
@@ -234,7 +237,8 @@ public class ClassInHandApplication extends Application {
      * DB에서 Seatplan history를 읽어 mSeatplans 리스트를 구성한다.
      */
     private void initSeatplanList() {
-        mSeatplans = new ArrayList<>();
+        mSeatplans.clear();
+
         Cursor c = dbHelper.getSavedDateList();
         while(c.moveToNext()) {
             long date = c.getLong(c.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_APPLY_DATE));
@@ -296,6 +300,12 @@ public class ClassInHandApplication extends Application {
         }
     }
 
+    public void rebuildAllData() {
+        initStudentList();
+        initSeatplanList();
+        initHistories();
+    }
+
     public TreeMap<Integer, Student> getDatedStudentsTreeMapKeybyId(long date) {
         TreeMap<Integer, Student> map = new TreeMap<>();
         for(Map.Entry<Integer, Student> e : mStudents.entrySet()) {
@@ -305,6 +315,17 @@ public class ClassInHandApplication extends Application {
             }
         }
         return map;
+    }
+
+    public void updateStudent(Student student) {
+        dbHelper.update(student);
+    }
+
+    public void restart() {
+        Intent i = getBaseContext().getPackageManager()
+                .getLaunchIntentForPackage( getBaseContext().getPackageName() );
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(i);
     }
 
     /* For Test only... create test dummy data */
@@ -347,9 +368,5 @@ public class ClassInHandApplication extends Application {
         addStudent(new Student(1034, 35, "한가인", false, indate, Long.MAX_VALUE));
         addStudent(new Student(1035, 36, "박한별", false, indate, Long.MAX_VALUE));
         addStudent(new Student(1036, 37, "심은경", false, indate, Long.MAX_VALUE));
-    }
-
-    public void updateStudent(Student student) {
-        dbHelper.update(student);
     }
 }

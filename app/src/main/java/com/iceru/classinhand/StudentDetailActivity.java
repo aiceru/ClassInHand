@@ -142,6 +142,7 @@ public class StudentDetailActivity extends ActionBarActivity {
 
     private void deleteMe() {
         application.removeStudent(mStudent);
+        application.rebuildAllData();
     }
 
     private void editMe() {
