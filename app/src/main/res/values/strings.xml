@@ -125,6 +125,7 @@
         <item>토요일</item>
     </string-array>
 
+    <string name="log_error_tag">com.iceru.classinhand:Error</string>
     <string name="hello_world">Hello world!</string>
 
 </resources>

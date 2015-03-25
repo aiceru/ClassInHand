@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
@@ -244,11 +245,13 @@ public class ClassInHandApplication extends Application {
             long date = c.getLong(c.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_APPLY_DATE));
 
             Cursor cursorForDate = dbHelper.getSeatplanInfo(date);
-            if(!cursorForDate.moveToFirst()) ;      // ERROR!!
+            cursorForDate.moveToFirst();
             int columnsInThisPlan = cursorForDate.getInt(
                     cursorForDate.getColumnIndexOrThrow(ClassDBContract.SeatplanInfo.COLUMN_NAME_COLUMNS));
             boolean isBoyRightInThisPlan = (cursorForDate.getInt(
                     cursorForDate.getColumnIndexOrThrow(ClassDBContract.SeatplanInfo.COLUMN_NAME_IS_BOY_RIGHT)) == 1);
+            int totalSeatsInThisPlan = cursorForDate.getInt(
+                    cursorForDate.getColumnIndexOrThrow(ClassDBContract.SeatplanInfo.COLUMN_NAME_TOTAL_SEATS));
             cursorForDate.close();
 
             cursorForDate = dbHelper.getSeatplan(date);
@@ -260,9 +263,14 @@ public class ClassInHandApplication extends Application {
                 aSeats.add(new Seat(seatId, mStudents.get(studentId)));
             }
 
+            if(aSeats.size() != totalSeatsInThisPlan) {
+                Log.e(getString(R.string.log_error_tag),
+                        "DB consistency error: seatplan total number of seats does not match");
+            }
+
             GregorianCalendar cal = new GregorianCalendar();
             cal.setTimeInMillis(date);
-            mSeatplans.add(new Seatplan(cal, aSeats, columnsInThisPlan, isBoyRightInThisPlan));
+            mSeatplans.add(new Seatplan(cal, aSeats, columnsInThisPlan, isBoyRightInThisPlan, aSeats.size()));
 
             cursorForDate.close();
         }
@@ -306,12 +314,12 @@ public class ClassInHandApplication extends Application {
         initHistories();
     }
 
-    public TreeMap<Integer, Student> getDatedStudentsTreeMapKeybyId(long date) {
+    public TreeMap<Integer, Student> getDatedStudentsTreeMapKeybyAttendNum(long date) {
         TreeMap<Integer, Student> map = new TreeMap<>();
         for(Map.Entry<Integer, Student> e : mStudents.entrySet()) {
             Student s = e.getValue();
             if(s.getInDate() <= date && s.getOutDate() > date) {
-                map.put(s.getId(), s);
+                map.put(s.getAttendNum(), s);
             }
         }
         return map;

@@ -67,7 +67,7 @@ public class SeatplanEditActivity extends ActionBarActivity {
 
         if(newDatelong == 0) finish();
 
-        mRemainStudents = application.getDatedStudentsTreeMapKeybyId(newDatelong);
+        mRemainStudents = application.getDatedStudentsTreeMapKeybyAttendNum(newDatelong);
 
         mNewDate = new GregorianCalendar();
         mNewDate.setTimeInMillis(newDatelong);
@@ -79,7 +79,8 @@ public class SeatplanEditActivity extends ActionBarActivity {
                     mNewDate,
                     new ArrayList<Seat>(),
                     application.globalProperties.columns,
-                    application.globalProperties.isBoyRight);
+                    application.globalProperties.isBoyRight,
+                    mRemainStudents.size());
             for (int i = 0; i < mRemainStudents.size(); i++) {
                 Seat s = new Seat(i);
                 mNewPlan.getmSeats().add(s);
@@ -94,10 +95,14 @@ public class SeatplanEditActivity extends ActionBarActivity {
                     mNewDate,
                     new ArrayList<Seat>(),
                     mOldPlan.getmColumns(),
-                    mOldPlan.isBoyRight());
-            for (int i = 0; i < mRemainStudents.size(); i++) {
+                    mOldPlan.isBoyRight(),
+                    mOldPlan.getmTotalSeats());
+            for (int i = 0; i < mOldPlan.getmTotalSeats(); i++) {
                 Seat s = new Seat(i);
                 s.setItsStudent(mOldPlan.getmSeats().get(i).getItsStudent());
+                if(s.getItsStudent() != null) {
+                    mRemainStudents.remove(s.getItsStudent().getAttendNum());
+                }
                 mNewPlan.getmSeats().add(s);
             }
         }
@@ -247,14 +252,18 @@ public class SeatplanEditActivity extends ActionBarActivity {
         Seat seat;
         if(mLeftSelectedSeat.getItsStudent() != null) {
             for (PersonalHistory p : mLeftSelectedSeat.getItsStudent().getHistories()) {
-                seat = mNewPlan.getmSeats().get(p.seatId);
-                seat.clrRecentSeatedFlag(ClassInHandApplication.SEATED_LEFT);
+                if(p.seatId < mNewPlan.getmSeats().size()) {
+                    seat = mNewPlan.getmSeats().get(p.seatId);
+                    seat.clrRecentSeatedFlag(ClassInHandApplication.SEATED_LEFT);
+                }
             }
         }
         if(mRightSelectedSeat.getItsStudent() != null) {
             for (PersonalHistory p : mRightSelectedSeat.getItsStudent().getHistories()) {
-                seat = mNewPlan.getmSeats().get(p.seatId);
-                seat.clrRecentSeatedFlag(ClassInHandApplication.SEATED_RIGHT);
+                if(p.seatId < mNewPlan.getmSeats().size()) {
+                    seat = mNewPlan.getmSeats().get(p.seatId);
+                    seat.clrRecentSeatedFlag(ClassInHandApplication.SEATED_RIGHT);
+                }
             }
         }
 
@@ -290,9 +299,11 @@ public class SeatplanEditActivity extends ActionBarActivity {
             mRemainStudents.put(victim.getAttendNum(), victim);
 
             for (PersonalHistory p : victim.getHistories()) {
-                seat = mNewPlan.getmSeats().get(p.seatId);
-                seat.clrRecentSeatedFlag(ClassInHandApplication.SEATED_LEFT);
-                seat.clrRecentSeatedFlag(ClassInHandApplication.SEATED_RIGHT);
+                if(p.seatId < mNewPlan.getmSeats().size()) {
+                    seat = mNewPlan.getmSeats().get(p.seatId);
+                    seat.clrRecentSeatedFlag(ClassInHandApplication.SEATED_LEFT);
+                    seat.clrRecentSeatedFlag(ClassInHandApplication.SEATED_RIGHT);
+                }
             }
         }
         // Vacate 버튼이 Visible 한 경우는, 왼쪽 오른쪽 중 하나만 선택된 상황이고, 거기서 자리비움 버튼을 누르면
@@ -459,8 +470,10 @@ public class SeatplanEditActivity extends ActionBarActivity {
                     tv.setTextSize(14);
                     layout_onseatclick_left.addView(tv);
 
-                    Seat seat = mNewPlan.getmSeats().get(p.seatId);
-                    seat.setRecentSeatedFlag(ClassInHandApplication.SEATED_LEFT);
+                    if(p.seatId < mNewPlan.getmSeats().size()) {
+                        Seat seat = mNewPlan.getmSeats().get(p.seatId);
+                        seat.setRecentSeatedFlag(ClassInHandApplication.SEATED_LEFT);
+                    }
 
                     if(++historyCount > application.globalProperties.num_histories) break;
                 }
@@ -512,8 +525,10 @@ public class SeatplanEditActivity extends ActionBarActivity {
                     tv.setTextSize(14);
                     layout_onseatclick_right.addView(tv);
 
-                    Seat seat = mNewPlan.getmSeats().get(p.seatId);
-                    seat.setRecentSeatedFlag(ClassInHandApplication.SEATED_RIGHT);
+                    if(p.seatId < mNewPlan.getmSeats().size()) {
+                        Seat seat = mNewPlan.getmSeats().get(p.seatId);
+                        seat.setRecentSeatedFlag(ClassInHandApplication.SEATED_RIGHT);
+                    }
 
                     if(++historyCount > application.globalProperties.num_histories) break;
                 }

@@ -10,25 +10,30 @@
               android:background="@color/grey_300">
 
 
-    <TextView
+    <com.iceru.classinhand.FontFitTextView
         android:id="@+id/textview_seated_num"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"/>
 
     <ImageView
         android:id="@+id/imageview_seated_boygirl"
         android:layout_width="16dp"
         android:layout_height="16dp"
+        android:layout_marginBottom="4dp"
         android:layout_alignParentEnd="true"/>
 
-    <TextView
+    <com.iceru.classinhand.FontFitTextView
         android:id="@+id/textview_seated_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/textview_seated_num"
-        android:singleLine="true"
-        android:layout_centerHorizontal="true"/>
+        android:layout_below="@id/imageview_seated_boygirl"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:singleLine="true"/>
 
     <ImageView
         android:id="@+id/imageview_recently_seated_left"

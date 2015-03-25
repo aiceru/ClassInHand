@@ -19,10 +19,10 @@ public class SeatGridAdapter extends BaseAdapter {
     private ArrayList<Seat> mDataset;
     private Context         mContext;
     private int             mColumns;
-    private int             mAdjustedTextSize;
+    //private int             mAdjustedTextSize;
     private int             mAdjustedImageSize;
-    private static final int    mTextWidth_Dividend = 112;
-    private static final int    mTextSize_Max = 16;
+    /*private static final int    mTextWidth_Dividend = 112;
+    private static final int    mTextSize_Max = 16;*/
     private static final int    mImageWidth_Dividend = 288;
     private static final int    mImageSize_Max = 50;
 
@@ -30,7 +30,7 @@ public class SeatGridAdapter extends BaseAdapter {
         this.mDataset = seats;
         this.mContext = context;
         this.mColumns = columns;
-        this.mAdjustedTextSize = mTextWidth_Dividend / mColumns > mTextSize_Max? mTextSize_Max : mTextWidth_Dividend / mColumns;
+        //this.mAdjustedTextSize = mTextWidth_Dividend / mColumns > mTextSize_Max? mTextSize_Max : mTextWidth_Dividend / mColumns;
         this.mAdjustedImageSize = mImageWidth_Dividend / mColumns > mImageSize_Max? mImageSize_Max : mImageWidth_Dividend / mColumns;
     }
 
@@ -58,14 +58,14 @@ public class SeatGridAdapter extends BaseAdapter {
 
         Seat seat = mDataset.get(position);
         RelativeLayout rlayout = (RelativeLayout)convertView.findViewById(R.id.relativelayout_seat_background);
-        TextView tv_num = (TextView)convertView.findViewById(R.id.textview_seated_num);
+        FontFitTextView tv_num = (FontFitTextView)convertView.findViewById(R.id.textview_seated_num);
         ImageView iv_gender = (ImageView)convertView.findViewById(R.id.imageview_seated_boygirl);
-        TextView tv_name = (TextView)convertView.findViewById(R.id.textview_seated_name);
+        FontFitTextView tv_name = (FontFitTextView) convertView.findViewById(R.id.textview_seated_name);
         ImageView iv_seated_left = (ImageView)convertView.findViewById(R.id.imageview_recently_seated_left);
         ImageView iv_seated_right = (ImageView)convertView.findViewById(R.id.imageview_recently_seated_right);
 
-        tv_num.setTextSize(TypedValue.COMPLEX_UNIT_SP, mAdjustedTextSize);
-        tv_name.setTextSize(TypedValue.COMPLEX_UNIT_SP, mAdjustedTextSize);
+        //tv_num.setTextSize(TypedValue.COMPLEX_UNIT_SP, mAdjustedTextSize);
+        //tv_name.setTextSize(TypedValue.COMPLEX_UNIT_SP, mAdjustedTextSize);
         iv_gender.getLayoutParams().width = mAdjustedImageSize;
         iv_seated_left.getLayoutParams().width = mAdjustedImageSize;
         iv_seated_right.getLayoutParams().width = mAdjustedImageSize;

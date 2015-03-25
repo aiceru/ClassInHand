@@ -52,12 +52,19 @@ public class ClassDBHelper extends SQLiteOpenHelper {
         values.put(ClassDBContract.SeatplanInfo.COLUMN_NAME_APPLY_DATE, applyDate);
         values.put(ClassDBContract.SeatplanInfo.COLUMN_NAME_COLUMNS, plan.getmColumns());
         values.put(ClassDBContract.SeatplanInfo.COLUMN_NAME_IS_BOY_RIGHT, (plan.isBoyRight()? 1 : 0));
+        values.put(ClassDBContract.SeatplanInfo.COLUMN_NAME_TOTAL_SEATS, plan.getmTotalSeats());
         ret |= wDB.insert(ClassDBContract.SeatplanInfo.TABLE_NAME, null, values);
         values.clear();
 
         for(Seat seat : plan.getmSeats()) {
             values.put(ClassDBContract.SeatHistory.COLUMN_NAME_ID, seat.getId());
-            values.put(ClassDBContract.SeatHistory.COLUMN_NAME_STUDENT_ID, seat.getItsStudent().getId());
+            Student s = seat.getItsStudent();
+            if(s != null) {
+                values.put(ClassDBContract.SeatHistory.COLUMN_NAME_STUDENT_ID, s.getId());
+            }
+            else {
+                values.putNull(ClassDBContract.SeatHistory.COLUMN_NAME_STUDENT_ID);
+            }
             values.put(ClassDBContract.SeatHistory.COLUMN_NAME_APPLY_DATE, applyDate);
 
             ret |= wDB.insert(ClassDBContract.SeatHistory.TABLE_NAME, null, values);
@@ -267,8 +274,12 @@ public class ClassDBHelper extends SQLiteOpenHelper {
 				selectionFromStudentInfo,
 				selectionArgs
 		);
-        wDB.delete(
+
+        ContentValues values = new ContentValues();
+        values.putNull(ClassDBContract.SeatHistory.COLUMN_NAME_STUDENT_ID);
+        wDB.update(
                 ClassDBContract.SeatHistory.TABLE_NAME,
+                values,
                 selectionFromSeatHistory,
                 selectionArgs
         );
