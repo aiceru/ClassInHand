@@ -1,5 +1,6 @@
 package com.iceru.classinhand;
 
+import android.app.ActionBar;
 import android.content.Context;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -7,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -19,19 +21,11 @@ public class SeatGridAdapter extends BaseAdapter {
     private ArrayList<Seat> mDataset;
     private Context         mContext;
     private int             mColumns;
-    //private int             mAdjustedTextSize;
-    private int             mAdjustedImageSize;
-    /*private static final int    mTextWidth_Dividend = 112;
-    private static final int    mTextSize_Max = 16;*/
-    private static final int    mImageWidth_Dividend = 288;
-    private static final int    mImageSize_Max = 50;
 
     public SeatGridAdapter(ArrayList<Seat> seats, Context context, int columns) {
         this.mDataset = seats;
         this.mContext = context;
         this.mColumns = columns;
-        //this.mAdjustedTextSize = mTextWidth_Dividend / mColumns > mTextSize_Max? mTextSize_Max : mTextWidth_Dividend / mColumns;
-        this.mAdjustedImageSize = mImageWidth_Dividend / mColumns > mImageSize_Max? mImageSize_Max : mImageWidth_Dividend / mColumns;
     }
 
     @Override
@@ -63,12 +57,6 @@ public class SeatGridAdapter extends BaseAdapter {
         FontFitTextView tv_name = (FontFitTextView) convertView.findViewById(R.id.textview_seated_name);
         ImageView iv_seated_left = (ImageView)convertView.findViewById(R.id.imageview_recently_seated_left);
         ImageView iv_seated_right = (ImageView)convertView.findViewById(R.id.imageview_recently_seated_right);
-
-        //tv_num.setTextSize(TypedValue.COMPLEX_UNIT_SP, mAdjustedTextSize);
-        //tv_name.setTextSize(TypedValue.COMPLEX_UNIT_SP, mAdjustedTextSize);
-        iv_gender.getLayoutParams().width = mAdjustedImageSize;
-        iv_seated_left.getLayoutParams().width = mAdjustedImageSize;
-        iv_seated_right.getLayoutParams().width = mAdjustedImageSize;
 
         Student student = seat.getItsStudent();
         if(student != null) {

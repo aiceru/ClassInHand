@@ -74,10 +74,7 @@ public class ClassInHandApplication extends Application {
         //ACRA.init(this);
 
         mCalToday = new GregorianCalendar();
-        mCalToday.clear(Calendar.HOUR);
-        mCalToday.clear(Calendar.MINUTE);
-        mCalToday.clear(Calendar.SECOND);
-        mCalToday.clear(Calendar.MILLISECOND);
+        clearTime(mCalToday);
 
         appInstance = this;
         dbHelper = new ClassDBHelper(this);
@@ -121,7 +118,11 @@ public class ClassInHandApplication extends Application {
         return dbHelper;
     }
 
-    public GregorianCalendar getmCalToday() { return mCalToday; }
+    public GregorianCalendar getValueOfTodayCalendar() {
+        GregorianCalendar c = new GregorianCalendar();
+        c.setTimeInMillis(mCalToday.getTimeInMillis());
+        return c;
+    }
 
     public boolean addStudent(Student student) {
         boolean exist = null != mStudents.get(student.getId());
@@ -334,6 +335,15 @@ public class ClassInHandApplication extends Application {
                 .getLaunchIntentForPackage( getBaseContext().getPackageName() );
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(i);
+    }
+
+    public void clearTime(GregorianCalendar c) {
+        c.clear(Calendar.AM_PM);
+        c.clear(Calendar.HOUR);
+        c.clear(Calendar.HOUR_OF_DAY);
+        c.clear(Calendar.MINUTE);
+        c.clear(Calendar.SECOND);
+        c.clear(Calendar.MILLISECOND);
     }
 
     /* For Test only... create test dummy data */

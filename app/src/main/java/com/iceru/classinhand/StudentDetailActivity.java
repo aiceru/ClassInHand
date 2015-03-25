@@ -179,7 +179,7 @@ public class StudentDetailActivity extends ActionBarActivity {
                 tv.setText(getDateString(cal));
             }
         };
-        GregorianCalendar todayCal = application.getmCalToday();
+        GregorianCalendar todayCal = application.getValueOfTodayCalendar();
         DatePickerDialog dateDialog = new DatePickerDialog(this, dateSetListener,
                 todayCal.get(Calendar.YEAR), todayCal.get(Calendar.MONTH), todayCal.get(Calendar.DAY_OF_MONTH));
         dateDialog.show();

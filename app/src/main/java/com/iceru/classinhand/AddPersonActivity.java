@@ -50,11 +50,7 @@ public class AddPersonActivity extends ActionBarActivity {
         mStudents = application.getmStudents();
 
         mAddingStudents = new TreeMap<>();
-        mInDate = new GregorianCalendar();
-        mInDate.clear(Calendar.HOUR);
-        mInDate.clear(Calendar.MINUTE);
-        mInDate.clear(Calendar.SECOND);
-        mInDate.clear(Calendar.MILLISECOND);
+        mInDate = application.getValueOfTodayCalendar();
 
         mAttendNumArray = new boolean[ClassInHandApplication.MAX_STUDENTS]; // initialized to false
         for(TreeMap.Entry<Integer, Student> entry : mStudents.entrySet()) {
