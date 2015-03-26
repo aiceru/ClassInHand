@@ -54,4 +54,28 @@ public class Student {
     public ArrayList<PersonalHistory> getHistories() {
         return histories;
     }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setAttendNum(int attendNum) {
+        this.attendNum = attendNum;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setBoy(boolean isBoy) {
+        this.isBoy = isBoy;
+    }
+
+    public void setInDate(long inDate) {
+        this.inDate = inDate;
+    }
+
+    public void setOutDate(long outDate) {
+        this.outDate = outDate;
+    }
 }

@@ -295,7 +295,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void onClickNewPlanButton(View view) {
-        mNewDate = new GregorianCalendar();
+        mNewDate = application.getValueOfTodayCalendar();
 
         DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override

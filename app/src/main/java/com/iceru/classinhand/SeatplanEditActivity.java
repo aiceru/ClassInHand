@@ -36,7 +36,6 @@ public class SeatplanEditActivity extends ActionBarActivity {
     private ClassInHandApplication          application;
 
     /* Data Structures */
-    private TreeMap<Integer, Student>       mStudents;
     private TreeMap<Integer, Student>       mRemainStudents;
     private Seatplan                        mNewPlan, mOldPlan;
     private GregorianCalendar               mNewDate, mOldDate;
@@ -61,14 +60,14 @@ public class SeatplanEditActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
 
         application = ClassInHandApplication.getInstance();
-        mStudents = application.getmCurrentStudents();
-        mRemainStudents = new TreeMap<>(mStudents);
 
         Intent intent = getIntent();
         long newDatelong = intent.getLongExtra(ClassInHandApplication.SEATPLAN_EDIT_NEWDATE, 0);
         long oldDatelong = intent.getLongExtra(ClassInHandApplication.SEATPLAN_EDIT_OLDDATE, 0);
 
         if(newDatelong == 0) finish();
+
+        mRemainStudents = application.getDatedStudentsTreeMapKeybyAttendNum(newDatelong);
 
         mNewDate = new GregorianCalendar();
         mNewDate.setTimeInMillis(newDatelong);
@@ -80,8 +79,9 @@ public class SeatplanEditActivity extends ActionBarActivity {
                     mNewDate,
                     new ArrayList<Seat>(),
                     application.globalProperties.columns,
-                    application.globalProperties.isBoyRight);
-            for (int i = 0; i < mStudents.size(); i++) {
+                    application.globalProperties.isBoyRight,
+                    mRemainStudents.size());
+            for (int i = 0; i < mRemainStudents.size(); i++) {
                 Seat s = new Seat(i);
                 mNewPlan.getmSeats().add(s);
             }
@@ -95,9 +95,14 @@ public class SeatplanEditActivity extends ActionBarActivity {
                     mNewDate,
                     new ArrayList<Seat>(),
                     mOldPlan.getmColumns(),
-                    mOldPlan.isBoyRight());
-            for(Seat oldseat : mOldPlan.getmSeats()) {
-                Seat s = new Seat(oldseat.getId(), oldseat.getItsStudent());
+                    mOldPlan.isBoyRight(),
+                    mOldPlan.getmTotalSeats());
+            for (int i = 0; i < mOldPlan.getmTotalSeats(); i++) {
+                Seat s = new Seat(i);
+                s.setItsStudent(mOldPlan.getmSeats().get(i).getItsStudent());
+                if(s.getItsStudent() != null) {
+                    mRemainStudents.remove(s.getItsStudent().getAttendNum());
+                }
                 mNewPlan.getmSeats().add(s);
             }
         }
@@ -201,7 +206,7 @@ public class SeatplanEditActivity extends ActionBarActivity {
         ArrayList<Seat> seatArray = mNewPlan.getmSeats();
         TreeMap<Double, Student> pointedTreeMap = new TreeMap<>();
 
-        for(Map.Entry<Integer, Student> entry : mStudents.entrySet()) {
+        for(Map.Entry<Integer, Student> entry : mRemainStudents.entrySet()) {
             Student s = entry.getValue();
             pointedTreeMap.put(Math.random(), s);
         }
@@ -226,7 +231,7 @@ public class SeatplanEditActivity extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_add_person, menu);
+        getMenuInflater().inflate(R.menu.menu_oneitem_done, menu);
         return true;
     }
 
@@ -248,14 +253,18 @@ public class SeatplanEditActivity extends ActionBarActivity {
         Seat seat;
         if(mLeftSelectedSeat.getItsStudent() != null) {
             for (PersonalHistory p : mLeftSelectedSeat.getItsStudent().getHistories()) {
-                seat = mNewPlan.getmSeats().get(p.seatId);
-                seat.clrRecentSeatedFlag(ClassInHandApplication.SEATED_LEFT);
+                if(p.seatId < mNewPlan.getmSeats().size()) {
+                    seat = mNewPlan.getmSeats().get(p.seatId);
+                    seat.clrRecentSeatedFlag(ClassInHandApplication.SEATED_LEFT);
+                }
             }
         }
         if(mRightSelectedSeat.getItsStudent() != null) {
             for (PersonalHistory p : mRightSelectedSeat.getItsStudent().getHistories()) {
-                seat = mNewPlan.getmSeats().get(p.seatId);
-                seat.clrRecentSeatedFlag(ClassInHandApplication.SEATED_RIGHT);
+                if(p.seatId < mNewPlan.getmSeats().size()) {
+                    seat = mNewPlan.getmSeats().get(p.seatId);
+                    seat.clrRecentSeatedFlag(ClassInHandApplication.SEATED_RIGHT);
+                }
             }
         }
 
@@ -291,9 +300,11 @@ public class SeatplanEditActivity extends ActionBarActivity {
             mRemainStudents.put(victim.getAttendNum(), victim);
 
             for (PersonalHistory p : victim.getHistories()) {
-                seat = mNewPlan.getmSeats().get(p.seatId);
-                seat.clrRecentSeatedFlag(ClassInHandApplication.SEATED_LEFT);
-                seat.clrRecentSeatedFlag(ClassInHandApplication.SEATED_RIGHT);
+                if(p.seatId < mNewPlan.getmSeats().size()) {
+                    seat = mNewPlan.getmSeats().get(p.seatId);
+                    seat.clrRecentSeatedFlag(ClassInHandApplication.SEATED_LEFT);
+                    seat.clrRecentSeatedFlag(ClassInHandApplication.SEATED_RIGHT);
+                }
             }
         }
         // Vacate 버튼이 Visible 한 경우는, 왼쪽 오른쪽 중 하나만 선택된 상황이고, 거기서 자리비움 버튼을 누르면
@@ -453,15 +464,17 @@ public class SeatplanEditActivity extends ActionBarActivity {
                 for(PersonalHistory p : selectedStudent.getHistories()) {
                     String whenStr = String.format("%02d.%02d ~\n", p.applyDate.get(Calendar.MONTH) + 1, p.applyDate.get(Calendar.DAY_OF_MONTH));
                     String whereStr = ConvertAbsSeatToSegAndRow(p.seatId) + ", ";
-                    Student pairStudent = application.findStudent(p.pairId);
+                    Student pairStudent = application.findStudentById(p.pairId);
                     String pairStr = pairStudent == null ? "" : pairStudent.getName();
                     tv = new TextView(this);
                     tv.setText(whenStr + whereStr + pairStr);
                     tv.setTextSize(14);
                     layout_onseatclick_left.addView(tv);
 
-                    Seat seat = mNewPlan.getmSeats().get(p.seatId);
-                    seat.setRecentSeatedFlag(ClassInHandApplication.SEATED_LEFT);
+                    if(p.seatId < mNewPlan.getmSeats().size()) {
+                        Seat seat = mNewPlan.getmSeats().get(p.seatId);
+                        seat.setRecentSeatedFlag(ClassInHandApplication.SEATED_LEFT);
+                    }
 
                     if(++historyCount > application.globalProperties.num_histories) break;
                 }
@@ -506,15 +519,17 @@ public class SeatplanEditActivity extends ActionBarActivity {
                 for(PersonalHistory p : selectedStudent.getHistories()) {
                     String whenStr = String.format("%02d.%02d ~\n", p.applyDate.get(Calendar.MONTH) + 1, p.applyDate.get(Calendar.DAY_OF_MONTH));
                     String whereStr = ConvertAbsSeatToSegAndRow(p.seatId) + ", ";
-                    Student pairStudent = application.findStudent(p.pairId);
+                    Student pairStudent = application.findStudentById(p.pairId);
                     String pairStr = pairStudent == null ? "" : pairStudent.getName();
                     tv = new TextView(this);
                     tv.setText(whenStr + whereStr + pairStr);
                     tv.setTextSize(14);
                     layout_onseatclick_right.addView(tv);
 
-                    Seat seat = mNewPlan.getmSeats().get(p.seatId);
-                    seat.setRecentSeatedFlag(ClassInHandApplication.SEATED_RIGHT);
+                    if(p.seatId < mNewPlan.getmSeats().size()) {
+                        Seat seat = mNewPlan.getmSeats().get(p.seatId);
+                        seat.setRecentSeatedFlag(ClassInHandApplication.SEATED_RIGHT);
+                    }
 
                     if(++historyCount > application.globalProperties.num_histories) break;
                 }

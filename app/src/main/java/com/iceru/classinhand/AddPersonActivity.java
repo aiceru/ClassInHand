@@ -1,5 +1,6 @@
 package com.iceru.classinhand;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,11 +11,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.TreeMap;
 
@@ -28,29 +31,30 @@ public class AddPersonActivity extends ActionBarActivity {
     private TreeMap<Integer, Student>       mStudents;
     private TreeMap<Integer, Student>       mAddingStudents;
     private boolean[]                       mAttendNumArray;
+    private GregorianCalendar               mInDate;
 
     /* Views */
     private RecyclerView                    mAddingListRecyclerView;
     private RecyclerView.Adapter            mAddingListAdapter;
     private RecyclerView.LayoutManager      mAddingListLayoutManager;
-
-    //private Spinner                         mGenderSpinner;
     private ToggleButton                    mGenderTglbtn;
     private EditText                        mNameEditText;
     private EditText                        mAttendNumEditText;
+    private TextView                        mInDateTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         application = ClassInHandApplication.getInstance();
-        mStudents = application.getmCurrentStudents();
+        mStudents = application.getmStudents();
 
         mAddingStudents = new TreeMap<>();
+        mInDate = application.getValueOfTodayCalendar();
 
         mAttendNumArray = new boolean[ClassInHandApplication.MAX_STUDENTS]; // initialized to false
         for(TreeMap.Entry<Integer, Student> entry : mStudents.entrySet()) {
-            mAttendNumArray[entry.getKey()] = true;
+            mAttendNumArray[entry.getValue().getAttendNum()] = true;
         }
 
         /*Student s;
@@ -98,6 +102,15 @@ public class AddPersonActivity extends ActionBarActivity {
             }
         });
 
+        mInDateTextView = (TextView)findViewById(R.id.textview_addperson_indate);
+        mInDateTextView.setText(getDateString(mInDate));
+        mInDateTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showInDatePickerDialog();
+            }
+        });
+
         mGenderTglbtn = (ToggleButton)findViewById(R.id.tglbtn_addperson_gender);
 
         while(mAttendNumArray[attendNum]) attendNum++;
@@ -109,7 +122,8 @@ public class AddPersonActivity extends ActionBarActivity {
         String name, numStr;
         int attendNum;
         boolean isboy;
-        long inDate = new GregorianCalendar().getTimeInMillis();
+
+        long inDate = mInDate.getTimeInMillis();
 
         numStr = mAttendNumEditText.getText().toString();
         name = mNameEditText.getText().toString();
@@ -128,11 +142,11 @@ public class AddPersonActivity extends ActionBarActivity {
         attendNum = Integer.valueOf(numStr);
 
         if(mAttendNumArray[attendNum]) {
-            Toast.makeText(this, R.string.warning_existing_num, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.warning_existing_attendnum, Toast.LENGTH_SHORT).show();
             return;
         }
 
-        student = new Student(ClassInHandApplication.NEXT_ID, attendNum, name, isboy, inDate, -1L);
+        student = new Student(ClassInHandApplication.NEXT_ID, attendNum, name, isboy, inDate, Long.MAX_VALUE);
         ClassInHandApplication.NEXT_ID++;
 
         mAddingStudents.put(student.getAttendNum(), student);
@@ -148,7 +162,7 @@ public class AddPersonActivity extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_add_person, menu);
+        getMenuInflater().inflate(R.menu.menu_oneitem_done, menu);
         return true;
     }
 
@@ -163,5 +177,28 @@ public class AddPersonActivity extends ActionBarActivity {
             finish();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private String getDateString(GregorianCalendar cal) {
+        return (new StringBuilder().append(cal.get(Calendar.YEAR))
+                .append(getString(R.string.year_string)).append(" ").append(cal.get(Calendar.MONTH) + 1)
+                .append(getString(R.string.month_string)).append(" ").append(cal.get(Calendar.DAY_OF_MONTH))
+                .append(getString(R.string.day_string)).append(", ")
+                .append(getResources().getStringArray(R.array.dayofweek_array)[cal.get(Calendar.DAY_OF_WEEK) - 1])
+                .toString());
+    }
+
+    private void showInDatePickerDialog() {
+        DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                mInDate.clear();
+                mInDate.set(year, monthOfYear, dayOfMonth);
+                mInDateTextView.setText(getDateString(mInDate));
+            }
+        };
+        DatePickerDialog dateDialog = new DatePickerDialog(this, dateSetListener,
+                mInDate.get(Calendar.YEAR), mInDate.get(Calendar.MONTH), mInDate.get(Calendar.DAY_OF_MONTH));
+        dateDialog.show();
     }
 }
