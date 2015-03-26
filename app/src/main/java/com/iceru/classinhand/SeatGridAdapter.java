@@ -2,6 +2,8 @@ package com.iceru.classinhand;
 
 import android.app.ActionBar;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,8 +54,8 @@ public class SeatGridAdapter extends BaseAdapter {
 
         Seat seat = mDataset.get(position);
         RelativeLayout rlayout = (RelativeLayout)convertView.findViewById(R.id.relativelayout_seat_background);
-        FontFitTextView tv_num = (FontFitTextView)convertView.findViewById(R.id.textview_seated_num);
-        ImageView iv_gender = (ImageView)convertView.findViewById(R.id.imageview_seated_boygirl);
+        final FontFitTextView tv_num = (FontFitTextView)convertView.findViewById(R.id.textview_seated_num);
+        final ImageView iv_gender = (ImageView)convertView.findViewById(R.id.imageview_seated_boygirl);
         FontFitTextView tv_name = (FontFitTextView) convertView.findViewById(R.id.textview_seated_name);
         ImageView iv_seated_left = (ImageView)convertView.findViewById(R.id.imageview_recently_seated_left);
         ImageView iv_seated_right = (ImageView)convertView.findViewById(R.id.imageview_recently_seated_right);
@@ -64,6 +66,13 @@ public class SeatGridAdapter extends BaseAdapter {
             iv_gender.setImageResource(
                     student.isBoy() ? R.drawable.ic_gender_boy : R.drawable.ic_gender_girl);
             tv_name.setText(student.getName());
+            iv_gender.post(new Runnable() {
+                @Override
+                public void run() {
+                    iv_gender.getLayoutParams().height = tv_num.getHeight();
+                    iv_gender.getLayoutParams().width = tv_num.getHeight()-8;
+                }
+            });
         }
         else {
             tv_num.setText(null);

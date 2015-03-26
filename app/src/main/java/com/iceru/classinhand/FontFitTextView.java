@@ -37,7 +37,7 @@ public class FontFitTextView extends TextView {
         int targetWidth = textWidth - this.getPaddingLeft() - this.getPaddingRight();
         float hi = 100;
         float lo = 2;
-        final float threshold = 1.0f; // How close we have to be
+        final float threshold = 0.2f; // How close we have to be
 
         mTestPaint.set(this.getPaint());
 
