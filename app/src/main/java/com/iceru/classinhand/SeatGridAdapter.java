@@ -57,8 +57,8 @@ public class SeatGridAdapter extends BaseAdapter {
         final FontFitTextView tv_num = (FontFitTextView)convertView.findViewById(R.id.textview_seated_num);
         final ImageView iv_gender = (ImageView)convertView.findViewById(R.id.imageview_seated_boygirl);
         FontFitTextView tv_name = (FontFitTextView) convertView.findViewById(R.id.textview_seated_name);
-        ImageView iv_seated_left = (ImageView)convertView.findViewById(R.id.imageview_recently_seated_left);
-        ImageView iv_seated_right = (ImageView)convertView.findViewById(R.id.imageview_recently_seated_right);
+        final ImageView iv_seated_left = (ImageView)convertView.findViewById(R.id.imageview_recently_seated_left);
+        final ImageView iv_seated_right = (ImageView)convertView.findViewById(R.id.imageview_recently_seated_right);
 
         Student student = seat.getItsStudent();
         if(student != null) {
@@ -69,8 +69,11 @@ public class SeatGridAdapter extends BaseAdapter {
             iv_gender.post(new Runnable() {
                 @Override
                 public void run() {
-                    iv_gender.getLayoutParams().height = tv_num.getHeight();
-                    iv_gender.getLayoutParams().width = tv_num.getHeight()-8;
+                    int height = tv_num.getHeight();
+                    iv_gender.getLayoutParams().height = height;
+                    iv_gender.getLayoutParams().width = height - 8;
+                    iv_seated_left.getLayoutParams().width = iv_seated_left.getLayoutParams().height = height - 8;
+                    iv_seated_right.getLayoutParams().width = iv_seated_right.getLayoutParams().height = height - 8;
                 }
             });
         }

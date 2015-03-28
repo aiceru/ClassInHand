@@ -11,6 +11,8 @@ import android.widget.TextView;
  */
 public class FontFitTextView extends TextView {
 
+    private static float SIZE_MAX = 42.0f;
+
     public FontFitTextView(Context context) {
         super(context);
         initialise();
@@ -50,7 +52,7 @@ public class FontFitTextView extends TextView {
                 lo = size; // too small
         }
         // Use lo so that we undershoot rather than overshoot
-        this.setTextSize(TypedValue.COMPLEX_UNIT_PX, lo);
+        this.setTextSize(TypedValue.COMPLEX_UNIT_PX, lo > SIZE_MAX? SIZE_MAX : lo);
     }
 
     @Override
