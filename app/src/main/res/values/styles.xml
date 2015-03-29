@@ -17,7 +17,7 @@
         <item name="windowActionBar">false</item>
         <item name="drawerArrowStyle">@style/Theme.DrawerArrowStyle</item>
 
-        <item name="floatingActionButtonStyle">@style/AppTheme.Fab</item>
+        <!--<item name="floatingActionButtonStyle">@style/AppTheme.Fab</item>-->
     </style>
 
     <style name="Theme.DrawerArrowStyle" parent="@style/Widget.AppCompat.DrawerArrowToggle">
@@ -25,9 +25,9 @@
         <item name="color">@android:color/white</item>
     </style>
 
-    <style name="AppTheme.Fab" parent="FloatingActionButton">
+    <!--<style name="AppTheme.Fab" parent="FloatingActionButton">
         <item name="floatingActionButtonColor">@color/fab_color</item>
-    </style>
+    </style>-->
 
     <style name="Widget.Button.Toggle" parent="android:Widget">
         <item name="android:background">@drawable/tglbtn_boygirl_layerlist</item>

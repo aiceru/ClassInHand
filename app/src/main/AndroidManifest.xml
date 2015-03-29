@@ -38,7 +38,6 @@
         </activity>
         <activity
             android:name=".SeatplanEditActivity"
-            android:label="@string/title_activity_seatplan_add"
             android:parentActivityName=".MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

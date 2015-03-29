@@ -44,7 +44,7 @@
                 android:layout_height="30dp"
                 android:gravity="center"
                 android:visibility="invisible"
-                android:background="@drawable/ic_repeat_black_24dp"/>
+                android:background="@drawable/ic_swap_horiz_black_24dp"/>
             <Button
                 android:id="@+id/btn_vacate_seat"
                 android:layout_width="30dp"

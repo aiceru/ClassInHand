@@ -38,15 +38,34 @@
             android:verticalSpacing="1dp"
             tools:listitem="@layout/seat"/>
 
-        <com.shamanland.fab.FloatingActionButton
+        <com.getbase.floatingactionbutton.FloatingActionsMenu
+            android:id="@+id/fab_seatplan_detail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
-            android:src="@drawable/ic_edit_white_24dp"
-            android:onClick="onClickEditButton"
-            app:floatingActionButtonColor="@color/fab_color"
-            app:floatingActionButtonSize="normal"/>
+            app:fab_addButtonColorNormal="@color/fab_color"
+            app:fab_addButtonColorPressed="@color/fab_color">
+            
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:fab_icon="@drawable/ic_edit_white_18dp"
+                app:fab_colorNormal="@color/fab_color"
+                app:fab_colorPressed="@color/fab_color"
+                app:fab_size="mini"
+                android:onClick="onClickEditButton"/>
+
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:fab_icon="@drawable/ic_delete_white_18dp"
+                app:fab_colorNormal="@color/fab_color"
+                app:fab_colorPressed="@color/fab_color"
+                app:fab_size="mini"
+                android:onClick="onClickDeleteButton"/>
+            
+        </com.getbase.floatingactionbutton.FloatingActionsMenu>
 
     </RelativeLayout>
 </LinearLayout>

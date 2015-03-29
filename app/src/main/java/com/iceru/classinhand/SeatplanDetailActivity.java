@@ -11,6 +11,9 @@ import android.view.View;
 import android.widget.DatePicker;
 import android.widget.GridView;
 
+import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
+
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.TreeMap;
@@ -85,6 +88,10 @@ public class SeatplanDetailActivity extends ActionBarActivity {
         });
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    public void onClickDeleteButton(View view) {
+        return;
     }
 
     private void displayDatepicker() {

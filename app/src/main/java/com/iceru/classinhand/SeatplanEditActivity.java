@@ -20,11 +20,12 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.shamanland.fab.FloatingActionButton;
+import com.getbase.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -47,7 +48,7 @@ public class SeatplanEditActivity extends ActionBarActivity {
 
     private LinearLayout                    layout_onseatclick_inflated, layout_onseatclick_left, layout_onseatclick_right;
     private Button                          mLeftCancelButton, mRightCancelButton, mChangeSeatButton, mVacateSeatButton;
-    private FloatingActionButton            mRandomAssignButton;
+    private FloatingActionButton mRandomAssignButton;
 
     private ListView                        mLeftDrawerListView, mRightDrawerListView;
     private TreeMapListViewAdapter          mRemainStudentListAdapter;
@@ -119,6 +120,7 @@ public class SeatplanEditActivity extends ActionBarActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setTitle(application.getDateString(mNewDate));
 
         int width = getResources().getDisplayMetrics().widthPixels / 2;
         DrawerLayout.LayoutParams params;

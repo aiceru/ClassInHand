@@ -346,6 +346,15 @@ public class ClassInHandApplication extends Application {
         c.clear(Calendar.MILLISECOND);
     }
 
+    public String getDateString(GregorianCalendar cal) {
+        return (new StringBuilder().append(cal.get(Calendar.YEAR))
+                .append(getString(R.string.year_string)).append(" ").append(cal.get(Calendar.MONTH) + 1)
+                .append(getString(R.string.month_string)).append(" ").append(cal.get(Calendar.DAY_OF_MONTH))
+                .append(getString(R.string.day_string)).append(", ")
+                .append(getResources().getStringArray(R.array.dayofweek_array)[cal.get(Calendar.DAY_OF_WEEK) - 1])
+                .toString());
+    }
+
     /* For Test only... create test dummy data */
     public void createTestData() {
         long indate = new GregorianCalendar(2015, 2, 1).getTimeInMillis();

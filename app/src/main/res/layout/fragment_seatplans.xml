@@ -15,15 +15,15 @@
 
     </android.support.v7.widget.RecyclerView>
 
-    <com.shamanland.fab.FloatingActionButton
+    <com.getbase.floatingactionbutton.FloatingActionButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_margin="@dimen/activity_horizontal_margin"
-        android:src="@drawable/ic_add"
-        android:onClick="onClickNewPlanButton"
-        app:floatingActionButtonColor="@color/fab_color"
-        app:floatingActionButtonSize="normal"/>
+        app:fab_icon="@drawable/ic_add_white_18dp"
+        app:fab_colorNormal="@color/fab_color"
+        app:fab_colorPressed="@color/fab_color"
+        android:onClick="onClickNewPlanButton"/>
 
 </RelativeLayout>

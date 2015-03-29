@@ -83,14 +83,15 @@
                 android:layout_rowSpan="3"
                 android:layout_width="16dp"/>
 
-            <com.shamanland.fab.FloatingActionButton
+            <com.getbase.floatingactionbutton.FloatingActionButton
                 android:layout_column="5"
                 android:layout_gravity="bottom"
                 android:layout_rowSpan="3"
-                android:src="@drawable/ic_add"
                 android:onClick="putToAddingList"
-                app:floatingActionButtonColor="@color/fab_color"
-                app:floatingActionButtonSize="mini"/>
+                app:fab_colorNormal="@color/fab_color"
+                app:fab_colorPressed="@color/fab_color"
+                app:fab_icon="@drawable/ic_add_white_18dp"
+                app:fab_size="mini"/>
 
             <EditText
                 android:id="@+id/edittext_addperson_name"
