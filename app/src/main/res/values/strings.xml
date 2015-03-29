@@ -16,6 +16,7 @@
     <string name="contents_dialog_recommend_edit">학생정보를 완전 삭제하면 예전의 배치 내역에 빈 자리가 나타나거나,
         랜덤 배치시 예전에 앉았던 짝 내역이 반영되지 않는 등의 오동작을 일으킬 수 있습니다. (학생이 전학을 가게 된 경우에는 삭제하지 마시고,
         학생정보 수정을 통해 [삭제(전출)일자] 를 설정하는 것을 추천합니다).\n\n그래도 삭제하시겠습니까?</string>
+    <string name="contents_dialog_confirm_delete">정말 삭제하시겠습니까?</string>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
     <string name="action_new">새로 생성</string>

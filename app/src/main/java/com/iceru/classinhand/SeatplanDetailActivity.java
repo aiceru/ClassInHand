@@ -91,7 +91,23 @@ public class SeatplanDetailActivity extends ActionBarActivity {
     }
 
     public void onClickDeleteButton(View view) {
-        return;
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.title_dialog_warning);
+        builder.setMessage(R.string.contents_dialog_confirm_delete);
+        builder.setPositiveButton(R.string.action_delete, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked OK button
+                application.removeSeatplan(mSeatplan);
+                finish();
+            }
+        });
+        builder.setNegativeButton(R.string.action_cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User cancelled the dialog, Do nothing
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     private void displayDatepicker() {
