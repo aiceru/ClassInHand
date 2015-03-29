@@ -29,7 +29,7 @@
             android:launchMode="singleInstance"
             android:theme="@android:style/Theme.Holo.Light.Dialog" />
         <activity
-            android:name=".AddPersonActivity"
+            android:name=".StudentAddActivity"
             android:label="@string/title_activity_student_add"
             android:parentActivityName=".MainActivity" >
             <meta-data

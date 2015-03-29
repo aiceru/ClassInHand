@@ -22,7 +22,7 @@ import java.util.GregorianCalendar;
 import java.util.TreeMap;
 
 
-public class AddPersonActivity extends ActionBarActivity {
+public class StudentAddActivity extends ActionBarActivity {
 
     /* Application Class */
     private ClassInHandApplication          application;
@@ -68,7 +68,7 @@ public class AddPersonActivity extends ActionBarActivity {
             mAddingStudents.put(i, s);
         }*/
 
-        setContentView(R.layout.activity_add_person);
+        setContentView(R.layout.activity_student_add);
         initViews();
     }
 
@@ -81,15 +81,15 @@ public class AddPersonActivity extends ActionBarActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-        mAddingListRecyclerView = (RecyclerView)findViewById(R.id.recyclerview_adding_list);
+        mAddingListRecyclerView = (RecyclerView)findViewById(R.id.recyclerview_student_add_studentlist);
         mAddingListRecyclerView .setHasFixedSize(true);
         mAddingListLayoutManager = new LinearLayoutManager(this);
         mAddingListRecyclerView.setLayoutManager(mAddingListLayoutManager);
         mAddingListAdapter = new StudentListAdapter(mAddingStudents, this);
         mAddingListRecyclerView.setAdapter(mAddingListAdapter);
 
-        mAttendNumEditText = (EditText)findViewById(R.id.edittext_addperson_attendnum);
-        mNameEditText = (EditText)findViewById(R.id.edittext_addperson_name);
+        mAttendNumEditText = (EditText)findViewById(R.id.edittext_student_add_attendnum);
+        mNameEditText = (EditText)findViewById(R.id.edittext_student_add_name);
 
         mNameEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -102,7 +102,7 @@ public class AddPersonActivity extends ActionBarActivity {
             }
         });
 
-        mInDateTextView = (TextView)findViewById(R.id.textview_addperson_indate);
+        mInDateTextView = (TextView)findViewById(R.id.textview_student_add_indate);
         mInDateTextView.setText(getDateString(mInDate));
         mInDateTextView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,7 +111,7 @@ public class AddPersonActivity extends ActionBarActivity {
             }
         });
 
-        mGenderTglbtn = (ToggleButton)findViewById(R.id.tglbtn_addperson_gender);
+        mGenderTglbtn = (ToggleButton)findViewById(R.id.tglbtn_student_add_gender);
 
         while(mAttendNumArray[attendNum]) attendNum++;
         mAttendNumEditText.setText(String.valueOf(attendNum));

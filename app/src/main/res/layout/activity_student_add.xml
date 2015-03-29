@@ -16,12 +16,14 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
         android:orientation="vertical"
         android:layout_weight="0.8">
 
         <android.support.v7.widget.RecyclerView
             xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/recyclerview_adding_list"
+            android:id="@+id/recyclerview_student_add_studentlist"
             android:scrollbars="vertical"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -29,7 +31,107 @@
 
         </android.support.v7.widget.RecyclerView>
 
-        <GridLayout
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageButton
+                android:id="@+id/imagebutton_student_add_picture"
+                android:layout_width="104dp"
+                android:layout_height="104dp"
+                android:layout_alignParentStart="true"
+                android:src="@drawable/ic_person_white_48dp"
+                android:padding="@dimen/activity_horizontal_margin"/>
+
+            <EditText
+                android:id="@+id/edittext_student_add_attendnum"
+                android:layout_width="52dp"
+                android:layout_height="52dp"
+                android:layout_toEndOf="@id/imagebutton_student_add_picture"
+                android:gravity="center"
+                android:textSize="16sp"
+                android:textColor="@color/text_secondary"
+                android:hint="@string/hint_edittext_attendnum"
+                android:maxLength="2"
+                android:singleLine="true"
+                android:inputType="number"
+                android:imeOptions="actionNext"
+                android:nextFocusDown="@+id/edittext_student_add_name"/>
+
+            <ToggleButton
+                android:id="@+id/tglbtn_student_add_gender"
+                style="@style/toggleButton"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignBaseline="@id/edittext_student_add_attendnum"
+                android:layout_alignParentEnd="true"
+                android:background="@drawable/tglbtn_boygirl_layerlist" />
+
+            <EditText
+                android:id="@id/edittext_student_add_name"
+                android:layout_height="52dp"
+                android:layout_width="match_parent"
+                android:layout_toEndOf="@id/imagebutton_student_add_picture"
+                android:layout_below="@id/edittext_student_add_attendnum"
+                android:paddingStart="16dp"
+                android:gravity="center"
+                android:textSize="16sp"
+                android:textColor="@color/text_secondary"
+                android:hint="@string/hint_edittext_name"
+                android:maxLength="6"
+                android:singleLine="true"
+                android:inputType="textPersonName"/>
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="@dimen/recyclerview_singleline_tile_height"
+                android:layout_weight="3"
+                android:textSize="16sp"
+                android:gravity="center"
+                android:text="@string/hint_edittext_indate"/>
+
+            <TextView
+                android:id="@+id/textview_student_add_indate"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/recyclerview_singleline_tile_height"
+                android:layout_weight="6"
+                android:gravity="center"
+                android:textColor="@color/text_secondary"
+                android:textSize="16sp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="@dimen/recyclerview_singleline_tile_height"
+                android:layout_weight="3"
+                android:textSize="16sp"
+                android:gravity="center"
+                android:text="@string/hint_edittext_indate"/>
+
+            <EditText
+                android:id="@+id/textview_student_add_contact"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/recyclerview_singleline_tile_height"
+                android:layout_weight="6"
+                android:gravity="center"
+                android:textColor="@color/text_secondary"
+                android:textSize="16sp"
+                android:inputType="phone"/>
+
+        </LinearLayout>
+
+        <!--GridLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:rowCount="3"
@@ -62,12 +164,6 @@
             <Space
                 android:layout_column="2"
                 android:layout_gravity="fill_horizontal"/>
-
-            <!--Spinner
-                android:id="@+id/spinner_addperson_gender"
-                android:layout_column="3"
-                android:layout_width="72dp"
-                android:layout_height="48dp"/-->
 
             <ToggleButton
                 android:id="@+id/tglbtn_addperson_gender"
@@ -122,7 +218,7 @@
                 android:textSize="16sp"
                 android:inputType="date"/>
 
-        </GridLayout>
+        </GridLayout-->
     </LinearLayout>
 
 </LinearLayout>

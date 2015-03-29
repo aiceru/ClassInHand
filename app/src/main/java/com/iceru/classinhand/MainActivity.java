@@ -290,7 +290,7 @@ public class MainActivity extends ActionBarActivity {
 	}*/
 
     public void onClickNewPersonButton(View view) {
-        Intent intent = new Intent(this, AddPersonActivity.class);
+        Intent intent = new Intent(this, StudentAddActivity.class);
         startActivity(intent);
     }
 
