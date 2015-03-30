@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.telephony.PhoneNumberUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,6 +27,7 @@ public class StudentDetailActivity extends ActionBarActivity {
     private EditText        mEdittextAttendNum;
     private EditText        mEdittextName;
     private ToggleButton    mTglbtnGender;
+    private EditText        mEdittextPhone;
     private GregorianCalendar   mIndate;
     private TextView        mTextviewIndate;
     private GregorianCalendar   mOutdate;
@@ -57,12 +59,14 @@ public class StudentDetailActivity extends ActionBarActivity {
         mTglbtnGender = (ToggleButton)findViewById(R.id.tglbtn_student_detail_gender);
         mEdittextAttendNum = (EditText)findViewById(R.id.edittext_student_detail_attendnum);
         mEdittextName = (EditText)findViewById(R.id.edittext_student_detail_name);
+        mEdittextPhone = (EditText)findViewById(R.id.edittext_student_detail_phone);
         mTextviewIndate = (TextView)findViewById(R.id.textview_student_detail_indate);
         mTextviewOutdate = (TextView)findViewById(R.id.textview_student_detail_outdate);
 
         mTglbtnGender.setChecked(mStudent.isBoy());
         mEdittextAttendNum.setText(String.valueOf(mStudent.getAttendNum()));
         mEdittextName.setText(mStudent.getName());
+        mEdittextPhone.setText(mStudent.getPhone());
 
         mIndate = new GregorianCalendar();
         mIndate.clear();
@@ -153,6 +157,7 @@ public class StudentDetailActivity extends ActionBarActivity {
         mEdittextAttendNum.setEnabled(true);
         mEdittextName.setEnabled(true);
         mTglbtnGender.setClickable(true);
+        mEdittextPhone.setEnabled(true);
         mTextviewIndate.setClickable(true);
         mTextviewOutdate.setClickable(true);
 
@@ -197,6 +202,7 @@ public class StudentDetailActivity extends ActionBarActivity {
             mStudent.setAttendNum(attendNum);
             mStudent.setName(mEdittextName.getText().toString());
             mStudent.setBoy(mTglbtnGender.isChecked());
+            mStudent.setPhone(PhoneNumberUtils.formatNumber(mEdittextPhone.getText().toString(), "KR"));
 
             mStudent.setInDate(mIndate.getTimeInMillis());
             mStudent.setOutDate(mOutdate.getTimeInMillis());

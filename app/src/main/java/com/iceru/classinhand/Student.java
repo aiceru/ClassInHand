@@ -11,21 +11,35 @@ public class Student {
 	private int		attendNum;
 	private String	name;
 	private boolean isBoy;		// true -> boy, false -> girl... T/F has no meaning. :)
+    private String  phone;
     private ArrayList<PersonalHistory> histories;
 
     private long    inDate;
     private long    outDate;
 
-	public Student(int id, int attendNum, String name, boolean isBoy, long inDate, long outDate) {
+    public Student(int id, int attendNum, String name, boolean isBoy, String phone, long inDate, long outDate) {
         this.id = id;
-		this.attendNum = attendNum;
-		this.name = name;
-		this.isBoy = isBoy;
+        this.attendNum = attendNum;
+        this.name = name;
+        this.isBoy = isBoy;
+        this.phone = phone;
         this.histories = new ArrayList<>();
 
         this.inDate = inDate;
         this.outDate = outDate;
-	}
+    }
+
+	/*public Student(int id, int attendNum, String name, boolean isBoy, long inDate, long outDate) {
+        this.id = id;
+        this.attendNum = attendNum;
+        this.name = name;
+        this.isBoy = isBoy;
+        this.phone = null;
+        this.histories = new ArrayList<>();
+
+        this.inDate = inDate;
+        this.outDate = outDate;
+	}*/
 
 	public int getAttendNum() {
 		return attendNum;
@@ -42,6 +56,10 @@ public class Student {
 	public boolean isBoy() {
 		return isBoy;
 	}
+
+    public String getPhone() {
+        return phone;
+    }
 
     public long getInDate() {
         return inDate;
@@ -69,6 +87,10 @@ public class Student {
 
     public void setBoy(boolean isBoy) {
         this.isBoy = isBoy;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public void setInDate(long inDate) {

@@ -77,6 +77,12 @@ public class MainActivity extends ActionBarActivity {
     //private CharSequence mTitle;
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(ClassInHandApplication.STATE_SELECTED_POSITION, mCurrentSelectedPosition);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -116,10 +122,10 @@ public class MainActivity extends ActionBarActivity {
         mDrawerList.add(DrawerSubItem.create(201, getString(R.string.title_fillinfo), "ic_edit_grey600_24dp", true, this));
         mDrawerList.add(DrawerSubItem.create(301, getString(R.string.title_setting), "ic_settings_grey600_24dp", true, this));
 
-        /*// TODO : Delete this!!
+        // TODO : Delete this!!
         mDrawerList.add(DrawerSubItem.create(901, "DB추출(개발자용)", "ic_settings_grey600_24dp", false, this));
         mDrawerList.add(DrawerSubItem.create(902, "DB삭제(개발자용)", "ic_settings_grey600_24dp", false, this));
-        mDrawerList.add(DrawerSubItem.create(903, "TestDB생성(개발자용)", "ic_settings_grey600_24dp", false, this));*/
+        mDrawerList.add(DrawerSubItem.create(903, "TestDB생성(개발자용)", "ic_settings_grey600_24dp", false, this));
 
         mDrawerListView.setAdapter(new DrawerContentAdapter(getSupportActionBar().getThemedContext(), R.layout.drawer_item, mDrawerList));
         mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -211,8 +217,8 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public void onResume() {
-        this.selectItem(mCurrentSelectedPosition);
         super.onResume();
+        this.selectItem(mCurrentSelectedPosition);
     }
 
     /*@Override

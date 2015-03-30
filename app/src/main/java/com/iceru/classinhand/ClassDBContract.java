@@ -12,6 +12,7 @@ public final class ClassDBContract {
         public static final String COLUMN_NAME_ATTEND_NUM = "attend_num";
 		public static final String COLUMN_NAME_NAME = "name";
 		public static final String COLUMN_NAME_GENDER = "gender";
+        public static final String COLUMN_NAME_PHONE = "phone";
         public static final String COLUMN_NAME_IN_DATE = "in_date";
         public static final String ColUMN_NAME_OUT_DATE = "out_date";
 	}
@@ -42,6 +43,7 @@ public final class ClassDBContract {
                     StudentInfo.COLUMN_NAME_ATTEND_NUM + INTEGER_TYPE + COMMA_SEP +
 					StudentInfo.COLUMN_NAME_NAME + TEXT_TYPE + COMMA_SEP +
 					StudentInfo.COLUMN_NAME_GENDER + INTEGER_TYPE + COMMA_SEP +
+                    StudentInfo.COLUMN_NAME_PHONE + INTEGER_TYPE + COMMA_SEP +
                     StudentInfo.COLUMN_NAME_IN_DATE + INTEGER_TYPE + COMMA_SEP +
                     StudentInfo.ColUMN_NAME_OUT_DATE + INTEGER_TYPE +
 			" )";

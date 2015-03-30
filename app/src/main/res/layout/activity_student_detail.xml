@@ -88,6 +88,33 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:textSize="16sp"
+                    android:text="@string/hint_edittext_phone"/>
+
+                <EditText
+                    android:id="@+id/edittext_student_detail_phone"
+                    android:layout_width="0dp"
+                    android:layout_height="52dp"
+                    android:layout_weight="2"
+                    android:gravity="center"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="16sp"
+                    android:enabled="false"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingStart="@dimen/activity_horizontal_margin"
+                android:paddingEnd="@dimen/activity_horizontal_margin">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="52dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textSize="16sp"
                     android:text="@string/hint_edittext_indate"/>
 
                 <TextView

@@ -111,7 +111,7 @@
     <string name="hint_edittext_attendnum">번호</string>
     <string name="hint_edittext_indate">등록(전입)일자</string>
     <string name="hint_edittext_outdate">삭제(전출)일자</string>
-    <string name="hint_edittext_contact">연락처</string>
+    <string name="hint_edittext_phone">연락처</string>
 
     <string name="year_string">년</string>
     <string name="month_string">월</string>

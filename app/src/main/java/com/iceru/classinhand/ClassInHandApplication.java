@@ -207,7 +207,7 @@ public class ClassInHandApplication extends Application {
      */
     private void initStudentList() {
         int id, attendNum;
-        String name;
+        String name, phone;
         boolean isBoy;
         long inDate, outDate, today;
 
@@ -221,10 +221,11 @@ public class ClassInHandApplication extends Application {
             attendNum = studentCursor.getInt(studentCursor.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_ATTEND_NUM));
             name = studentCursor.getString(studentCursor.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_NAME));
             isBoy = (studentCursor.getInt(studentCursor.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_GENDER)) == 1);
+            phone = studentCursor.getString(studentCursor.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_PHONE));
             inDate = studentCursor.getLong(studentCursor.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_IN_DATE));
             outDate = studentCursor.getLong(studentCursor.getColumnIndexOrThrow(ClassDBContract.StudentInfo.ColUMN_NAME_OUT_DATE));
 
-            Student s = new Student(id, attendNum, name, isBoy, inDate, outDate);
+            Student s = new Student(id, attendNum, name, isBoy, phone, inDate, outDate);
             if(inDate <= today && outDate > today) {
                 mCurrentStudents.put(s.getAttendNum(), s);
             }
@@ -358,42 +359,42 @@ public class ClassInHandApplication extends Application {
     /* For Test only... create test dummy data */
     public void createTestData() {
         long indate = new GregorianCalendar(2015, 2, 1).getTimeInMillis();
-        addStudent(new Student(1000,   1, "연우진", true,  indate, Long.MAX_VALUE));
-        addStudent(new Student(1001,   2, "이종석", true,  indate, Long.MAX_VALUE));
-        addStudent(new Student(1002,   3, "송중기", true,  indate, Long.MAX_VALUE));
-        addStudent(new Student(1003,   4, "여진구", true,  indate, Long.MAX_VALUE));
-        addStudent(new Student(1004,   5, "유승호", true,  indate, Long.MAX_VALUE));
-        addStudent(new Student(1005,   6, "하정우", true,  indate, Long.MAX_VALUE));
-        addStudent(new Student(1006,   7, "유재석", true,  indate, Long.MAX_VALUE));
-        addStudent(new Student(1007,   8, "김우빈", true,  indate, Long.MAX_VALUE));
-        addStudent(new Student(1008,   9, "정우",  true,  indate, Long.MAX_VALUE));
-        addStudent(new Student(1009,  10, "유연석", true,  indate, Long.MAX_VALUE));
-        addStudent(new Student(1010, 11, "임시완", true,  indate, Long.MAX_VALUE));
-        addStudent(new Student(1011, 12, "신하균", true,  indate, Long.MAX_VALUE));
-        addStudent(new Student(1012, 13, "이민호", true,  indate, Long.MAX_VALUE));
-        addStudent(new Student(1013, 14, "정우성", true,  indate, Long.MAX_VALUE));
-        addStudent(new Student(1014, 15, "원빈",  true,  indate, Long.MAX_VALUE));
-        addStudent(new Student(1015, 16, "강동원", true,  indate, Long.MAX_VALUE));
-        addStudent(new Student(1016, 17, "이정재", true,  indate, Long.MAX_VALUE));
-        addStudent(new Student(1017, 18, "설현",  false, indate, Long.MAX_VALUE));
-        addStudent(new Student(1018, 19, "문채원", false, indate, Long.MAX_VALUE));
-        addStudent(new Student(1019, 20, "아이유", false, indate, Long.MAX_VALUE));
-        addStudent(new Student(1020, 21, "김태희", false, indate, Long.MAX_VALUE));
-        addStudent(new Student(1021, 22, "송혜교", false, indate, Long.MAX_VALUE));
-        addStudent(new Student(1022, 23, "한지민", false, indate, Long.MAX_VALUE));
-        addStudent(new Student(1023, 24, "손예진", false, indate, Long.MAX_VALUE));
-        addStudent(new Student(1024, 25, "이나영", false, indate, Long.MAX_VALUE));
-        addStudent(new Student(1025, 26, "신민아", false, indate, Long.MAX_VALUE));
-        addStudent(new Student(1026, 27, "이민정", false, indate, Long.MAX_VALUE));
-        addStudent(new Student(1027, 28, "신소율", false, indate, Long.MAX_VALUE));
-        addStudent(new Student(1028, 29, "한효주", false, indate, Long.MAX_VALUE));
-        addStudent(new Student(1029, 30, "수지",  false, indate, Long.MAX_VALUE));
-        addStudent(new Student(1030, 31, "송지효", false, indate, Long.MAX_VALUE));
-        addStudent(new Student(1031, 32, "김소은", false, indate, Long.MAX_VALUE));
-        addStudent(new Student(1032, 33, "이정현", false, indate, Long.MAX_VALUE));
-        addStudent(new Student(1033, 34, "유진",  false, indate, Long.MAX_VALUE));
-        addStudent(new Student(1034, 35, "한가인", false, indate, Long.MAX_VALUE));
-        addStudent(new Student(1035, 36, "박한별", false, indate, Long.MAX_VALUE));
-        addStudent(new Student(1036, 37, "심은경", false, indate, Long.MAX_VALUE));
+        addStudent(new Student(1000,   1, "연우진", true, "01000000000", indate, Long.MAX_VALUE));
+        addStudent(new Student(1001,   2, "이종석", true, "01000000000", indate, Long.MAX_VALUE));
+        addStudent(new Student(1002,   3, "송중기", true, "01000000000", indate, Long.MAX_VALUE));
+        addStudent(new Student(1003,   4, "여진구", true, "01000000000", indate, Long.MAX_VALUE));
+        addStudent(new Student(1004,   5, "유승호", true, "01000000000", indate, Long.MAX_VALUE));
+        addStudent(new Student(1005,   6, "하정우", true, "01000000000", indate, Long.MAX_VALUE));
+        addStudent(new Student(1006,   7, "유재석", true, "01000000000", indate, Long.MAX_VALUE));
+        addStudent(new Student(1007,   8, "김우빈", true, "01000000000", indate, Long.MAX_VALUE));
+        addStudent(new Student(1008,   9, "정우",  true, "01000000000", indate, Long.MAX_VALUE));
+        addStudent(new Student(1009,  10, "유연석", true, "01000000000", indate, Long.MAX_VALUE));
+        addStudent(new Student(1010, 11, "임시완", true, "01000000000", indate, Long.MAX_VALUE));
+        addStudent(new Student(1011, 12, "신하균", true, "01000000000", indate, Long.MAX_VALUE));
+        addStudent(new Student(1012, 13, "이민호", true, "01000000000", indate, Long.MAX_VALUE));
+        addStudent(new Student(1013, 14, "정우성", true, "01000000000", indate, Long.MAX_VALUE));
+        addStudent(new Student(1014, 15, "원빈",  true, "01000000000", indate, Long.MAX_VALUE));
+        addStudent(new Student(1015, 16, "강동원", true, "01000000000", indate, Long.MAX_VALUE));
+        addStudent(new Student(1016, 17, "이정재", true, "01000000000", indate, Long.MAX_VALUE));
+        addStudent(new Student(1017, 18, "설현",  false,"01000000000", indate, Long.MAX_VALUE));
+        addStudent(new Student(1018, 19, "문채원", false,"01000000000", indate, Long.MAX_VALUE));
+        addStudent(new Student(1019, 20, "아이유", false,"01000000000", indate, Long.MAX_VALUE));
+        addStudent(new Student(1020, 21, "김태희", false,"01000000000", indate, Long.MAX_VALUE));
+        addStudent(new Student(1021, 22, "송혜교", false,"01000000000", indate, Long.MAX_VALUE));
+        addStudent(new Student(1022, 23, "한지민", false,"01000000000", indate, Long.MAX_VALUE));
+        addStudent(new Student(1023, 24, "손예진", false,"01000000000", indate, Long.MAX_VALUE));
+        addStudent(new Student(1024, 25, "이나영", false,"01000000000", indate, Long.MAX_VALUE));
+        addStudent(new Student(1025, 26, "신민아", false,"01000000000", indate, Long.MAX_VALUE));
+        addStudent(new Student(1026, 27, "이민정", false,"01000000000", indate, Long.MAX_VALUE));
+        addStudent(new Student(1027, 28, "신소율", false,"01000000000", indate, Long.MAX_VALUE));
+        addStudent(new Student(1028, 29, "한효주", false,"01000000000", indate, Long.MAX_VALUE));
+        addStudent(new Student(1029, 30, "수지",  false,"01000000000", indate, Long.MAX_VALUE));
+        addStudent(new Student(1030, 31, "송지효", false,"01000000000", indate, Long.MAX_VALUE));
+        addStudent(new Student(1031, 32, "김소은", false,"01000000000", indate, Long.MAX_VALUE));
+        addStudent(new Student(1032, 33, "이정현", false,"01000000000", indate, Long.MAX_VALUE));
+        addStudent(new Student(1033, 34, "유진",  false,"01000000000", indate, Long.MAX_VALUE));
+        addStudent(new Student(1034, 35, "한가인", false,"01000000000", indate, Long.MAX_VALUE));
+        addStudent(new Student(1035, 36, "박한별", false,"01000000000", indate, Long.MAX_VALUE));
+        addStudent(new Student(1036, 37, "심은경", false,"01000000000", indate, Long.MAX_VALUE));
     }
 }

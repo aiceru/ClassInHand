@@ -39,6 +39,7 @@ public class ClassDBHelper extends SQLiteOpenHelper {
         values.put(ClassDBContract.StudentInfo.COLUMN_NAME_ATTEND_NUM, student.getAttendNum());
         values.put(ClassDBContract.StudentInfo.COLUMN_NAME_NAME, student.getName());
         values.put(ClassDBContract.StudentInfo.COLUMN_NAME_GENDER, student.isBoy()? 1:2);
+        values.put(ClassDBContract.StudentInfo.COLUMN_NAME_PHONE, student.getPhone());
         values.put(ClassDBContract.StudentInfo.COLUMN_NAME_IN_DATE, student.getInDate());
         values.put(ClassDBContract.StudentInfo.ColUMN_NAME_OUT_DATE, student.getOutDate());
 
@@ -295,6 +296,7 @@ public class ClassDBHelper extends SQLiteOpenHelper {
         values.put(ClassDBContract.StudentInfo.COLUMN_NAME_ATTEND_NUM, student.getAttendNum());
         values.put(ClassDBContract.StudentInfo.COLUMN_NAME_NAME, student.getName());
         values.put(ClassDBContract.StudentInfo.COLUMN_NAME_GENDER, student.isBoy()? 1:2);
+        values.put(ClassDBContract.StudentInfo.COLUMN_NAME_PHONE, student.getPhone());
         values.put(ClassDBContract.StudentInfo.COLUMN_NAME_IN_DATE, student.getInDate());
         values.put(ClassDBContract.StudentInfo.ColUMN_NAME_OUT_DATE, student.getOutDate());
         wDB.update(
