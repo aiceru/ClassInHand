@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
 import java.util.TreeMap;
 
 /**
@@ -17,7 +18,7 @@ import java.util.TreeMap;
 public class StudentListFragment extends Fragment {
     private ClassInHandApplication          application;
     private MainActivity                    mainActivity;
-    private TreeMap<Integer, Student>       mCurrentStudents;
+    private ArrayList<Student>              mStudents;
 
     private RecyclerView                    mStudentListRecyclerView;
     private StudentListAdapter              mStudentListAdapter;
@@ -34,7 +35,7 @@ public class StudentListFragment extends Fragment {
 
         mainActivity = (MainActivity)getActivity();
         application = ClassInHandApplication.getInstance();
-        mCurrentStudents = application.getmCurrentStudents();
+        mStudents = application.getmStudentsArrayList();
     }
 
     @Override
@@ -45,7 +46,7 @@ public class StudentListFragment extends Fragment {
         mStudentListRecyclerView.setHasFixedSize(false);
         mStudentListLayoutManager = new LinearLayoutManager(mainActivity);
         mStudentListRecyclerView.setLayoutManager(mStudentListLayoutManager);
-        mStudentListAdapter = new StudentListAdapter(mCurrentStudents, mainActivity);
+        mStudentListAdapter = new StudentListAdapter(mStudents, mainActivity);
         mStudentListRecyclerView.setAdapter(mStudentListAdapter);
         mStudentListRecyclerView.addOnItemTouchListener(
                 new RecyclerItemClickListener(mainActivity, new RecyclerItemClickListener.OnItemClickListener() {

@@ -14,10 +14,12 @@ public class Student {
     private String  phone;
     private ArrayList<PersonalHistory> histories;
 
+    private boolean isInClass;
     private long    inDate;
     private long    outDate;
 
-    public Student(int id, int attendNum, String name, boolean isBoy, String phone, long inDate, long outDate) {
+    public Student(int id, int attendNum, String name, boolean isBoy, String phone,
+                   boolean isInClass, long inDate, long outDate) {
         this.id = id;
         this.attendNum = attendNum;
         this.name = name;
@@ -25,6 +27,7 @@ public class Student {
         this.phone = phone;
         this.histories = new ArrayList<>();
 
+        this.isInClass = isInClass;
         this.inDate = inDate;
         this.outDate = outDate;
     }
@@ -61,6 +64,10 @@ public class Student {
         return phone;
     }
 
+    public boolean isInClass() {
+        return isInClass;
+    }
+
     public long getInDate() {
         return inDate;
     }
@@ -91,6 +98,10 @@ public class Student {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public void setInClass(boolean isInClass) {
+        this.isInClass = isInClass;
     }
 
     public void setInDate(long inDate) {

@@ -10,7 +10,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.lang.reflect.Array;
 import java.security.cert.CollectionCertStoreParameters;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.TreeMap;
@@ -20,8 +22,8 @@ import java.util.TreeMap;
  */
 public class StudentListAdapter extends RecyclerView.Adapter<StudentListAdapter.ViewHolder> {
 
-    private TreeMap<Integer, Student> mDataset;
-    private Collection<Student> mDataCollection;
+    private ArrayList<Student> mDataset;
+    //private Collection<Student> mDataCollection;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         //public TextView     tv_attend_num;
@@ -36,9 +38,9 @@ public class StudentListAdapter extends RecyclerView.Adapter<StudentListAdapter.
         }
     }
 
-    public StudentListAdapter(TreeMap<Integer, Student> dataset, Context context) {
+    public StudentListAdapter(ArrayList<Student> dataset, Context context) {
         mDataset = dataset;
-        mDataCollection = mDataset.values();
+        //mDataCollection = mDataset.values();
     }
 
     @Override
@@ -63,7 +65,7 @@ public class StudentListAdapter extends RecyclerView.Adapter<StudentListAdapter.
     }
 
     public Object getItem(int position) {
-        return mDataCollection.toArray()[position];
+        return mDataset.get(position);
     }
 
     /*public void removeAt(int position) {

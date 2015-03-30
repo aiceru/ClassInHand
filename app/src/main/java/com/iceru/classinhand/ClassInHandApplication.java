@@ -58,13 +58,15 @@ public class ClassInHandApplication extends Application {
 
     private static ClassInHandApplication appInstance;
 
-    private TreeMap <Integer, Student> mStudents;        // KEY : ID
-    private TreeMap <Integer, Student> mCurrentStudents; // KEY : attendNum
+    //private TreeMap <Integer, Student> mStudents;        // KEY : ID
+    //private TreeMap <Integer, Student> mCurrentStudents; // KEY : attendNum
+    private ArrayList<Student> mStudentsArrayList;
 
     private ArrayList<Seatplan>         mSeatplans;
 
     private ClassDBHelper   dbHelper;
 
+    private Comparator<Student>     mStudentComparator;
     private Comparator<Seatplan>    mSeatplanComparator;
     private GregorianCalendar       mCalToday;
 
@@ -79,10 +81,25 @@ public class ClassInHandApplication extends Application {
         appInstance = this;
         dbHelper = new ClassDBHelper(this);
 
-        mStudents = new TreeMap<>();
-        mCurrentStudents = new TreeMap<>();
+        /*mStudents = new TreeMap<>();
+        mCurrentStudents = new TreeMap<>();*/
+        mStudentsArrayList = new ArrayList<>();
         mSeatplans = new ArrayList<>();
 
+        mStudentComparator = new Comparator<Student>() {
+            @Override
+            public int compare(Student lhs, Student rhs) {
+                if(lhs.isInClass() == rhs.isInClass()) {
+                    return rhs.getAttendNum() - lhs.getAttendNum();
+                }
+                else if(lhs.isInClass()) {
+                    return 1;
+                }
+                else {
+                    return -1;
+                }
+            }
+        };
         mSeatplanComparator = new Comparator<Seatplan>() {
             @Override
             public int compare(Seatplan lhs, Seatplan rhs) {
@@ -104,11 +121,15 @@ public class ClassInHandApplication extends Application {
         return appInstance;
     }
 
-    public TreeMap<Integer, Student> getmStudents() {
-        return mStudents;
+    public ArrayList<Student> getmStudentsArrayList() {
+        return mStudentsArrayList;
     }
 
-    public TreeMap<Integer, Student> getmCurrentStudents() { return mCurrentStudents; }
+    /*public TreeMap<Integer, Student> getmStudents() {
+        return mStudents;
+    }*/
+
+    /*public TreeMap<Integer, Student> getmCurrentStudents() { return mCurrentStudents; }*/
 
     public ArrayList<Seatplan> getmSeatplans() {
         return mSeatplans;
@@ -125,13 +146,16 @@ public class ClassInHandApplication extends Application {
     }
 
     public boolean addStudent(Student student) {
-        boolean exist = null != mStudents.get(student.getId());
+        //boolean exist = null != mStudents.get(student.getId());
+        boolean exist = 0 >= mStudentsArrayList.indexOf(student);
         if(!exist) {
-            long today = mCalToday.getTimeInMillis();
-            mStudents.put(student.getId(), student);
-            if(student.getInDate() <= today && student.getOutDate() > today) {
+            //long today = mCalToday.getTimeInMillis();
+            //mStudents.put(student.getId(), student);
+            mStudentsArrayList.add(student);
+            Collections.sort(mStudentsArrayList, mStudentComparator);
+            /*if(student.getInDate() <= today && student.getOutDate() > today) {
                 mCurrentStudents.put(student.getAttendNum(), student);
-            }
+            }*/
             dbHelper.insert(student);
         }
         return !exist;
@@ -145,25 +169,35 @@ public class ClassInHandApplication extends Application {
     }
 
     public Student findStudentById(int id) {
-        return mStudents.get(id);
+        //return mStudents.get(id);
+        for(Student s : mStudentsArrayList) {
+            if(s.getId() == id) return s;
+        }
+        return null;
     }
 
     public Student findStudentByAttendNum(int attendNum) {
-        return mCurrentStudents.get(attendNum);
+        //return mCurrentStudents.get(attendNum);
+        for(Student s : mStudentsArrayList) {
+            if(s.getAttendNum() == attendNum) return s;
+        }
+        return null;
     }
 
     public boolean removeStudent(Student student) {
-        boolean success = null != mStudents.remove(student.getId());
+        //boolean success = null != mStudents.remove(student.getId());
+        boolean success = mStudentsArrayList.remove(student);
         if(success) {
-            mCurrentStudents.remove(student.getAttendNum());
+            //mCurrentStudents.remove(student.getAttendNum());
             dbHelper.delete(student);
         }
         return success;
     }
 
     public void removeAllStudents() {
-        mStudents.clear();
-        mCurrentStudents.clear();
+        //mStudents.clear();
+        //mCurrentStudents.clear();
+        mStudentsArrayList.clear();
         dbHelper.deleteAllStudents();
     }
 
@@ -211,8 +245,9 @@ public class ClassInHandApplication extends Application {
         boolean isBoy;
         long inDate, outDate, today;
 
-        mStudents.clear();
-        mCurrentStudents.clear();
+        /*mStudents.clear();
+        mCurrentStudents.clear();*/
+        mStudentsArrayList.clear();
 
         today = mCalToday.getTimeInMillis();
         Cursor studentCursor = dbHelper.getStudentsList();
@@ -225,15 +260,18 @@ public class ClassInHandApplication extends Application {
             inDate = studentCursor.getLong(studentCursor.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_IN_DATE));
             outDate = studentCursor.getLong(studentCursor.getColumnIndexOrThrow(ClassDBContract.StudentInfo.ColUMN_NAME_OUT_DATE));
 
-            Student s = new Student(id, attendNum, name, isBoy, phone, inDate, outDate);
-            if(inDate <= today && outDate > today) {
+            Student s = new Student(id, attendNum, name, isBoy, phone,
+                    (inDate <= today && outDate > today), inDate, outDate);
+            /*if(inDate <= today && outDate > today) {
                 mCurrentStudents.put(s.getAttendNum(), s);
-            }
-            mStudents.put(id, s);
+            }*/
+            //mStudents.put(id, s);
+            mStudentsArrayList.add(s);
 
             NEXT_ID = id + 1;
         }
         studentCursor.close();
+        Collections.sort(mStudentsArrayList, mStudentComparator);
     }
 
     /**
@@ -262,7 +300,8 @@ public class ClassInHandApplication extends Application {
             while (cursorForDate.moveToNext()) {
                 int seatId = cursorForDate.getInt(cursorForDate.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_ID));
                 int studentId = cursorForDate.getInt(cursorForDate.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_STUDENT_ID));
-                aSeats.add(new Seat(seatId, mStudents.get(studentId)));
+                //aSeats.add(new Seat(seatId, mStudents.get(studentId)));
+                aSeats.add(new Seat(seatId, findStudentById(studentId)));
             }
 
             if(aSeats.size() != totalSeatsInThisPlan) {
@@ -286,11 +325,11 @@ public class ClassInHandApplication extends Application {
         Cursor historyCursor;
         GregorianCalendar cal;
         int studentId, seatId, pairId;
-        Student student;
         long date;
 
-        for(TreeMap.Entry<Integer, Student> entry : mStudents.entrySet()) {
-            student = entry.getValue();
+        //for(TreeMap.Entry<Integer, Student> entry : mStudents.entrySet()) {
+        for(Student student : mStudentsArrayList) {
+            //student = entry.getValue();
             student.getHistories().clear();
 
             studentId = student.getId();
@@ -318,8 +357,7 @@ public class ClassInHandApplication extends Application {
 
     public TreeMap<Integer, Student> getDatedStudentsTreeMapKeybyAttendNum(long date) {
         TreeMap<Integer, Student> map = new TreeMap<>();
-        for(Map.Entry<Integer, Student> e : mStudents.entrySet()) {
-            Student s = e.getValue();
+        for(Student s : mStudentsArrayList) {
             if(s.getInDate() <= date && s.getOutDate() > date) {
                 map.put(s.getAttendNum(), s);
             }
@@ -329,13 +367,7 @@ public class ClassInHandApplication extends Application {
 
     public void updateStudent(Student student) {
         dbHelper.update(student);
-    }
-
-    public void restart() {
-        Intent i = getBaseContext().getPackageManager()
-                .getLaunchIntentForPackage( getBaseContext().getPackageName() );
-        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(i);
+        Collections.sort(mStudentsArrayList, mStudentComparator);
     }
 
     public void clearTime(GregorianCalendar c) {
@@ -359,42 +391,42 @@ public class ClassInHandApplication extends Application {
     /* For Test only... create test dummy data */
     public void createTestData() {
         long indate = new GregorianCalendar(2015, 2, 1).getTimeInMillis();
-        addStudent(new Student(1000,   1, "연우진", true, "01000000000", indate, Long.MAX_VALUE));
-        addStudent(new Student(1001,   2, "이종석", true, "01000000000", indate, Long.MAX_VALUE));
-        addStudent(new Student(1002,   3, "송중기", true, "01000000000", indate, Long.MAX_VALUE));
-        addStudent(new Student(1003,   4, "여진구", true, "01000000000", indate, Long.MAX_VALUE));
-        addStudent(new Student(1004,   5, "유승호", true, "01000000000", indate, Long.MAX_VALUE));
-        addStudent(new Student(1005,   6, "하정우", true, "01000000000", indate, Long.MAX_VALUE));
-        addStudent(new Student(1006,   7, "유재석", true, "01000000000", indate, Long.MAX_VALUE));
-        addStudent(new Student(1007,   8, "김우빈", true, "01000000000", indate, Long.MAX_VALUE));
-        addStudent(new Student(1008,   9, "정우",  true, "01000000000", indate, Long.MAX_VALUE));
-        addStudent(new Student(1009,  10, "유연석", true, "01000000000", indate, Long.MAX_VALUE));
-        addStudent(new Student(1010, 11, "임시완", true, "01000000000", indate, Long.MAX_VALUE));
-        addStudent(new Student(1011, 12, "신하균", true, "01000000000", indate, Long.MAX_VALUE));
-        addStudent(new Student(1012, 13, "이민호", true, "01000000000", indate, Long.MAX_VALUE));
-        addStudent(new Student(1013, 14, "정우성", true, "01000000000", indate, Long.MAX_VALUE));
-        addStudent(new Student(1014, 15, "원빈",  true, "01000000000", indate, Long.MAX_VALUE));
-        addStudent(new Student(1015, 16, "강동원", true, "01000000000", indate, Long.MAX_VALUE));
-        addStudent(new Student(1016, 17, "이정재", true, "01000000000", indate, Long.MAX_VALUE));
-        addStudent(new Student(1017, 18, "설현",  false,"01000000000", indate, Long.MAX_VALUE));
-        addStudent(new Student(1018, 19, "문채원", false,"01000000000", indate, Long.MAX_VALUE));
-        addStudent(new Student(1019, 20, "아이유", false,"01000000000", indate, Long.MAX_VALUE));
-        addStudent(new Student(1020, 21, "김태희", false,"01000000000", indate, Long.MAX_VALUE));
-        addStudent(new Student(1021, 22, "송혜교", false,"01000000000", indate, Long.MAX_VALUE));
-        addStudent(new Student(1022, 23, "한지민", false,"01000000000", indate, Long.MAX_VALUE));
-        addStudent(new Student(1023, 24, "손예진", false,"01000000000", indate, Long.MAX_VALUE));
-        addStudent(new Student(1024, 25, "이나영", false,"01000000000", indate, Long.MAX_VALUE));
-        addStudent(new Student(1025, 26, "신민아", false,"01000000000", indate, Long.MAX_VALUE));
-        addStudent(new Student(1026, 27, "이민정", false,"01000000000", indate, Long.MAX_VALUE));
-        addStudent(new Student(1027, 28, "신소율", false,"01000000000", indate, Long.MAX_VALUE));
-        addStudent(new Student(1028, 29, "한효주", false,"01000000000", indate, Long.MAX_VALUE));
-        addStudent(new Student(1029, 30, "수지",  false,"01000000000", indate, Long.MAX_VALUE));
-        addStudent(new Student(1030, 31, "송지효", false,"01000000000", indate, Long.MAX_VALUE));
-        addStudent(new Student(1031, 32, "김소은", false,"01000000000", indate, Long.MAX_VALUE));
-        addStudent(new Student(1032, 33, "이정현", false,"01000000000", indate, Long.MAX_VALUE));
-        addStudent(new Student(1033, 34, "유진",  false,"01000000000", indate, Long.MAX_VALUE));
-        addStudent(new Student(1034, 35, "한가인", false,"01000000000", indate, Long.MAX_VALUE));
-        addStudent(new Student(1035, 36, "박한별", false,"01000000000", indate, Long.MAX_VALUE));
-        addStudent(new Student(1036, 37, "심은경", false,"01000000000", indate, Long.MAX_VALUE));
+        addStudent(new Student(1000,   1, "연우진", true, "01000000000",true,  indate, Long.MAX_VALUE));
+        addStudent(new Student(1001,   2, "이종석", true, "01000000000",true,  indate, Long.MAX_VALUE));
+        addStudent(new Student(1002,   3, "송중기", true, "01000000000",true,  indate, Long.MAX_VALUE));
+        addStudent(new Student(1003,   4, "여진구", true, "01000000000",true,  indate, Long.MAX_VALUE));
+        addStudent(new Student(1004,   5, "유승호", true, "01000000000",true,  indate, Long.MAX_VALUE));
+        addStudent(new Student(1005,   6, "하정우", true, "01000000000",true,  indate, Long.MAX_VALUE));
+        addStudent(new Student(1006,   7, "유재석", true, "01000000000",true,  indate, Long.MAX_VALUE));
+        addStudent(new Student(1007,   8, "김우빈", true, "01000000000",true,  indate, Long.MAX_VALUE));
+        addStudent(new Student(1008,   9, "정우",  true, "01000000000",true,  indate, Long.MAX_VALUE));
+        addStudent(new Student(1009,  10, "유연석", true, "01000000000",true,  indate, Long.MAX_VALUE));
+        addStudent(new Student(1010, 11, "임시완", true, "01000000000", true, indate, Long.MAX_VALUE));
+        addStudent(new Student(1011, 12, "신하균", true, "01000000000", true, indate, Long.MAX_VALUE));
+        addStudent(new Student(1012, 13, "이민호", true, "01000000000", true, indate, Long.MAX_VALUE));
+        addStudent(new Student(1013, 14, "정우성", true, "01000000000", true, indate, Long.MAX_VALUE));
+        addStudent(new Student(1014, 15, "원빈",  true, "01000000000", true, indate, Long.MAX_VALUE));
+        addStudent(new Student(1015, 16, "강동원", true, "01000000000", true, indate, Long.MAX_VALUE));
+        addStudent(new Student(1016, 17, "이정재", true, "01000000000", true, indate, Long.MAX_VALUE));
+        addStudent(new Student(1017, 18, "설현",  false,"01000000000", true, indate, Long.MAX_VALUE));
+        addStudent(new Student(1018, 19, "문채원", false,"01000000000", true, indate, Long.MAX_VALUE));
+        addStudent(new Student(1019, 20, "아이유", false,"01000000000", true, indate, Long.MAX_VALUE));
+        addStudent(new Student(1020, 21, "김태희", false,"01000000000", true, indate, Long.MAX_VALUE));
+        addStudent(new Student(1021, 22, "송혜교", false,"01000000000", true, indate, Long.MAX_VALUE));
+        addStudent(new Student(1022, 23, "한지민", false,"01000000000", true, indate, Long.MAX_VALUE));
+        addStudent(new Student(1023, 24, "손예진", false,"01000000000", true, indate, Long.MAX_VALUE));
+        addStudent(new Student(1024, 25, "이나영", false,"01000000000", true, indate, Long.MAX_VALUE));
+        addStudent(new Student(1025, 26, "신민아", false,"01000000000", true, indate, Long.MAX_VALUE));
+        addStudent(new Student(1026, 27, "이민정", false,"01000000000", true, indate, Long.MAX_VALUE));
+        addStudent(new Student(1027, 28, "신소율", false,"01000000000", true, indate, Long.MAX_VALUE));
+        addStudent(new Student(1028, 29, "한효주", false,"01000000000", true, indate, Long.MAX_VALUE));
+        addStudent(new Student(1029, 30, "수지",  false,"01000000000", true, indate, Long.MAX_VALUE));
+        addStudent(new Student(1030, 31, "송지효", false,"01000000000", true, indate, Long.MAX_VALUE));
+        addStudent(new Student(1031, 32, "김소은", false,"01000000000", true, indate, Long.MAX_VALUE));
+        addStudent(new Student(1032, 33, "이정현", false,"01000000000", true, indate, Long.MAX_VALUE));
+        addStudent(new Student(1033, 34, "유진",  false,"01000000000", true, indate, Long.MAX_VALUE));
+        addStudent(new Student(1034, 35, "한가인", false,"01000000000", true, indate, Long.MAX_VALUE));
+        addStudent(new Student(1035, 36, "박한별", false,"01000000000", true, indate, Long.MAX_VALUE));
+        addStudent(new Student(1036, 37, "심은경", false,"01000000000", true, indate, Long.MAX_VALUE));
     }
 }

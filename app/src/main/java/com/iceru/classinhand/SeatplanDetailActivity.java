@@ -27,7 +27,6 @@ public class SeatplanDetailActivity extends ActionBarActivity {
     private ClassInHandApplication application;
 
     /* Data Structures */
-    private TreeMap<Integer, Student> mStudents;
     private Seatplan mSeatplan;
     private GregorianCalendar mDate, mNewDate;
     private SeatGridAdapter mSeatGridAdapter;
@@ -45,7 +44,6 @@ public class SeatplanDetailActivity extends ActionBarActivity {
 
         if (position < 0) finish();
 
-        mStudents = application.getmStudents();
         mSeatplan = application.getmSeatplans().get(position);
         mDate = mSeatplan.getmApplyDate();
 
