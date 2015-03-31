@@ -18,9 +18,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.TreeMap;
 
 
 public class StudentAddActivity extends ActionBarActivity {
@@ -29,7 +29,7 @@ public class StudentAddActivity extends ActionBarActivity {
     private ClassInHandApplication          application;
 
     /* Data Structures */
-    private TreeMap<Integer, Student>       mStudents;
+    private ArrayList<Student> mStudents;
     private boolean[]                       mAttendNumArray;
     private GregorianCalendar               mInDate;
 
@@ -53,8 +53,8 @@ public class StudentAddActivity extends ActionBarActivity {
         mInDate = application.getValueOfTodayCalendar();
 
         mAttendNumArray = new boolean[ClassInHandApplication.MAX_STUDENTS]; // initialized to false
-        for(TreeMap.Entry<Integer, Student> entry : mStudents.entrySet()) {
-            mAttendNumArray[entry.getValue().getAttendNum()] = true;
+        for(Student s: mStudents) {
+            mAttendNumArray[s.getAttendNum()] = true;
         }
 
         setContentView(R.layout.activity_student_add);
@@ -81,14 +81,6 @@ public class StudentAddActivity extends ActionBarActivity {
         mAttendNumEditText = (EditText)findViewById(R.id.edittext_student_add_attendnum);
         while(mAttendNumArray[attendNum]) attendNum++;
         mAttendNumEditText.setText(String.valueOf(attendNum));
-        /*mAttendNumEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus) {
-                    mStudentsList.scrollToPosition(mStudents.size()-1);
-                }
-            }
-        });*/
 
         mGenderTglbtn = (ToggleButton)findViewById(R.id.tglbtn_student_add_gender);
 
@@ -124,6 +116,7 @@ public class StudentAddActivity extends ActionBarActivity {
         boolean isboy;
 
         long inDate = mInDate.getTimeInMillis();
+        long today = application.getValueOfTodayCalendar().getTimeInMillis();
 
         numStr = mAttendNumEditText.getText().toString();
         name = mNameEditText.getText().toString();
@@ -147,7 +140,8 @@ public class StudentAddActivity extends ActionBarActivity {
             return;
         }
 
-        student = new Student(ClassInHandApplication.NEXT_ID, attendNum, name, isboy, phone, inDate, Long.MAX_VALUE);
+        student = new Student(ClassInHandApplication.NEXT_ID, attendNum, name, isboy,
+                phone, (inDate <= today), inDate, Long.MAX_VALUE);
         ClassInHandApplication.NEXT_ID++;
 
         application.addStudent(student);

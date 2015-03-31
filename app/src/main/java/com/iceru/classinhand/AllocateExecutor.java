@@ -19,8 +19,9 @@ public class AllocateExecutor extends Allocator {
     private ArrayList<Seatplan> mSeatplans;
     private Seatplan mNewSeatplan;
 
-    public AllocateExecutor(Seatplan s)
+    public AllocateExecutor(Seatplan s, TreeMap<Integer, Student> students)
     {
+        mStudents = students;
         mNewSeatplan = s;
         mRules = new TreeMap<>();
     }
@@ -43,7 +44,7 @@ public class AllocateExecutor extends Allocator {
     {
         application = ClassInHandApplication.getInstance();
         //mStudents = application.getmStudents();
-        mRemainStudents = new TreeMap<>(mStudents);
+        //mRemainStudents = new TreeMap<>(mStudents);
         mSeatplans = application.getmSeatplans();
 
         ArrayList<Integer> currentAllocatable = new ArrayList<Integer>();

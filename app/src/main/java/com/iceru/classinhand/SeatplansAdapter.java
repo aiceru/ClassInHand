@@ -1,6 +1,8 @@
 package com.iceru.classinhand;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,15 +20,23 @@ public class SeatplansAdapter extends RecyclerView.Adapter<SeatplansAdapter.View
     private ArrayList<Seatplan> mDataset;
     private Context             mContext;
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         public TextView tv_apply_date;
-        //public ExpandableGridView gv_seats;
+        public IViewHolderOnClick mListener;
 
-        public ViewHolder(View v) {
+        public ViewHolder(View v, IViewHolderOnClick listener) {
             super(v);
             tv_apply_date = (TextView)v.findViewById(R.id.textview_apply_date);
-            /*gv_seats = (ExpandableGridView)v.findViewById(R.id.gridview_seats);
-            gv_seats.setExpanded(true);*/
+            this.mListener = listener;
+        }
+
+        @Override
+        public void onClick(View v) {
+            mListener.onClick(v, this.getLayoutPosition());
+        }
+
+        public static interface IViewHolderOnClick {
+            public void onClick(View v, int position);
         }
     }
 
@@ -38,7 +48,14 @@ public class SeatplansAdapter extends RecyclerView.Adapter<SeatplansAdapter.View
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardtitle_seatplan, parent, false);
-        return new ViewHolder(v);
+        return new ViewHolder(v, new ViewHolder.IViewHolderOnClick() {
+            @Override
+            public void onClick(View v, int position) {
+                Intent intent = new Intent(mContext, SeatplanDetailActivity.class);
+                intent.putExtra(ClassInHandApplication.SEATPLAN_SELECTED_POSITION, position);
+                mContext.startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -50,7 +67,6 @@ public class SeatplansAdapter extends RecyclerView.Adapter<SeatplansAdapter.View
         holder.tv_apply_date.setText(String.valueOf(cal.get(Calendar.YEAR)) + ". " +
                 String.valueOf(cal.get(Calendar.MONTH) + 1) + ". " +
                 String.valueOf(cal.get(Calendar.DAY_OF_MONTH)) + " ~");
-        /*holder.gv_seats.setAdapter(new SeatGridAdapter(seatplan.getmSeats(), mContext));*/
     }
 
     @Override

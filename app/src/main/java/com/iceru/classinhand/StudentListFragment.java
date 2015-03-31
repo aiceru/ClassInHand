@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
-import java.util.TreeMap;
 
 /**
  * Created by iceru on 14. 11. 19..
@@ -35,7 +34,7 @@ public class StudentListFragment extends Fragment {
 
         mainActivity = (MainActivity)getActivity();
         application = ClassInHandApplication.getInstance();
-        mStudents = application.getmStudentsArrayList();
+        mStudents = application.getmStudents();
     }
 
     @Override
@@ -48,16 +47,6 @@ public class StudentListFragment extends Fragment {
         mStudentListRecyclerView.setLayoutManager(mStudentListLayoutManager);
         mStudentListAdapter = new StudentListAdapter(mStudents, mainActivity);
         mStudentListRecyclerView.setAdapter(mStudentListAdapter);
-        mStudentListRecyclerView.addOnItemTouchListener(
-                new RecyclerItemClickListener(mainActivity, new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, int position) {
-                        Student s = (Student)mStudentListAdapter.getItem(position);
-                        Intent intent = new Intent(mainActivity, StudentDetailActivity.class);
-                        intent.putExtra(ClassInHandApplication.STUDENT_SELECTED_ID, s.getId());
-                        startActivity(intent);
-                    }
-                }));
 
         return rootView;
     }

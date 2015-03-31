@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -47,16 +48,6 @@ public class SeatplansFragment extends Fragment{
         mSeatplanRecyclerView.setLayoutManager(mSeatplanLayoutManager);
         mSeatplansAdapter = new SeatplansAdapter(mSeatplans, mainActivity);
         mSeatplanRecyclerView.setAdapter(mSeatplansAdapter);
-        mSeatplanRecyclerView.addOnItemTouchListener(
-                new RecyclerItemClickListener(mainActivity, new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, int position) {
-                        Intent intent = new Intent(mainActivity, SeatplanDetailActivity.class);
-                        intent.putExtra(ClassInHandApplication.SEATPLAN_SELECTED_POSITION, position);
-                        startActivity(intent);
-                    }
-                })
-        );
 
         return rootView;
     }

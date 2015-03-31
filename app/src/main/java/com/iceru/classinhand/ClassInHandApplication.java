@@ -1,7 +1,6 @@
 package com.iceru.classinhand;
 
 import android.app.Application;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.preference.PreferenceManager;
@@ -58,10 +57,7 @@ public class ClassInHandApplication extends Application {
 
     private static ClassInHandApplication appInstance;
 
-    //private TreeMap <Integer, Student> mStudents;        // KEY : ID
-    //private TreeMap <Integer, Student> mCurrentStudents; // KEY : attendNum
-    private ArrayList<Student> mStudentsArrayList;
-
+    private ArrayList<Student>          mStudents;
     private ArrayList<Seatplan>         mSeatplans;
 
     private ClassDBHelper   dbHelper;
@@ -81,22 +77,20 @@ public class ClassInHandApplication extends Application {
         appInstance = this;
         dbHelper = new ClassDBHelper(this);
 
-        /*mStudents = new TreeMap<>();
-        mCurrentStudents = new TreeMap<>();*/
-        mStudentsArrayList = new ArrayList<>();
+        mStudents = new ArrayList<>();
         mSeatplans = new ArrayList<>();
 
         mStudentComparator = new Comparator<Student>() {
             @Override
             public int compare(Student lhs, Student rhs) {
                 if(lhs.isInClass() == rhs.isInClass()) {
-                    return rhs.getAttendNum() - lhs.getAttendNum();
+                    return lhs.getAttendNum() - rhs.getAttendNum();
                 }
                 else if(lhs.isInClass()) {
-                    return 1;
+                    return -1;
                 }
                 else {
-                    return -1;
+                    return 1;
                 }
             }
         };
@@ -121,15 +115,9 @@ public class ClassInHandApplication extends Application {
         return appInstance;
     }
 
-    public ArrayList<Student> getmStudentsArrayList() {
-        return mStudentsArrayList;
-    }
-
-    /*public TreeMap<Integer, Student> getmStudents() {
+    public ArrayList<Student> getmStudents() {
         return mStudents;
-    }*/
-
-    /*public TreeMap<Integer, Student> getmCurrentStudents() { return mCurrentStudents; }*/
+    }
 
     public ArrayList<Seatplan> getmSeatplans() {
         return mSeatplans;
@@ -146,16 +134,10 @@ public class ClassInHandApplication extends Application {
     }
 
     public boolean addStudent(Student student) {
-        //boolean exist = null != mStudents.get(student.getId());
-        boolean exist = 0 >= mStudentsArrayList.indexOf(student);
+        boolean exist = 0 <= mStudents.indexOf(student);
         if(!exist) {
-            //long today = mCalToday.getTimeInMillis();
-            //mStudents.put(student.getId(), student);
-            mStudentsArrayList.add(student);
-            Collections.sort(mStudentsArrayList, mStudentComparator);
-            /*if(student.getInDate() <= today && student.getOutDate() > today) {
-                mCurrentStudents.put(student.getAttendNum(), student);
-            }*/
+            mStudents.add(student);
+            Collections.sort(mStudents, mStudentComparator);
             dbHelper.insert(student);
         }
         return !exist;
@@ -170,7 +152,7 @@ public class ClassInHandApplication extends Application {
 
     public Student findStudentById(int id) {
         //return mStudents.get(id);
-        for(Student s : mStudentsArrayList) {
+        for(Student s : mStudents) {
             if(s.getId() == id) return s;
         }
         return null;
@@ -178,7 +160,7 @@ public class ClassInHandApplication extends Application {
 
     public Student findStudentByAttendNum(int attendNum) {
         //return mCurrentStudents.get(attendNum);
-        for(Student s : mStudentsArrayList) {
+        for(Student s : mStudents) {
             if(s.getAttendNum() == attendNum) return s;
         }
         return null;
@@ -186,7 +168,7 @@ public class ClassInHandApplication extends Application {
 
     public boolean removeStudent(Student student) {
         //boolean success = null != mStudents.remove(student.getId());
-        boolean success = mStudentsArrayList.remove(student);
+        boolean success = mStudents.remove(student);
         if(success) {
             //mCurrentStudents.remove(student.getAttendNum());
             dbHelper.delete(student);
@@ -195,9 +177,7 @@ public class ClassInHandApplication extends Application {
     }
 
     public void removeAllStudents() {
-        //mStudents.clear();
-        //mCurrentStudents.clear();
-        mStudentsArrayList.clear();
+        mStudents.clear();
         dbHelper.deleteAllStudents();
     }
 
@@ -245,33 +225,29 @@ public class ClassInHandApplication extends Application {
         boolean isBoy;
         long inDate, outDate, today;
 
-        /*mStudents.clear();
-        mCurrentStudents.clear();*/
-        mStudentsArrayList.clear();
+        mStudents.clear();
 
         today = mCalToday.getTimeInMillis();
         Cursor studentCursor = dbHelper.getStudentsList();
-        while (studentCursor.moveToNext()) {
-            id = studentCursor.getInt(studentCursor.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_ID));
-            attendNum = studentCursor.getInt(studentCursor.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_ATTEND_NUM));
-            name = studentCursor.getString(studentCursor.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_NAME));
-            isBoy = (studentCursor.getInt(studentCursor.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_GENDER)) == 1);
-            phone = studentCursor.getString(studentCursor.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_PHONE));
-            inDate = studentCursor.getLong(studentCursor.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_IN_DATE));
-            outDate = studentCursor.getLong(studentCursor.getColumnIndexOrThrow(ClassDBContract.StudentInfo.ColUMN_NAME_OUT_DATE));
+        if(studentCursor.moveToFirst()) {
+            while (studentCursor.moveToNext()) {
+                id = studentCursor.getInt(studentCursor.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_ID));
+                attendNum = studentCursor.getInt(studentCursor.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_ATTEND_NUM));
+                name = studentCursor.getString(studentCursor.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_NAME));
+                isBoy = (studentCursor.getInt(studentCursor.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_GENDER)) == 1);
+                phone = studentCursor.getString(studentCursor.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_PHONE));
+                inDate = studentCursor.getLong(studentCursor.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_IN_DATE));
+                outDate = studentCursor.getLong(studentCursor.getColumnIndexOrThrow(ClassDBContract.StudentInfo.ColUMN_NAME_OUT_DATE));
 
-            Student s = new Student(id, attendNum, name, isBoy, phone,
-                    (inDate <= today && outDate > today), inDate, outDate);
-            /*if(inDate <= today && outDate > today) {
-                mCurrentStudents.put(s.getAttendNum(), s);
-            }*/
-            //mStudents.put(id, s);
-            mStudentsArrayList.add(s);
+                Student s = new Student(id, attendNum, name, isBoy, phone,
+                        (inDate <= today && outDate > today), inDate, outDate);
+                mStudents.add(s);
 
-            NEXT_ID = id + 1;
+                NEXT_ID = id + 1;
+            }
         }
         studentCursor.close();
-        Collections.sort(mStudentsArrayList, mStudentComparator);
+        Collections.sort(mStudents, mStudentComparator);
     }
 
     /**
@@ -327,9 +303,7 @@ public class ClassInHandApplication extends Application {
         int studentId, seatId, pairId;
         long date;
 
-        //for(TreeMap.Entry<Integer, Student> entry : mStudents.entrySet()) {
-        for(Student student : mStudentsArrayList) {
-            //student = entry.getValue();
+        for(Student student : mStudents) {
             student.getHistories().clear();
 
             studentId = student.getId();
@@ -357,7 +331,7 @@ public class ClassInHandApplication extends Application {
 
     public TreeMap<Integer, Student> getDatedStudentsTreeMapKeybyAttendNum(long date) {
         TreeMap<Integer, Student> map = new TreeMap<>();
-        for(Student s : mStudentsArrayList) {
+        for(Student s : mStudents) {
             if(s.getInDate() <= date && s.getOutDate() > date) {
                 map.put(s.getAttendNum(), s);
             }
@@ -367,7 +341,7 @@ public class ClassInHandApplication extends Application {
 
     public void updateStudent(Student student) {
         dbHelper.update(student);
-        Collections.sort(mStudentsArrayList, mStudentComparator);
+        Collections.sort(mStudents, mStudentComparator);
     }
 
     public void clearTime(GregorianCalendar c) {
