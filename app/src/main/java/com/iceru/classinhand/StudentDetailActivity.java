@@ -192,6 +192,7 @@ public class StudentDetailActivity extends ActionBarActivity {
 
     private void saveMe() {
         int attendNum = Integer.parseInt(mEdittextAttendNum.getText().toString());
+        long today = application.getValueOfTodayCalendar().getTimeInMillis();
 
         if( (application.findStudentByAttendNum(attendNum) == null) ||
                 (mStudent.getAttendNum() == attendNum) ) {
@@ -207,6 +208,8 @@ public class StudentDetailActivity extends ActionBarActivity {
             mStudent.setInDate(mIndate.getTimeInMillis());
             mStudent.setOutDate(mOutdate.getTimeInMillis());
 
+            // Fix : wooseok, 2015 03 31 수정된 학생정보 리스트에 반영
+            mStudent.setInClass(mStudent.getInDate() <= today && mStudent.getOutDate() > today);
             application.updateStudent(mStudent);
 
             mEdittextAttendNum.setEnabled(false);
