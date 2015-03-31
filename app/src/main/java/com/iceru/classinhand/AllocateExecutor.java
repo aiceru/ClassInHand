@@ -32,6 +32,7 @@ public class AllocateExecutor extends Allocator {
         mRules.put(new Integer(1),new RuleOldSeatCheck(true, 1));
         mRules.put(new Integer(2),new RuleOldPairCheck(true, 2));
         mRules.put(new Integer(3),new RuleSideCheck(true, 3));
+        mRules.put(new Integer(4),new RuleOldRowCheck(true, 4));
         // mNewSeatplan의 isboyRight를 전달해주기 위해서 별도의 함수를 선언하고 캐스팅으로 해결
         // siceman 2015-03-15 TODO:다형성을 적용한 생성자로 후처리가 필요함
         ((RuleSideCheck)mRules.get(3)).setIsBoyFlag(mNewSeatplan.isBoyRight());

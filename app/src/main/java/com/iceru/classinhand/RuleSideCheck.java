@@ -32,11 +32,10 @@ public class RuleSideCheck extends Rule {
         /* 실제 필터 로직 추가 */
         for(int allocEntry:allocatable)
         {
-            if((allocEntry % 2) == isBoyRight)
+            if((allocEntry % 2) == isBoyRight && newAllocatable.size() >= 2)
                 //newAllocatable.remove(allocEntry);
                 newAllocatable.remove(new Integer(allocEntry));
         }
-
         return newAllocatable;
     }
 }

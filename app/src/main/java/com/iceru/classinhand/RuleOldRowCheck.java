@@ -5,10 +5,10 @@ import java.util.ArrayList;
 /**
  * Created by Hongjoong on 2015-01-12.
  */
-public class RuleOldPairCheck extends Rule {
+public class RuleOldRowCheck extends Rule {
     private ClassInHandApplication          application;
-   // private static final int MaxHistoryLookup = 3;
-    public RuleOldPairCheck(boolean isDefault, int priority)
+    //private static final int MaxHistoryLookup = 3;
+    public RuleOldRowCheck(boolean isDefault, int priority)
     {
         super(isDefault,priority);
     }
@@ -23,6 +23,7 @@ public class RuleOldPairCheck extends Rule {
         ArrayList<Integer> newAllocatable = (ArrayList<Integer>) allocatable.clone();
 
         /* 실제 필터 로직 추가 */
+        int columns = application.globalProperties.columns;
 
         int maxHistory = 0;
         if(st.getHistories().size() < application.globalProperties.num_histories)
@@ -32,24 +33,16 @@ public class RuleOldPairCheck extends Rule {
 
         if(maxHistory == 0)
             return newAllocatable;
-        // 과거에 짝이었던 학생이 현재 할당된 자리의 옆자리를 제거함
+        // 학생 별로 앉았던 자리의 히스토리를 들고 있으므로 해당 값을 할당 가능한 자리에서 제거함
         int historyCount = 1;
         for(PersonalHistory p : st.getHistories()) {
-            if(p == null)
-                break;
-            if(newAllocatable.size() <= 1)
-                break;
-            for(Seat seat:seatArray)
-            {
-                if(seat.getItsStudent() == null)
-                    continue;
-                if(seat.getItsStudent().getId() == p.pairId)
-                {
-                    newAllocatable.remove(new Integer(seat.getPairSeatId()));
-                    break;
-                }
+            for(int a:newAllocatable) {
+                if((int)(a/columns) == (int)(p.seatId/columns) && newAllocatable.size() >= 2)
+                    newAllocatable.remove(new Integer(p.seatId));
             }
             if(++historyCount > maxHistory)
+                break;
+            if(newAllocatable.size() <= 1)
                 break;
         }
         return newAllocatable;
