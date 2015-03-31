@@ -28,6 +28,7 @@ public class SeatplansAdapter extends RecyclerView.Adapter<SeatplansAdapter.View
             super(v);
             tv_apply_date = (TextView)v.findViewById(R.id.textview_apply_date);
             this.mListener = listener;
+            v.setOnClickListener(this);
         }
 
         @Override

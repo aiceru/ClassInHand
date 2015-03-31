@@ -41,6 +41,7 @@ public class StudentListAdapter extends RecyclerView.Adapter<StudentListAdapter.
             tv_name = (TextView) v.findViewById(R.id.textview_name);
             iv_gender = (ImageView) v.findViewById(R.id.imageview_gender);
             mListener = listener;
+            v.setOnClickListener(this);
         }
 
         @Override
@@ -61,7 +62,7 @@ public class StudentListAdapter extends RecyclerView.Adapter<StudentListAdapter.
     @Override
     public StudentListAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.student_info, viewGroup, false);
-        StudentListAdapter.ViewHolder vh = new ViewHolder(v, new StudentListAdapter.ViewHolder.IViewHolderClick() {
+        return new ViewHolder(v, new StudentListAdapter.ViewHolder.IViewHolderClick() {
             public void viewholderClick(View v, int position) {
                 Student s = mDataset.get(position);
                 Intent intent = new Intent(mContext, StudentDetailActivity.class);
@@ -69,7 +70,6 @@ public class StudentListAdapter extends RecyclerView.Adapter<StudentListAdapter.
                 mContext.startActivity(intent);
             }
         });
-        return vh;
     }
 
     @Override
