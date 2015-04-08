@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -13,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -28,6 +30,7 @@ public class StudentDetailActivity extends ActionBarActivity {
     private EditText        mEdittextName;
     private ToggleButton    mTglbtnGender;
     private EditText        mEdittextPhone;
+    private ImageButton     mImageButtonCall;
     private GregorianCalendar   mIndate;
     private TextView        mTextviewIndate;
     private GregorianCalendar   mOutdate;
@@ -60,6 +63,7 @@ public class StudentDetailActivity extends ActionBarActivity {
         mEdittextAttendNum = (EditText)findViewById(R.id.edittext_student_detail_attendnum);
         mEdittextName = (EditText)findViewById(R.id.edittext_student_detail_name);
         mEdittextPhone = (EditText)findViewById(R.id.edittext_student_detail_phone);
+        mImageButtonCall = (ImageButton)findViewById(R.id.imagebutton_student_detail_call);
         mTextviewIndate = (TextView)findViewById(R.id.textview_student_detail_indate);
         mTextviewOutdate = (TextView)findViewById(R.id.textview_student_detail_outdate);
 
@@ -158,6 +162,7 @@ public class StudentDetailActivity extends ActionBarActivity {
         mEdittextName.setEnabled(true);
         mTglbtnGender.setClickable(true);
         mEdittextPhone.setEnabled(true);
+        mImageButtonCall.setEnabled(false);
         mTextviewIndate.setClickable(true);
         mTextviewOutdate.setClickable(true);
 
@@ -215,6 +220,8 @@ public class StudentDetailActivity extends ActionBarActivity {
             mEdittextAttendNum.setEnabled(false);
             mEdittextName.setEnabled(false);
             mTglbtnGender.setClickable(false);
+            mEdittextPhone.setEnabled(false);
+            mImageButtonCall.setEnabled(true);
             mTextviewIndate.setClickable(false);
             mTextviewOutdate.setClickable(false);
         }
@@ -228,5 +235,12 @@ public class StudentDetailActivity extends ActionBarActivity {
                                         .create();
             dialog.show();
         }
+    }
+
+    public void makeCall(View view) {
+        String uri = "tel:" + mStudent.getPhone().trim() ;
+        Intent intent = new Intent(Intent.ACTION_CALL);
+        intent.setData(Uri.parse(uri));
+        startActivity(intent);
     }
 }

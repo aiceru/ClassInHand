@@ -229,22 +229,20 @@ public class ClassInHandApplication extends Application {
 
         today = mCalToday.getTimeInMillis();
         Cursor studentCursor = dbHelper.getStudentsList();
-        if(studentCursor.moveToFirst()) {
-            while (studentCursor.moveToNext()) {
-                id = studentCursor.getInt(studentCursor.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_ID));
-                attendNum = studentCursor.getInt(studentCursor.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_ATTEND_NUM));
-                name = studentCursor.getString(studentCursor.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_NAME));
-                isBoy = (studentCursor.getInt(studentCursor.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_GENDER)) == 1);
-                phone = studentCursor.getString(studentCursor.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_PHONE));
-                inDate = studentCursor.getLong(studentCursor.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_IN_DATE));
-                outDate = studentCursor.getLong(studentCursor.getColumnIndexOrThrow(ClassDBContract.StudentInfo.ColUMN_NAME_OUT_DATE));
+        while (studentCursor.moveToNext()) {
+            id = studentCursor.getInt(studentCursor.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_ID));
+            attendNum = studentCursor.getInt(studentCursor.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_ATTEND_NUM));
+            name = studentCursor.getString(studentCursor.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_NAME));
+            isBoy = (studentCursor.getInt(studentCursor.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_GENDER)) == 1);
+            phone = studentCursor.getString(studentCursor.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_PHONE));
+            inDate = studentCursor.getLong(studentCursor.getColumnIndexOrThrow(ClassDBContract.StudentInfo.COLUMN_NAME_IN_DATE));
+            outDate = studentCursor.getLong(studentCursor.getColumnIndexOrThrow(ClassDBContract.StudentInfo.ColUMN_NAME_OUT_DATE));
 
-                Student s = new Student(id, attendNum, name, isBoy, phone,
-                        (inDate <= today && outDate > today), inDate, outDate);
-                mStudents.add(s);
+            Student s = new Student(id, attendNum, name, isBoy, phone,
+                    (inDate <= today && outDate > today), inDate, outDate);
+            mStudents.add(s);
 
-                NEXT_ID = id + 1;
-            }
+            NEXT_ID = id + 1;
         }
         studentCursor.close();
         Collections.sort(mStudents, mStudentComparator);
