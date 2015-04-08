@@ -53,7 +53,7 @@ public class SeatGridAdapter extends BaseAdapter {
         }
 
         Seat seat = mDataset.get(position);
-        RelativeLayout rlayout = (RelativeLayout)convertView.findViewById(R.id.relativelayout_seat_background);
+        //RelativeLayout rlayout = (RelativeLayout)convertView.findViewById(R.id.relativelayout_seat_background);
         final FontFitTextView tv_num = (FontFitTextView)convertView.findViewById(R.id.textview_seated_num);
         final ImageView iv_gender = (ImageView)convertView.findViewById(R.id.imageview_seated_boygirl);
         FontFitTextView tv_name = (FontFitTextView) convertView.findViewById(R.id.textview_seated_name);
@@ -85,13 +85,17 @@ public class SeatGridAdapter extends BaseAdapter {
 
         byte selectedFlag = seat.getSelectedFlag();
         if((selectedFlag & ClassInHandApplication.SEATED_LEFT) != 0) {
-            rlayout.setBackgroundColor(mContext.getResources().getColor(R.color.pink_200));
+            //convertView.setBackgroundColor(mContext.getResources().getColor(R.color.pink_200));
+            convertView.setBackgroundResource(R.drawable.gridlineselectedpink);
         }
         else if((selectedFlag & ClassInHandApplication.SEATED_RIGHT) != 0) {
-            rlayout.setBackgroundColor(mContext.getResources().getColor(R.color.light_blue_200));
+            //convertView.setBackgroundColor(mContext.getResources().getColor(R.color.light_blue_200));
+            convertView.setBackgroundResource(R.drawable.gridlineselectedblue);
         }
         else {
-            rlayout.setBackgroundColor(mContext.getResources().getColor(R.color.grey_300));
+            //rlayout.setBackgroundColor(mContext.getResources().getColor(R.color.grey_300));
+            if(position % 2 == 0) convertView.setBackgroundResource(R.drawable.gridlineleft);
+            else convertView.setBackgroundResource(R.drawable.gridlineright);
         }
 
         byte seatedFlag = seat.getRecentSeatedFlag();
