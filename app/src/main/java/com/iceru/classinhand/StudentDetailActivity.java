@@ -2,6 +2,7 @@ package com.iceru.classinhand;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -12,14 +13,26 @@ import android.telephony.PhoneNumberUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.SimpleAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import org.apache.http.protocol.HTTP;
+
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
+import java.util.Map;
 
 
 public class StudentDetailActivity extends ActionBarActivity {
@@ -30,13 +43,66 @@ public class StudentDetailActivity extends ActionBarActivity {
     private EditText        mEdittextName;
     private ToggleButton    mTglbtnGender;
     private EditText        mEdittextPhone;
-    private ImageButton     mImageButtonCall;
+    private Spinner         mSpinnerCallorSms;
     private GregorianCalendar   mIndate;
     private TextView        mTextviewIndate;
     private GregorianCalendar   mOutdate;
     private TextView        mTextviewOutdate;
 
     private Menu            menu;
+
+    private class spinnerAdapter extends BaseAdapter {
+        private class ViewHolder {
+            ImageView iv_content;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return null;
+        }
+
+        @Override
+        public int getCount() {
+            return 3;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            View view = convertView;
+            ViewHolder vh;
+
+            if(convertView == null) {
+                view = getLayoutInflater().inflate(R.layout.spinner_row_callorsms, parent, false);
+                vh = new ViewHolder();
+                vh.iv_content = (ImageView)view.findViewById(R.id.imageview_call_or_sms);
+                view.setTag(vh);
+            }
+            else {
+                vh = (ViewHolder)view.getTag();
+            }
+
+            switch(position) {
+                case 0:
+                    vh.iv_content.setImageResource(R.drawable.ic_call_made_grey_700_24dp);
+                    break;
+                case 1:
+                    vh.iv_content.setImageResource(R.drawable.ic_call_indigo_500_24dp);
+                    break;
+                case 2:
+                    vh.iv_content.setImageResource(R.drawable.ic_sms_indigo_500_24dp);
+                    break;
+                default:
+                    break;
+
+            }
+            return view;
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +129,7 @@ public class StudentDetailActivity extends ActionBarActivity {
         mEdittextAttendNum = (EditText)findViewById(R.id.edittext_student_detail_attendnum);
         mEdittextName = (EditText)findViewById(R.id.edittext_student_detail_name);
         mEdittextPhone = (EditText)findViewById(R.id.edittext_student_detail_phone);
-        mImageButtonCall = (ImageButton)findViewById(R.id.imagebutton_student_detail_call);
+        mSpinnerCallorSms = (Spinner)findViewById(R.id.spinner_callorsms);
         mTextviewIndate = (TextView)findViewById(R.id.textview_student_detail_indate);
         mTextviewOutdate = (TextView)findViewById(R.id.textview_student_detail_outdate);
 
@@ -71,6 +137,28 @@ public class StudentDetailActivity extends ActionBarActivity {
         mEdittextAttendNum.setText(String.valueOf(mStudent.getAttendNum()));
         mEdittextName.setText(mStudent.getName());
         mEdittextPhone.setText(mStudent.getPhone());
+
+        mSpinnerCallorSms.setAdapter(new spinnerAdapter());
+        mSpinnerCallorSms.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                switch(position) {
+                    case 1:
+                        makeCall();
+                        break;
+                    case 2:
+                        sendSms();
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         mIndate = new GregorianCalendar();
         mIndate.clear();
@@ -162,7 +250,7 @@ public class StudentDetailActivity extends ActionBarActivity {
         mEdittextName.setEnabled(true);
         mTglbtnGender.setClickable(true);
         mEdittextPhone.setEnabled(true);
-        mImageButtonCall.setEnabled(false);
+        mSpinnerCallorSms.setEnabled(false);
         mTextviewIndate.setClickable(true);
         mTextviewOutdate.setClickable(true);
 
@@ -221,7 +309,7 @@ public class StudentDetailActivity extends ActionBarActivity {
             mEdittextName.setEnabled(false);
             mTglbtnGender.setClickable(false);
             mEdittextPhone.setEnabled(false);
-            mImageButtonCall.setEnabled(true);
+            mSpinnerCallorSms.setEnabled(true);
             mTextviewIndate.setClickable(false);
             mTextviewOutdate.setClickable(false);
         }
@@ -237,10 +325,22 @@ public class StudentDetailActivity extends ActionBarActivity {
         }
     }
 
-    public void makeCall(View view) {
-        String uri = "tel:" + mStudent.getPhone().trim() ;
+    public void makeCall() {
+        String uri = "tel:" + mStudent.getPhone().trim();
         Intent intent = new Intent(Intent.ACTION_CALL);
         intent.setData(Uri.parse(uri));
-        startActivity(intent);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        }
+    }
+
+    public void sendSms() {
+        String uri = "smsto:" + mStudent.getPhone().trim();
+        Intent intent = new Intent(Intent.ACTION_SENDTO);
+        intent.setType(HTTP.PLAIN_TEXT_TYPE);
+        intent.setData(Uri.parse(uri));
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        }
     }
 }

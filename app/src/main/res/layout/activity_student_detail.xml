@@ -101,13 +101,12 @@
                     android:inputType="phone"
                     android:enabled="false"/>
 
-                <ImageButton
-                    android:id="@+id/imagebutton_student_detail_call"
+                <Spinner
+                    android:id="@+id/spinner_callorsms"
                     android:layout_width="0dp"
+                    android:layout_weight="2"
                     android:layout_height="52dp"
-                    android:layout_weight="1"
-                    android:src="@drawable/ic_call_indigo_500_24dp"
-                    android:onClick="makeCall"/>
+                    android:spinnerMode="dropdown"/>
 
             </LinearLayout>
 

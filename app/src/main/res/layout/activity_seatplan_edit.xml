@@ -31,6 +31,19 @@
                 android:padding="@dimen/activity_horizontal_margin"
                 android:orientation="vertical">
 
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp"
+                    android:background="@color/green_900"
+                    android:layout_marginBottom="16dp"/>
+
+                <ImageView
+                    android:layout_width="100dp"
+                    android:layout_height="30dp"
+                    android:layout_marginBottom="24dp"
+                    android:layout_gravity="center"
+                    android:background="@color/brown_400"/>
+
                 <LinearLayout
                     android:id="@+id/linearlayout_onseatclick_inflated"
                     android:layout_width="match_parent"
