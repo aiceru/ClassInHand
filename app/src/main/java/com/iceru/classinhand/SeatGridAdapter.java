@@ -124,7 +124,7 @@ public class SeatGridAdapter extends BaseAdapter {
             ovh.lvh.textviewName.setText(leftStudent.getName());
             ovh.lvh.imageviewGender.setImageResource(
                     leftStudent.isBoy()? R.drawable.ic_gender_boy : R.drawable.ic_gender_girl);
-            ovh.lvh.imageviewGender.post(new Runnable() {
+            ovh.lvh.rlayout.post(new Runnable() {
                 @Override
                 public void run() {
                     int h = ovh.lvh.textviewNum.getHeight();
@@ -147,17 +147,17 @@ public class SeatGridAdapter extends BaseAdapter {
             ovh.rvh.textviewNum.setText(String.valueOf(rightStudent.getAttendNum()));
             ovh.rvh.textviewName.setText(rightStudent.getName());
             ovh.rvh.imageviewGender.setImageResource(
-                    rightStudent.isBoy()? R.drawable.ic_gender_boy : R.drawable.ic_gender_girl);
-            ovh.rvh.imageviewGender.post(new Runnable() {
+                    rightStudent.isBoy() ? R.drawable.ic_gender_boy : R.drawable.ic_gender_girl);
+            ovh.rvh.rlayout.post(new Runnable() {
                 @Override
                 public void run() {
                     int h = ovh.rvh.textviewNum.getHeight();
                     ovh.rvh.imageviewGender.getLayoutParams().height = h;
-                    ovh.rvh.imageviewGender.getLayoutParams().width = h-8;
+                    ovh.rvh.imageviewGender.getLayoutParams().width = h - 8;
                     ovh.rvh.imageviewSeatedLeft.getLayoutParams().width =
-                            ovh.rvh.imageviewSeatedLeft.getLayoutParams().height = h-8;
+                            ovh.rvh.imageviewSeatedLeft.getLayoutParams().height = h - 8;
                     ovh.rvh.imageviewSeatedRight.getLayoutParams().width =
-                            ovh.rvh.imageviewSeatedRight.getLayoutParams().height = h-8;
+                            ovh.rvh.imageviewSeatedRight.getLayoutParams().height = h - 8;
                 }
             });
         }
@@ -198,18 +198,18 @@ public class SeatGridAdapter extends BaseAdapter {
         }
 
         if((seatedFlag & ClassInHandApplication.SEATED_RIGHT) != 0) {
-            ovh.lvh.imageviewSeatedLeft.setVisibility(View.VISIBLE);
+            ovh.lvh.imageviewSeatedRight.setVisibility(View.VISIBLE);
         }
         else {
-            ovh.lvh.imageviewSeatedLeft.setVisibility(View.GONE);
+            ovh.lvh.imageviewSeatedRight.setVisibility(View.GONE);
         }
 
         seatedFlag = rightSeat.getRecentSeatedFlag();
         if((seatedFlag & ClassInHandApplication.SEATED_LEFT) != 0) {
-            ovh.rvh.imageviewSeatedRight.setVisibility(View.VISIBLE);
+            ovh.rvh.imageviewSeatedLeft.setVisibility(View.VISIBLE);
         }
         else {
-            ovh.rvh.imageviewSeatedRight.setVisibility(View.GONE);
+            ovh.rvh.imageviewSeatedLeft.setVisibility(View.GONE);
         }
 
         if((seatedFlag & ClassInHandApplication.SEATED_RIGHT) != 0) {
