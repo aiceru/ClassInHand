@@ -62,8 +62,8 @@ public class SeatplanDetailActivity extends ActionBarActivity {
         getSupportActionBar().setTitle(dateString);
 
         gv_seats = (GridView) findViewById(R.id.gridview_seatplan_detail);
-        gv_seats.setNumColumns(mSeatplan.getmColumns());
-        mSeatGridAdapter = new SeatGridAdapter(mSeatplan.getmSeats(), this, mSeatplan.getmColumns());
+        gv_seats.setNumColumns(mSeatplan.getmColumns()/2);
+        mSeatGridAdapter = new SeatGridAdapter(mSeatplan.getmSeats(), this, mSeatplan.getmColumns()/2, null);
         gv_seats.setAdapter(mSeatGridAdapter);
     }
 

@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
@@ -191,9 +192,15 @@ public class SeatplanEditActivity extends ActionBarActivity {
         gv_seats = (GridView) findViewById(R.id.gridview_newseatplan);
         layout_onseatclick_inflated = (LinearLayout) findViewById(R.id.linearlayout_onseatclick_inflated);
 
-        mSeatGridAdapter = new SeatGridAdapter(mNewPlan.getmSeats(), this, mNewPlan.getmColumns());
+        mSeatGridAdapter = new SeatGridAdapter(mNewPlan.getmSeats(), this, mNewPlan.getmColumns() / 2,
+                new SeatGridAdapter.InnerViewHolder.ISeatClick() {
+                    @Override
+                    public void seatClick(View v, int seatId) {
+                        onSeatClick(seatId);
+                    }
+                });
         gv_seats.setAdapter(mSeatGridAdapter);
-        gv_seats.setNumColumns(mNewPlan.getmColumns());
+        gv_seats.setNumColumns(mNewPlan.getmColumns()/2);
         gv_seats.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

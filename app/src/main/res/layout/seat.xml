@@ -1,56 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:id="@+id/relativelayout_seat_background"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:gravity="center"
-              android:orientation="vertical"
-              android:padding="4dp"
-              android:background="@color/grey_300">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
 
-    <com.iceru.classinhand.FontFitTextView
-        android:id="@+id/textview_seated_num"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
-        android:layout_marginStart="4dp"
-        android:layout_alignParentStart="true"/>
-
-    <ImageView
-        android:id="@+id/imageview_seated_boygirl"
-        android:layout_width="16dp"
-        android:layout_height="16dp"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="4dp"
-        android:scaleType="fitCenter"/>
-
-    <com.iceru.classinhand.FontFitTextView
-        android:id="@+id/textview_seated_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
-        android:layout_below="@id/textview_seated_num"
+    <RelativeLayout
+        android:id="@+id/relativelayout_seat_background_left"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
         android:gravity="center"
-        android:singleLine="true"/>
+        android:orientation="vertical"
+        android:padding="4dp">
 
-    <ImageView
-        android:id="@+id/imageview_recently_seated_left"
-        android:layout_width="16dp"
-        android:layout_height="16dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:src="@drawable/ic_error_pink_500_24px"
-        android:visibility="invisible"/>
+        <com.iceru.classinhand.FontFitTextView
+            android:id="@+id/textview_seated_num_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:layout_marginStart="4dp"
+            android:layout_alignParentStart="true"/>
 
-    <ImageView
-        android:id="@+id/imageview_recently_seated_right"
-        android:layout_width="16dp"
-        android:layout_height="16dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:src="@drawable/ic_error_custom_24px"
-        android:visibility="invisible"/>
+        <ImageView
+            android:id="@+id/imageview_seated_boygirl_left"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="4dp"
+            android:scaleType="fitCenter"/>
 
-</RelativeLayout>
+        <com.iceru.classinhand.FontFitTextView
+            android:id="@+id/textview_seated_name_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:layout_below="@id/textview_seated_num_left"
+            android:gravity="center"
+            android:singleLine="true"/>
+
+        <ImageView
+            android:id="@+id/imageview_recently_seated_left_left"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:src="@drawable/ic_error_pink_500_24px"
+            android:visibility="invisible"/>
+
+        <ImageView
+            android:id="@+id/imageview_recently_seated_right_left"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/ic_error_custom_24px"
+            android:visibility="invisible"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/relativelayout_seat_background_right"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="4dp">
+
+        <com.iceru.classinhand.FontFitTextView
+            android:id="@+id/textview_seated_num_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:layout_marginStart="4dp"
+            android:layout_alignParentStart="true"/>
+
+        <ImageView
+            android:id="@+id/imageview_seated_boygirl_right"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="4dp"
+            android:scaleType="fitCenter"/>
+
+        <com.iceru.classinhand.FontFitTextView
+            android:id="@+id/textview_seated_name_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:layout_below="@id/textview_seated_num_right"
+            android:gravity="center"
+            android:singleLine="true"/>
+
+        <ImageView
+            android:id="@+id/imageview_recently_seated_left_right"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:src="@drawable/ic_error_pink_500_24px"
+            android:visibility="invisible"/>
+
+        <ImageView
+            android:id="@+id/imageview_recently_seated_right_right"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/ic_error_custom_24px"
+            android:visibility="invisible"/>
+
+    </RelativeLayout>
+
+</LinearLayout>
