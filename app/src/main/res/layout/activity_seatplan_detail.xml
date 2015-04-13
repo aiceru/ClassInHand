@@ -14,49 +14,40 @@
         android:minHeight="?attr/actionBarSize"
         app:theme="@style/ThemeOverlay.AppCompat.ActionBar" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/activity_horizontal_margin"
-        android:orientation="vertical">
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="10dp"
-            android:background="@color/green_900"
-            android:layout_marginBottom="16dp"/>
-
-        <ImageView
-            android:layout_width="100dp"
-            android:layout_height="30dp"
-            android:layout_gravity="center"
-            android:background="@color/brown_400"/>
-
-    </LinearLayout>
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="@dimen/activity_horizontal_margin"
-        android:orientation="vertical">
+        android:padding="@dimen/activity_horizontal_margin">
 
-        <!--TextView
-            android:id="@+id/textview_detailedseatplan"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/activity_vertical_margin"
-            android:layout_alignParentEnd="true"
-            android:textSize="@dimen/abc_text_size_body_1_material"
-            android:text="DATE"/-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-        <GridView
-            android:id="@+id/gridview_seatplan_detail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:horizontalSpacing="5dp"
-            android:verticalSpacing="-1dp"
-            tools:listitem="@layout/seat"/>
+                <GridView
+                    android:id="@+id/gridview_seatplan_detail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:horizontalSpacing="5dp"
+                    android:verticalSpacing="-1dp"
+                    tools:listitem="@layout/seat"/>
+
+                <ImageView
+                    android:layout_width="100dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="32dp"
+                    android:background="@drawable/lectern"/>
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp"
+                    android:layout_marginTop="32dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="@drawable/board"/>
+
+            </LinearLayout>
 
         <com.getbase.floatingactionbutton.FloatingActionsMenu
             android:id="@+id/fab_seatplan_detail"
@@ -66,7 +57,7 @@
             android:layout_alignParentEnd="true"
             app:fab_addButtonColorNormal="@color/fab_color"
             app:fab_addButtonColorPressed="@color/fab_color">
-            
+
             <com.getbase.floatingactionbutton.FloatingActionButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -84,8 +75,8 @@
                 app:fab_colorPressed="@color/fab_color"
                 app:fab_size="mini"
                 android:onClick="onClickDeleteButton"/>
-            
-        </com.getbase.floatingactionbutton.FloatingActionsMenu>
 
+        </com.getbase.floatingactionbutton.FloatingActionsMenu>
     </RelativeLayout>
+
 </LinearLayout>

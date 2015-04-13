@@ -18,4 +18,10 @@
         android:entries="@array/sharedpref_entries_columns"
         android:entryValues="@array/sharedpref_entryvalues_columns"
         android:defaultValue="6"/>
+    <ListPreference
+        android:key="@string/sharedpref_key_rows"
+        android:title="@string/sharedpref_title_rows"
+        android:entries="@array/sharedpref_entries_rows"
+        android:entryValues="@array/sharedpref_entryvalues_rows"
+        android:defaultValue="5"/>
 </PreferenceScreen>

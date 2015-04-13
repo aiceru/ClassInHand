@@ -106,6 +106,7 @@ public class ClassInHandApplication extends Application {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         globalProperties.num_histories = Integer.parseInt(prefs.getString(getString(R.string.sharedpref_key_num_histories), "3"));
         globalProperties.columns = Integer.parseInt(prefs.getString(getString(R.string.sharedpref_key_columns), "6"));
+        globalProperties.rows = Integer.parseInt(prefs.getString(getString(R.string.sharedpref_key_rows), "5"));
         globalProperties.isBoyRight = Boolean.parseBoolean(prefs.getString(getString(R.string.sharedpref_key_is_boy_right), "true"));
 
         rebuildAllData();
@@ -262,10 +263,10 @@ public class ClassInHandApplication extends Application {
             cursorForDate.moveToFirst();
             int columnsInThisPlan = cursorForDate.getInt(
                     cursorForDate.getColumnIndexOrThrow(ClassDBContract.SeatplanInfo.COLUMN_NAME_COLUMNS));
+            int rowsInThisPlan = cursorForDate.getInt(
+                    cursorForDate.getColumnIndexOrThrow(ClassDBContract.SeatplanInfo.COLUMN_NAME_ROWS));
             boolean isBoyRightInThisPlan = (cursorForDate.getInt(
                     cursorForDate.getColumnIndexOrThrow(ClassDBContract.SeatplanInfo.COLUMN_NAME_IS_BOY_RIGHT)) == 1);
-            int totalSeatsInThisPlan = cursorForDate.getInt(
-                    cursorForDate.getColumnIndexOrThrow(ClassDBContract.SeatplanInfo.COLUMN_NAME_TOTAL_SEATS));
             cursorForDate.close();
 
             cursorForDate = dbHelper.getSeatplan(date);
@@ -278,14 +279,14 @@ public class ClassInHandApplication extends Application {
                 aSeats.add(new Seat(seatId, findStudentById(studentId)));
             }
 
-            if(aSeats.size() != totalSeatsInThisPlan) {
+            if(aSeats.size() != columnsInThisPlan * rowsInThisPlan) {
                 Log.e(getString(R.string.log_error_tag),
                         "DB consistency error: seatplan total number of seats does not match");
             }
 
             GregorianCalendar cal = new GregorianCalendar();
             cal.setTimeInMillis(date);
-            mSeatplans.add(new Seatplan(cal, aSeats, columnsInThisPlan, isBoyRightInThisPlan, aSeats.size()));
+            mSeatplans.add(new Seatplan(cal, aSeats, columnsInThisPlan, rowsInThisPlan, isBoyRightInThisPlan));
 
             cursorForDate.close();
         }

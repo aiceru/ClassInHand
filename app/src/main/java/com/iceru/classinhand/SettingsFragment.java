@@ -30,6 +30,9 @@ public class SettingsFragment extends PreferenceFragment
         pref = findPreference(getString(R.string.sharedpref_key_columns));
         pref.setSummary(getString(R.string.sharedpref_summary_current_value) +
                 application.globalProperties.columns/2);
+        pref = findPreference(getString(R.string.sharedpref_key_rows));
+        pref.setSummary(getString(R.string.sharedpref_summary_current_value) +
+                application.globalProperties.rows);
         pref = findPreference(getString(R.string.sharedpref_key_is_boy_right));
         pref.setSummary(getString(R.string.sharedpref_summary_current_value) +
                 (application.globalProperties.isBoyRight?
@@ -62,6 +65,12 @@ public class SettingsFragment extends PreferenceFragment
             application.globalProperties.columns = columns;
             Preference pref = findPreference(key);
             pref.setSummary(getString(R.string.sharedpref_summary_current_value) + columns/2);
+        }
+        else if(key.equals(getString(R.string.sharedpref_key_rows))) {
+            int rows = Integer.parseInt(sharedPreferences.getString(key, ""));
+            application.globalProperties.rows = rows;
+            Preference pref = findPreference(key);
+            pref.setSummary(getString(R.string.sharedpref_summary_current_value) + rows);
         }
         else if(key.equals(getString(R.string.sharedpref_key_is_boy_right))) {
             boolean isBoyRight = Boolean.parseBoolean(sharedPreferences.getString(key, ""));

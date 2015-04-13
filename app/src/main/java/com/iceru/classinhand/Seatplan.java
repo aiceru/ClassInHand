@@ -11,21 +11,19 @@ public class Seatplan {
     private GregorianCalendar       mApplyDate;
     private ArrayList<Seat>         mSeats;
     private int                     mColumns;
+    private int                     mRows;
     private boolean                 mBoySitsRight;
 
-    /* 20150325 ADD. iceru. */
-    private int                     mTotalSeats;
-
-    public Seatplan(GregorianCalendar applyDate, ArrayList<Seat> seats, int columns, boolean isBoyRight, int totalSeats) {
+    public Seatplan(GregorianCalendar applyDate, ArrayList<Seat> seats, int columns, int rows, boolean isBoyRight) {
         this.mApplyDate = applyDate;
         mApplyDate.clear(Calendar.HOUR);
         mApplyDate.clear(Calendar.MINUTE);
         mApplyDate.clear(Calendar.SECOND);
         mApplyDate.clear(Calendar.MILLISECOND);
         this.mColumns = columns;
+        this.mRows = rows;
         this.mBoySitsRight = isBoyRight;
         this.mSeats = seats;
-        this.mTotalSeats = totalSeats;
         /*for(Seat s : seats) {
             s.setBelongingPlan(this);
         }*/
@@ -47,9 +45,7 @@ public class Seatplan {
         return mColumns;
     }
 
-    public boolean isBoyRight() { return mBoySitsRight; }
+    public int getmRows() { return mRows; }
 
-    public int getmTotalSeats() {
-        return mTotalSeats;
-    }
+    public boolean isBoyRight() { return mBoySitsRight; }
 }

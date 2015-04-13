@@ -6,5 +6,6 @@ package com.iceru.classinhand;
 public class GlobalProperties {
     public boolean isBoyRight;
     public int columns;
+    public int rows;
     public int num_histories;
 }

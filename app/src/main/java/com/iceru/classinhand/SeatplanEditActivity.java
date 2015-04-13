@@ -62,6 +62,7 @@ public class SeatplanEditActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
 
         application = ClassInHandApplication.getInstance();
+        int row, col;
 
         Intent intent = getIntent();
         long newDatelong = intent.getLongExtra(ClassInHandApplication.SEATPLAN_EDIT_NEWDATE, 0);
@@ -77,13 +78,15 @@ public class SeatplanEditActivity extends ActionBarActivity {
             mOldDate = null;
             mOldPlan = null;
 
+            col = application.globalProperties.columns;
+            row = application.globalProperties.rows;
+
             mNewPlan = new Seatplan(
                     mNewDate,
                     new ArrayList<Seat>(),
-                    application.globalProperties.columns,
-                    application.globalProperties.isBoyRight,
-                    mRemainStudents.size());
-            for (int i = 0; i < mRemainStudents.size(); i++) {
+                    col, row,
+                    application.globalProperties.isBoyRight);
+            for (int i = 0; i < row * col; i++) {
                 Seat s = new Seat(i);
                 mNewPlan.getmSeats().add(s);
             }
@@ -93,13 +96,15 @@ public class SeatplanEditActivity extends ActionBarActivity {
             mOldDate.setTimeInMillis(oldDatelong);
             mOldPlan = application.findSeatplan(mOldDate);
 
+            col = mOldPlan.getmColumns();
+            row = mOldPlan.getmRows();
+
             mNewPlan = new Seatplan(
                     mNewDate,
                     new ArrayList<Seat>(),
-                    mOldPlan.getmColumns(),
-                    mOldPlan.isBoyRight(),
-                    mOldPlan.getmTotalSeats());
-            for (int i = 0; i < mOldPlan.getmTotalSeats(); i++) {
+                    col, row,
+                    mOldPlan.isBoyRight());
+            for (int i = 0; i < row * col; i++) {
                 Seat s = new Seat(i);
                 s.setItsStudent(mOldPlan.getmSeats().get(i).getItsStudent());
                 if(s.getItsStudent() != null) {

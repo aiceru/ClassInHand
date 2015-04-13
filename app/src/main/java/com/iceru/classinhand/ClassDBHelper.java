@@ -52,8 +52,8 @@ public class ClassDBHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(ClassDBContract.SeatplanInfo.COLUMN_NAME_APPLY_DATE, applyDate);
         values.put(ClassDBContract.SeatplanInfo.COLUMN_NAME_COLUMNS, plan.getmColumns());
+        values.put(ClassDBContract.SeatplanInfo.COLUMN_NAME_ROWS, plan.getmRows());
         values.put(ClassDBContract.SeatplanInfo.COLUMN_NAME_IS_BOY_RIGHT, (plan.isBoyRight()? 1 : 0));
-        values.put(ClassDBContract.SeatplanInfo.COLUMN_NAME_TOTAL_SEATS, plan.getmTotalSeats());
         ret |= wDB.insert(ClassDBContract.SeatplanInfo.TABLE_NAME, null, values);
         values.clear();
 

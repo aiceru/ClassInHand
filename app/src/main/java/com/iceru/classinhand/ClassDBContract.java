@@ -28,8 +28,8 @@ public final class ClassDBContract {
         public static final String TABLE_NAME = "seatplan_info";
         public static final String COLUMN_NAME_APPLY_DATE = "apply_date";
         public static final String COLUMN_NAME_COLUMNS = "columns";
+		public static final String COLUMN_NAME_ROWS = "rows";
         public static final String COLUMN_NAME_IS_BOY_RIGHT = "is_boy_right";
-        public static final String COLUMN_NAME_TOTAL_SEATS = "total_seats";
     }
 
 	private static final String TEXT_TYPE = " TEXT";
@@ -59,8 +59,8 @@ public final class ClassDBContract {
             "CREATE TABLE " + SeatplanInfo.TABLE_NAME + " (" +
                     SeatplanInfo.COLUMN_NAME_APPLY_DATE + INTEGER_TYPE + COMMA_SEP +
                     SeatplanInfo.COLUMN_NAME_COLUMNS + INTEGER_TYPE + COMMA_SEP +
-                    SeatplanInfo.COLUMN_NAME_IS_BOY_RIGHT + INTEGER_TYPE + COMMA_SEP +
-                    SeatplanInfo.COLUMN_NAME_TOTAL_SEATS + INTEGER_TYPE +
+					SeatplanInfo.COLUMN_NAME_ROWS + INTEGER_TYPE + COMMA_SEP +
+                    SeatplanInfo.COLUMN_NAME_IS_BOY_RIGHT + INTEGER_TYPE +
             " )";
 
 	public static final String SQL_DELETE_TABLE_STUDENTINFO =
