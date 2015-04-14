@@ -17,6 +17,8 @@
         랜덤 배치시 예전에 앉았던 짝 내역이 반영되지 않는 등의 오동작을 일으킬 수 있습니다. (학생이 전학을 가게 된 경우에는 삭제하지 마시고,
         학생정보 수정을 통해 [삭제(전출)일자] 를 설정하는 것을 추천합니다).\n\n그래도 삭제하시겠습니까?</string>
     <string name="contents_dialog_confirm_delete">정말 삭제하시겠습니까?</string>
+    <string name="contents_dialog_confirm_increase_row">학생 수가 전체 자리 수보다 많아 전부 배치할 수 없습니다.
+        환경 설정에서 좌석 배치의 줄 수(행)를 늘려주세요.</string>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
     <string name="action_new">새로 생성</string>
@@ -34,11 +36,15 @@
     <string name="icon">icon</string>
     <string name="done">done</string>
     <string name="cancel">취소</string>
+    <string name="confirm">확인</string>
     <string name="deleteAll">deleteAll</string>
     <string name="yes">예</string>
     <string name="no">아니오</string>
     <string name="edit_location_only">아니요. 배치만 바꿀래요</string>
     <string name="edit_date_either">네. 날짜도 바꿀래요</string>
+
+    <string name="remain_seats">남은 자리\n</string>
+    <string name="remain_students">남은 학생\n</string>
 
     <string name="hint_edittext_role">역할</string>
     <string name="warning_edittext_name_is_null">이름을 입력하세요</string>
@@ -52,6 +58,8 @@
     <string name="string_row">줄</string>
     <string name="string_left">왼쪽</string>
     <string name="string_right">오른쪽</string>
+
+    <string name="button_toggle_empty_fix">빈자리 고정/해제</string>
 
     <!--<string name="sharedpref_student_name_list">com.iceru.teacherschores.PREF_KEY_STUDENT_LIST</string>
     <string name="sharedpref_boygirl_list">com.iceru.teacherschores.PREF_KEY_BOYGIRL_LIST</string>

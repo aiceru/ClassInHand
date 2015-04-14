@@ -9,7 +9,7 @@ public class Seat {
     private int pairSeatId;
     private byte recentSeatedFlag;
     private byte selectedFlag;
-    //private Seatplan belongingPlan;
+    private boolean fixed;
 
 	public Seat(int id, Student st) {
 		this.id = id;
@@ -17,6 +17,7 @@ public class Seat {
         this.pairSeatId = this.id % 2 == 0? this.id + 1 : this.id - 1;
         this.recentSeatedFlag = 0x00;
         this.selectedFlag = 0x00;
+        this.fixed = false;
 	}
 
 	public Seat(int id) {
@@ -41,6 +42,8 @@ public class Seat {
 
     public byte getSelectedFlag() { return selectedFlag; }
 
+    public boolean isFixed() { return fixed; }
+
     /*public Seatplan getBelongingPlan() {
         return belongingPlan;
     }*/
@@ -63,6 +66,10 @@ public class Seat {
 
     public void clrSelectedFlag(byte flag) {
         this.selectedFlag &= (~flag);
+    }
+
+    public void setFixed(boolean fix) {
+        this.fixed = fix;
     }
 
     /*public void setBelongingPlan(Seatplan p) {

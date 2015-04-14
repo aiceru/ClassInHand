@@ -52,12 +52,33 @@
                         android:verticalSpacing="-1dp"
                         tools:listitem="@layout/seat"/>
 
-                    <ImageView
-                        android:layout_width="100dp"
-                        android:layout_height="30dp"
-                        android:layout_gravity="center"
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_marginTop="32dp"
-                        android:background="@drawable/lectern" />
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/textview_seatplan_edit_remainstudents"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"/>
+
+                        <ImageView
+                            android:layout_width="100dp"
+                            android:layout_height="40dp"
+                            android:layout_gravity="center"
+                            android:background="@drawable/lectern" />
+
+                        <TextView
+                            android:id="@+id/textview_seatplan_edit_remainseats"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"/>
+
+                    </LinearLayout>
 
                     <ImageView
                         android:layout_width="match_parent"
@@ -84,25 +105,49 @@
 
         </FrameLayout>
 
-        <ListView
-            android:id="@+id/seatplanactivity_left_drawer"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:id="@+id/linearlayout_left_drawer"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_gravity="left"
-            android:background="#FFFFFF"
-            android:choiceMode="singleChoice"
-            android:divider="@android:color/transparent"
-            android:dividerHeight="0dp" />
+            android:layout_gravity="start"
+            android:gravity="center"
+            android:background="@color/white"
+            android:orientation="vertical">
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/button_toggle_empty_fix"
+                android:onClick="toggleEmptyFixed"/>
+            <ListView
+                android:id="@+id/seatplanactivity_left_drawer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:choiceMode="singleChoice"
+                android:divider="@android:color/transparent"
+                android:dividerHeight="0dp" />
+        </LinearLayout>
 
-        <ListView
-            android:id="@+id/seatplanactivity_right_drawer"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:id="@+id/linearlayout_right_drawer"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_gravity="right"
-            android:background="#FFFFFF"
-            android:choiceMode="singleChoice"
-            android:divider="@android:color/transparent"
-            android:dividerHeight="0dp" />
+            android:layout_gravity="end"
+            android:gravity="center"
+            android:background="@color/white"
+            android:orientation="vertical">
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/button_toggle_empty_fix"
+                android:onClick="toggleEmptyFixed"/>
+            <ListView
+                android:id="@+id/seatplanactivity_right_drawer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:choiceMode="singleChoice"
+                android:divider="@android:color/transparent"
+                android:dividerHeight="0dp" />
+        </LinearLayout>
 
     </android.support.v4.widget.DrawerLayout>
 

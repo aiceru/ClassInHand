@@ -35,6 +35,7 @@ public class SeatGridAdapter extends BaseAdapter {
         public int          mSeatId;
 
         public RelativeLayout  rlayout;
+        public ImageView       imageviewFixed;
         public FontFitTextView textviewNum;
         public ImageView       imageviewGender;
         public FontFitTextView textviewName;
@@ -47,6 +48,7 @@ public class SeatGridAdapter extends BaseAdapter {
 
             if(seatId % 2 == 0) {
                 rlayout = (RelativeLayout) v.findViewById(R.id.relativelayout_seat_background_left);
+                imageviewFixed = (ImageView) v.findViewById(R.id.imageview_seat_fixed_left);
                 textviewNum = (FontFitTextView) v.findViewById(R.id.textview_seated_num_left);
                 imageviewGender = (ImageView) v.findViewById(R.id.imageview_seated_boygirl_left);
                 textviewName = (FontFitTextView) v.findViewById(R.id.textview_seated_name_left);
@@ -55,6 +57,7 @@ public class SeatGridAdapter extends BaseAdapter {
             }
             else {
                 rlayout = (RelativeLayout) v.findViewById(R.id.relativelayout_seat_background_right);
+                imageviewFixed = (ImageView) v.findViewById(R.id.imageview_seat_fixed_right);
                 textviewNum = (FontFitTextView) v.findViewById(R.id.textview_seated_num_right);
                 imageviewGender = (ImageView) v.findViewById(R.id.imageview_seated_boygirl_right);
                 textviewName = (FontFitTextView) v.findViewById(R.id.textview_seated_name_right);
@@ -104,7 +107,7 @@ public class SeatGridAdapter extends BaseAdapter {
         View view = convertView;
         final OuterViewHolder ovh;
         Seat leftSeat = mDataset.get(position*2);
-        Seat rightSeat = mDataset.get(position * 2 + 1 >= mDataset.size()? position*2 : position*2+1);
+        Seat rightSeat = position*2+1 >= mDataset.size()? null : mDataset.get(position*2+1);
         Student leftStudent = leftSeat.getItsStudent();
         Student rightStudent = rightSeat.getItsStudent();
 
@@ -218,6 +221,12 @@ public class SeatGridAdapter extends BaseAdapter {
         else {
             ovh.rvh.imageviewSeatedRight.setVisibility(View.GONE);
         }
+
+        if(leftSeat.isFixed()) ovh.lvh.imageviewFixed.setVisibility(View.VISIBLE);
+        else ovh.lvh.imageviewFixed.setVisibility(View.GONE);
+
+        if(rightSeat.isFixed()) ovh.rvh.imageviewFixed.setVisibility(View.VISIBLE);
+        else ovh.rvh.imageviewFixed.setVisibility(View.GONE);
 
         return view;
     }

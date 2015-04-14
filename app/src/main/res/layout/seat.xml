@@ -13,6 +13,13 @@
         android:gravity="center"
         android:orientation="vertical"
         android:padding="4dp">
+        <ImageView
+            android:id="@+id/imageview_seat_fixed_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:src="@drawable/ic_pin_drop_black_18dp"
+            android:visibility="invisible"/>
 
         <com.iceru.classinhand.FontFitTextView
             android:id="@+id/textview_seated_num_left"
@@ -70,6 +77,14 @@
         android:gravity="center"
         android:orientation="vertical"
         android:padding="4dp">
+
+        <ImageView
+            android:id="@+id/imageview_seat_fixed_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:src="@drawable/ic_pin_drop_black_18dp"
+            android:visibility="invisible"/>
 
         <com.iceru.classinhand.FontFitTextView
             android:id="@+id/textview_seated_num_right"
