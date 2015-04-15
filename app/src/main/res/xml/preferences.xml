@@ -1,5 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceScreen
+        android:key="@string/sharedpref_key_applying_rules"
+        android:title="@string/sharedpref_title_applying_rules">
+        <com.iceru.classinhand.ToolbarPreference
+            android:key="@string/sharedpref_key_applying_rules"
+            android:title="@string/sharedpref_title_applying_rules"/>
+        <CheckBoxPreference
+            android:key="@string/sharedpref_key_rule_oldpair"
+            android:title="@string/sharedpref_title_rule_oldpair"
+            android:defaultValue="true"
+            android:enabled="false"/>
+        <CheckBoxPreference
+            android:key="@string/sharedpref_key_rule_oldseat"
+            android:title="@string/sharedpref_title_rule_oldseat"
+            android:defaultValue="true"
+            android:enabled="false"/>
+        <CheckBoxPreference
+            android:key="@string/sharedpref_key_rule_oldrow"
+            android:title="@string/sharedpref_title_rule_oldrow"
+            android:defaultValue="true"
+            android:enabled="false"/>
+    </PreferenceScreen>
     <ListPreference
         android:key="@string/sharedpref_key_num_histories"
         android:title="@string/sharedpref_title_num_histories"

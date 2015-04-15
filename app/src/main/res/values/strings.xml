@@ -67,15 +67,23 @@
     <string name="sharedpref_boygirl_list">com.iceru.teacherschores.PREF_KEY_BOYGIRL_LIST</string>
     <string name="sharedpref_role_list">com.iceru.teacherschores.PREF_KEY_ROLE_LIST</string>-->
 
+    <string name="sharedpref_key_applying_rules">com.iceru.classinhand.SHAREDPREF_APPLYING_RULES</string>
     <string name="sharedpref_key_num_histories">com.iceru.classinhand.SHAREDPREF_NUM_HISTORIES</string>
     <string name="sharedpref_key_is_boy_right">com.iceru.classinhand.SHAREDPREF_IS_BOY_RIGHT</string>
     <string name="sharedpref_key_columns">com.iceru.classinhand.SHAREDPREF_COLUMNS</string>
     <string name="sharedpref_key_rows">com.iceru.classinhand.SHAREDPREF_ROWS</string>
+    <string name="sharedpref_key_rule_oldpair">com.iceru.classinhand.SHAREDPREF_RULE_OLDPAIR</string>
+    <string name="sharedpref_key_rule_oldseat">com.iceru.classinhand.SHAREDPREF_RULE_OLDSEAT</string>
+    <string name="sharedpref_key_rule_oldrow">com.iceru.classinhand.SHAREDPREF_RULE_OLDROW</string>
 
+    <string name="sharedpref_title_applying_rules">적용 룰 선택</string>
     <string name="sharedpref_title_num_histories">과거 배치내역 반영 갯수 지정</string>
     <string name="sharedpref_title_is_boy_right">남/여학생 배치 지정</string>
     <string name="sharedpref_title_columns">교실 분단 수 지정 (열)</string>
     <string name="sharedpref_title_rows">교실 줄 수 지정 (행)</string>
+    <string name="sharedpref_title_rule_oldpair">앉았던 짝 피하기</string>
+    <string name="sharedpref_title_rule_oldseat">앉았던 자리 피하기</string>
+    <string name="sharedpref_title_rule_oldrow">앉았던 줄 피하기</string>
 
     <string name="sharedpref_summary_current_value">현재 설정:\u0020</string>
     <string name="sharedpref_summary_boy_is_right">여학생 | 남학생</string>
