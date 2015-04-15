@@ -620,16 +620,31 @@ public class SeatplanEditActivity extends ActionBarActivity {
     }
 
     public void toggleEmptyFixed(View v) {
-        mLeftSelectedSeat.clrSelectedFlag(ClassInHandApplication.SEATED_LEFT);
+        if(getRemainSeats() == mRemainStudents.size() && !mLeftSelectedSeat.isFixed()) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(getString(R.string.title_dialog_warning));
+            builder.setMessage(getString(R.string.contents_dialog_cannot_set_emtpy));
+            builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
 
-        mLeftSelectedSeat.setFixed(!mLeftSelectedSeat.isFixed());
-        layout_onseatclick_inflated.setVisibility(View.GONE);
+                }
+            });
+            builder.create().show();
 
-        mSeatGridAdapter.notifyDataSetChanged();
+        }
+        else {
+            mLeftSelectedSeat.setFixed(!mLeftSelectedSeat.isFixed());
+            mLeftSelectedSeat.clrSelectedFlag(ClassInHandApplication.SEATED_LEFT);
 
-        mDrawerLayout.closeDrawer(Gravity.LEFT);
-        mDrawerLayout.closeDrawer(Gravity.RIGHT);
+            layout_onseatclick_inflated.setVisibility(View.GONE);
 
-        setRemainStrings();
+            mSeatGridAdapter.notifyDataSetChanged();
+
+            mDrawerLayout.closeDrawer(Gravity.LEFT);
+            mDrawerLayout.closeDrawer(Gravity.RIGHT);
+
+            setRemainStrings();
+        }
     }
 }
