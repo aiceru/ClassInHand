@@ -58,7 +58,9 @@ public class AllocateExecutor extends Allocator {
         // 현재 좌석의 모든 아이디를 currentAllocatable에 등록한다
         for(Seat s : seatArray)
         {
-            currentAllocatable.add(new Integer(s.getId()));
+            // 2015.04.15 siceman : 고정되지 않은 자리만 이용해서 배치에 적용함
+            if(!s.isFixed())
+                currentAllocatable.add(new Integer(s.getId()));
         }
 
         ArrayList<Integer> newAllocatable;
