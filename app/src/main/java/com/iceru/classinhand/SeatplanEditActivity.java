@@ -41,6 +41,7 @@ public class SeatplanEditActivity extends ActionBarActivity {
 
     /* Data Structures */
     private TreeMap<Integer, Student>       mRemainStudents;
+    private TreeMap<Integer, Student>       mRemainStudentsBackup;
     private Seatplan                        mNewPlan, mOldPlan;
     private GregorianCalendar               mNewDate, mOldDate;
     private Seat                            mLeftSelectedSeat, mRightSelectedSeat;
@@ -77,6 +78,7 @@ public class SeatplanEditActivity extends ActionBarActivity {
         if(newDatelong == 0) finish();
 
         mRemainStudents = application.getDatedStudentsTreeMapKeybyAttendNum(newDatelong);
+        mRemainStudentsBackup = new TreeMap<>(mRemainStudents);     // copy mRemainStudents
 
         mNewDate = new GregorianCalendar();
         mNewDate.setTimeInMillis(newDatelong);
@@ -99,6 +101,12 @@ public class SeatplanEditActivity extends ActionBarActivity {
                     }
                 });
                 AlertDialog dialog = builder.create();
+                dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        finish();
+                    }
+                });
                 dialog.show();
             }
 
@@ -113,6 +121,27 @@ public class SeatplanEditActivity extends ActionBarActivity {
             }
         }
         else {
+            /* 학생 목록에 변동 있을 시 수정 거부! */
+            if(!mRemainStudents.equals(application.getDatedStudentsTreeMapKeybyAttendNum(oldDatelong))) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle(R.string.title_dialog_warning);
+                builder.setMessage(R.string.contents_dialog_remainstudents_not_equals);
+                builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        finish();
+                    }
+                });
+                dialog.show();
+            }
+
             mOldDate = new GregorianCalendar();
             mOldDate.setTimeInMillis(oldDatelong);
             mOldPlan = application.findSeatplan(mOldDate);
@@ -205,6 +234,8 @@ public class SeatplanEditActivity extends ActionBarActivity {
                     mLeftSelectedSeat.setFixed(true);
 
                     mRemainStudents.remove(candidate.getAttendNum());
+                    mRemainStudentsBackup.remove(candidate.getAttendNum());
+
                     mLeftSelectedSeat.clrSelectedFlag(ClassInHandApplication.SEATED_LEFT);
                     layout_onseatclick_inflated.setVisibility(View.GONE);
 
@@ -249,11 +280,13 @@ public class SeatplanEditActivity extends ActionBarActivity {
 
     public void assignRandom(View view) {
         ArrayList<Seat> seatArray = mNewPlan.getmSeats();
-        TreeMap<Double, Student> pointedTreeMap = new TreeMap<>();
+        //TreeMap<Double, Student> pointedTreeMap = new TreeMap<>();
 
-        for(Map.Entry<Integer, Student> entry : mRemainStudents.entrySet()) {
+        mRemainStudents.clear();
+        for(Map.Entry<Integer, Student> entry : mRemainStudentsBackup.entrySet()) {
             Student s = entry.getValue();
-            pointedTreeMap.put(Math.random(), s);
+            mRemainStudents.put(s.getAttendNum(), s);
+            //pointedTreeMap.put(Math.random(), s);
         }
 
         AllocateExecutor AE = new AllocateExecutor(mNewPlan, mRemainStudents);
@@ -311,8 +344,10 @@ public class SeatplanEditActivity extends ActionBarActivity {
         mRightSelectedSeat.setItsStudent(tempStd);
 
         mLeftSelectedSeat.clrSelectedFlag(ClassInHandApplication.SEATED_LEFT);
+        mLeftSelectedSeat.setFixed(false);
         mLeftSelectedSeat = null;
         mRightSelectedSeat.clrSelectedFlag(ClassInHandApplication.SEATED_RIGHT);
+        mRightSelectedSeat.setFixed(false);
         mRightSelectedSeat = null;
 
         mChangeSeatButton.setVisibility(View.GONE);
@@ -337,6 +372,7 @@ public class SeatplanEditActivity extends ActionBarActivity {
         if(victim != null) {
             selectedSeat.setItsStudent(null);
             mRemainStudents.put(victim.getAttendNum(), victim);
+            mRemainStudentsBackup.put(victim.getAttendNum(), victim);
 
             for (PersonalHistory p : victim.getHistories()) {
                 if(p.seatId < mNewPlan.getmSeats().size()) {

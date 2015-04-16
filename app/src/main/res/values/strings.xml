@@ -21,6 +21,8 @@
         환경 설정에서 좌석 배치의 줄 수(행)를 늘려주세요.</string>
     <string name="contents_dialog_cannot_set_emtpy">남은 자리 수가 학생수보다 적어 빈자리로 고정시킬 수 없습니다.
         하나 이상의 다른 자리의 빈자리 고정을 해제하고 다시 시도해 주세요.</string>
+    <string name="contents_dialog_remainstudents_not_equals">학생 명단에 변경이 있어 자리배치도를 올바르게 수정할 수 없습니다.
+        배치도를 새로 생성해 주세요.</string>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
     <string name="action_new">새로 생성</string>
