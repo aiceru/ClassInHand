@@ -11,18 +11,26 @@ public class Seat {
     private byte selectedFlag;
     private boolean fixed;
 
-	public Seat(int id, Student st) {
+	public Seat(int id, Student st, boolean fixed) {
 		this.id = id;
 		this.itsStudent = st;
         this.pairSeatId = this.id % 2 == 0? this.id + 1 : this.id - 1;
         this.recentSeatedFlag = 0x00;
         this.selectedFlag = 0x00;
-        this.fixed = false;
+        this.fixed = fixed;
 	}
 
 	public Seat(int id) {
 		this(id, null);
 	}
+
+    public Seat(int id, Student st) {
+        this(id, st, false);
+    }
+
+    public Seat(int id, boolean fixed) {
+        this(id, null, fixed);
+    }
 
 	public int getId() {
 		return id;

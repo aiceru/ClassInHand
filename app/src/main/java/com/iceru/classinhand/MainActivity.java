@@ -34,14 +34,6 @@ import android.widget.DatePicker;
 import android.widget.ListView;
 import android.widget.Toast;
 
-@ReportsCrashes(
-        formKey = "",
-        httpMethod = HttpSender.Method.PUT,
-        reportType = HttpSender.Type.JSON,
-        formUri = "http://aiceru.iriscouch.com/acra-classinhand/_design/acra-storage/_update/report",
-        formUriBasicAuthLogin = "tester_classinhand",
-        formUriBasicAuthPassword = "classinhandTester"
-)
 public class MainActivity extends ActionBarActivity {
 
     private ClassInHandApplication application;

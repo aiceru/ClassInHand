@@ -74,7 +74,7 @@ public class AllocateExecutor extends Allocator {
             int selectedSeatID = newAllocatable.get(seatIndex);
 
             Student s = e.getValue();
-            seatArray.get(new Integer(selectedSeatID)).setItsStudent(s);
+            seatArray.get(selectedSeatID).setItsStudent(s);
             // wooseok. 2015 03 31
             // Fix issue : 자리 하나에 학생 앉히고 나면, mRemainStudents (AE 내부에서는 mStudents) 에서 remove 해줘야 함~
             mStudents.remove(s.getAttendNum());
