@@ -115,9 +115,9 @@ public class MainActivity extends ActionBarActivity {
         mDrawerList.add(DrawerSubItem.create(301, getString(R.string.title_setting), "ic_settings_grey600_24dp", true, this));
 
         // TODO : Delete this!!
-        mDrawerList.add(DrawerSubItem.create(901, "DB추출(개발자용)", "ic_settings_grey600_24dp", false, this));
+        /*mDrawerList.add(DrawerSubItem.create(901, "DB추출(개발자용)", "ic_settings_grey600_24dp", false, this));
         mDrawerList.add(DrawerSubItem.create(902, "DB삭제(개발자용)", "ic_settings_grey600_24dp", false, this));
-        mDrawerList.add(DrawerSubItem.create(903, "TestDB생성(개발자용)", "ic_settings_grey600_24dp", false, this));
+        mDrawerList.add(DrawerSubItem.create(903, "TestDB생성(개발자용)", "ic_settings_grey600_24dp", false, this));*/
 
         mDrawerListView.setAdapter(new DrawerContentAdapter(getSupportActionBar().getThemedContext(), R.layout.drawer_item, mDrawerList));
         mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

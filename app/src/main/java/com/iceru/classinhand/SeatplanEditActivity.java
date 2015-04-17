@@ -361,8 +361,6 @@ public class SeatplanEditActivity extends ActionBarActivity {
 
         mSeatGridAdapter.notifyDataSetChanged();
         setRemainStrings();
-
-        ClassInHandApplication.acraTest();
     }
 
     private void vacateSeat() {
