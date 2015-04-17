@@ -20,6 +20,7 @@ public final class ClassDBContract {
 	public static abstract class SeatHistory {
 		public static final String TABLE_NAME = "seat_history";
 		public static final String COLUMN_NAME_ID = "id";
+		public static final String COLUMN_NAME_FIXED = "fixed";
 		public static final String COLUMN_NAME_STUDENT_ID = "student_id";
 		public static final String COLUMN_NAME_APPLY_DATE = "apply_date";
 	}
@@ -51,6 +52,7 @@ public final class ClassDBContract {
 	public static final String SQL_CREATE_TABLE_SEATHISTORY =
 			"CREATE TABLE " + SeatHistory.TABLE_NAME + " (" +
 					SeatHistory.COLUMN_NAME_ID + INTEGER_TYPE + COMMA_SEP +
+					SeatHistory.COLUMN_NAME_FIXED + INTEGER_TYPE + COMMA_SEP +
 					SeatHistory.COLUMN_NAME_STUDENT_ID + INTEGER_TYPE + COMMA_SEP +
 					SeatHistory.COLUMN_NAME_APPLY_DATE + INTEGER_TYPE +
 			" )";

@@ -15,10 +15,10 @@
         android:padding="4dp">
         <ImageView
             android:id="@+id/imageview_seat_fixed_left"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
             android:layout_centerInParent="true"
-            android:src="@drawable/ic_pin_drop_black_18dp"
+            android:src="@drawable/ic_lock_indigo_500_18dp"
             android:visibility="invisible"/>
 
         <com.iceru.classinhand.FontFitTextView
@@ -80,10 +80,10 @@
 
         <ImageView
             android:id="@+id/imageview_seat_fixed_right"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
             android:layout_centerInParent="true"
-            android:src="@drawable/ic_pin_drop_black_18dp"
+            android:src="@drawable/ic_lock_indigo_500_18dp"
             android:visibility="invisible"/>
 
         <com.iceru.classinhand.FontFitTextView

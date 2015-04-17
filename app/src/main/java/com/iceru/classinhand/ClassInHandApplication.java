@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import org.acra.ACRA;
 import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
 import org.acra.sender.HttpSender;
@@ -31,9 +32,9 @@ import java.util.TreeMap;
         formUriBasicAuthPassword = "classinhandTester",
         mode = ReportingInteractionMode.DIALOG,
         resDialogText = R.string.crash_dialog_text,
-        //resDialogIcon = R.drawable.ic_action_warning, //optional. default is a warning sign
+        resDialogIcon = R.drawable.ic_error_custom_24px, //optional. default is a warning sign
         resDialogTitle = R.string.crash_dialog_title, // optional. default is your application name
-        resDialogCommentPrompt = R.string.crash_dialog_comment_prompt, // optional. when defined, adds a user text field input with this text resource as a label
+        //resDialogCommentPrompt = R.string.crash_dialog_comment_prompt, // optional. when defined, adds a user text field input with this text resource as a label
         resDialogOkToast = R.string.crash_dialog_ok_toast // optional. displays a Toast message when the user accepts to send a report.
 )
 public class ClassInHandApplication extends Application {
@@ -69,7 +70,7 @@ public class ClassInHandApplication extends Application {
     @Override
     public final void onCreate() {
         super.onCreate();
-        //ACRA.init(this);
+        ACRA.init(this);
 
         mCalToday = new GregorianCalendar();
         clearTime(mCalToday);
@@ -275,8 +276,10 @@ public class ClassInHandApplication extends Application {
             while (cursorForDate.moveToNext()) {
                 int seatId = cursorForDate.getInt(cursorForDate.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_ID));
                 int studentId = cursorForDate.getInt(cursorForDate.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_STUDENT_ID));
-                //aSeats.add(new Seat(seatId, mStudents.get(studentId)));
                 aSeats.add(new Seat(seatId, findStudentById(studentId)));
+                if(cursorForDate.getInt(cursorForDate.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_FIXED)) == 1) {
+                    aSeats.get(seatId).setFixed(true);
+                }
             }
 
             if(aSeats.size() != columnsInThisPlan * rowsInThisPlan) {
@@ -401,5 +404,10 @@ public class ClassInHandApplication extends Application {
         addStudent(new Student(1034, 35, "한가인", false,"01000000000", true, indate, Long.MAX_VALUE));
         addStudent(new Student(1035, 36, "박한별", false,"01000000000", true, indate, Long.MAX_VALUE));
         addStudent(new Student(1036, 37, "심은경", false,"01000000000", true, indate, Long.MAX_VALUE));
+    }
+
+    static public void acraTest() {
+        String str = null;
+        str.charAt(0);
     }
 }

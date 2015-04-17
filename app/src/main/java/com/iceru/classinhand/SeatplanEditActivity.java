@@ -20,7 +20,6 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
@@ -28,7 +27,6 @@ import com.getbase.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -155,8 +153,8 @@ public class SeatplanEditActivity extends ActionBarActivity {
                     col, row,
                     mOldPlan.isBoyRight());
             for (int i = 0; i < row * col; i++) {
-                Seat s = new Seat(i);
-                s.setItsStudent(mOldPlan.getmSeats().get(i).getItsStudent());
+                Seat olds = mOldPlan.getmSeats().get(i);
+                Seat s = new Seat(i, olds.getItsStudent(), olds.isFixed());
                 if(s.getItsStudent() != null) {
                     mRemainStudents.remove(s.getItsStudent().getAttendNum());
                 }
@@ -282,6 +280,7 @@ public class SeatplanEditActivity extends ActionBarActivity {
         ArrayList<Seat> seatArray = mNewPlan.getmSeats();
         //TreeMap<Double, Student> pointedTreeMap = new TreeMap<>();
 
+        clearAllocation();
         mRemainStudents.clear();
         for(Map.Entry<Integer, Student> entry : mRemainStudentsBackup.entrySet()) {
             Student s = entry.getValue();
@@ -362,6 +361,8 @@ public class SeatplanEditActivity extends ActionBarActivity {
 
         mSeatGridAdapter.notifyDataSetChanged();
         setRemainStrings();
+
+        ClassInHandApplication.acraTest();
     }
 
     private void vacateSeat() {
@@ -640,6 +641,14 @@ public class SeatplanEditActivity extends ActionBarActivity {
         if(seatId % 2 == 0) segAndRow += getString(R.string.string_left);
         else segAndRow += getString(R.string.string_right);
         return segAndRow;
+    }
+
+    private void clearAllocation() {
+        for(Seat s : mNewPlan.getmSeats()) {
+            if(!s.isFixed()) {
+                s.setItsStudent(null);
+            }
+        }
     }
 
     private void setRemainStrings() {

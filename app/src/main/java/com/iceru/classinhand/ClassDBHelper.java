@@ -59,6 +59,7 @@ public class ClassDBHelper extends SQLiteOpenHelper {
 
         for(Seat seat : plan.getmSeats()) {
             values.put(ClassDBContract.SeatHistory.COLUMN_NAME_ID, seat.getId());
+            values.put(ClassDBContract.SeatHistory.COLUMN_NAME_FIXED, (seat.isFixed()? 1 : 0));
             Student s = seat.getItsStudent();
             if(s != null) {
                 values.put(ClassDBContract.SeatHistory.COLUMN_NAME_STUDENT_ID, s.getId());
