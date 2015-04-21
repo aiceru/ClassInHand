@@ -25,8 +25,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:paddingStart="@dimen/activity_horizontal_margin"
-                android:paddingEnd="@dimen/activity_horizontal_margin">
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin">
 
                 <ToggleButton
                     android:id="@+id/tglbtn_student_detail_gender"
@@ -34,7 +34,7 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_gravity="center"
-                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
                     android:layout_centerInParent="true"
                     android:gravity="center"
                     android:clickable="false"
@@ -44,9 +44,9 @@
                     android:id="@+id/edittext_student_detail_attendnum"
                     android:layout_width="52dp"
                     android:layout_height="@dimen/recyclerview_singleline_tile_height"
-                    android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true"
                     android:layout_centerInParent="true"
-                    android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                    android:layout_marginRight="@dimen/activity_horizontal_margin"
                     android:gravity="center"
                     android:textColor="@color/text_secondary"
                     android:enabled="false"
@@ -62,9 +62,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/recyclerview_singleline_tile_height"
                     android:layout_centerInParent="true"
-                    android:layout_toEndOf="@id/edittext_student_detail_attendnum"
-                    android:layout_toStartOf="@id/tglbtn_student_detail_gender"
-                    android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                    android:layout_toRightOf="@id/edittext_student_detail_attendnum"
+                    android:layout_toLeftOf="@id/tglbtn_student_detail_gender"
+                    android:layout_marginRight="@dimen/activity_horizontal_margin"
                     android:gravity="center"
                     android:textColor="@color/text_secondary"
                     android:enabled="false"
@@ -79,8 +79,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:paddingStart="@dimen/activity_horizontal_margin"
-                android:paddingEnd="@dimen/activity_horizontal_margin">
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin">
 
                 <TextView
                     android:layout_width="0dp"
@@ -114,8 +114,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:paddingStart="@dimen/activity_horizontal_margin"
-                android:paddingEnd="@dimen/activity_horizontal_margin">
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin">
 
                 <TextView
                     android:layout_width="0dp"
@@ -141,8 +141,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:paddingStart="@dimen/activity_horizontal_margin"
-                android:paddingEnd="@dimen/activity_horizontal_margin"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
                 android:layout_gravity="center">
 
                 <TextView

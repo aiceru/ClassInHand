@@ -70,7 +70,10 @@ public class ClassInHandApplication extends Application {
     @Override
     public final void onCreate() {
         super.onCreate();
-        ACRA.init(this);
+        // Release 빌드에만 활성화
+        if(!BuildConfig.DEBUG) {
+            ACRA.init(this);
+        }
 
         mCalToday = new GregorianCalendar();
         clearTime(mCalToday);

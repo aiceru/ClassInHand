@@ -9,8 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TabHost;
-
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 
 /**
  * Created by iceru on 14. 8. 9.

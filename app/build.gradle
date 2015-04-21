@@ -1,3 +1,5 @@
+import java.text.SimpleDateFormat
+
 apply plugin: 'com.android.application'
 
 android {
@@ -6,10 +8,22 @@ android {
 
     defaultConfig {
         applicationId "com.iceru.classinhand"
-        minSdkVersion 17
+        minSdkVersion 16
         targetSdkVersion 19
-        versionCode 5
-        versionName "0.80"
+        versionCode 6
+        versionName "0.80.1"
+        applicationVariants.all { variant ->
+            variant.outputs.each { output ->
+                def df = new SimpleDateFormat("yyMMdd")
+                df.setTimeZone(TimeZone.getDefault())
+                def file = output.outputFile
+                // simple date format 으로 날짜를 앞에 붙여주고, BuildTypesTestApp(앱이름)을 추가, versionName 과 versionCode 도 붙여줌
+                def newName = "${df.format(new Date())}_classinhand_${defaultConfig.versionName}(${defaultConfig.versionCode})"
+                // 어떤 빌드로 생성된 apk 인지 알 수 있게 buildType 을 붙여줌
+                newName += "_${variant.buildType.name}.apk"
+                output.outputFile = new File(file.parent, newName);
+            }
+        }
     }
 
     signingConfigs {
@@ -44,5 +58,6 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:+'
     compile 'ch.acra:acra:4.5.0'
     compile 'com.getbase:floatingactionbutton:1.9.0'
+    compile project(':android-support-v4-preferencefragment')
 }
 

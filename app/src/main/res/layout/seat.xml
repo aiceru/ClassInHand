@@ -26,15 +26,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="2dp"
-            android:layout_marginStart="2dp"
-            android:layout_alignParentStart="true"/>
+            android:layout_marginLeft="2dp"
+            android:layout_alignParentLeft="true"/>
 
         <ImageView
             android:id="@+id/imageview_seated_boygirl_left"
             android:layout_width="16dp"
             android:layout_height="16dp"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="2dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="2dp"
             android:scaleType="fitCenter"/>
 
         <com.iceru.classinhand.FontFitTextView
@@ -52,8 +52,8 @@
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:layout_alignParentBottom="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="2dp"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="2dp"
             android:src="@drawable/ic_error_pink_500_24px"
             android:visibility="invisible"/>
 
@@ -62,8 +62,8 @@
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="2dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="2dp"
             android:src="@drawable/ic_error_custom_24px"
             android:visibility="invisible"/>
 
@@ -91,15 +91,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="2dp"
-            android:layout_marginStart="2dp"
-            android:layout_alignParentStart="true"/>
+            android:layout_marginLeft="2dp"
+            android:layout_alignParentLeft="true"/>
 
         <ImageView
             android:id="@+id/imageview_seated_boygirl_right"
             android:layout_width="16dp"
             android:layout_height="16dp"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="4dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="4dp"
             android:scaleType="fitCenter"/>
 
         <com.iceru.classinhand.FontFitTextView
@@ -117,8 +117,8 @@
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:layout_alignParentBottom="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="2dp"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="2dp"
             android:src="@drawable/ic_error_pink_500_24px"
             android:visibility="invisible"/>
 
@@ -127,8 +127,8 @@
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="2dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="2dp"
             android:src="@drawable/ic_error_custom_24px"
             android:visibility="invisible"/>
 

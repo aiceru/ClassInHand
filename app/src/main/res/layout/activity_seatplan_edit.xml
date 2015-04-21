@@ -109,7 +109,7 @@
             android:id="@+id/linearlayout_left_drawer"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_gravity="start"
+            android:layout_gravity="left"
             android:gravity="center"
             android:background="@color/white"
             android:orientation="vertical">
@@ -131,7 +131,7 @@
             android:id="@+id/linearlayout_right_drawer"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_gravity="end"
+            android:layout_gravity="right"
             android:gravity="center"
             android:background="@color/white"
             android:orientation="vertical">

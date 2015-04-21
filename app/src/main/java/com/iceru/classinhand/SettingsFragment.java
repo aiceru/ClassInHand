@@ -3,7 +3,7 @@ package com.iceru.classinhand;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.Preference;
-import android.preference.PreferenceFragment;
+import android.support.v4.preference.PreferenceFragment;
 
 /**
  * Created by iceru on 15. 3. 8..
