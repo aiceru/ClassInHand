@@ -5,7 +5,7 @@
         by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
 
     -->
-    <style name="AppTheme" parent="@style/Theme.AppCompat.Light">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
 
         <!-- customize the color palette -->
         <item name="colorPrimary">@color/primary</item>
@@ -20,7 +20,7 @@
         <!--<item name="floatingActionButtonStyle">@style/AppTheme.Fab</item>-->
     </style>
 
-    <style name="Theme.DrawerArrowStyle" parent="@style/Widget.AppCompat.DrawerArrowToggle">
+    <style name="Theme.DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
         <item name="spinBars">true</item>
         <item name="color">@android:color/white</item>
     </style>
@@ -34,7 +34,7 @@
         <item name="android:disabledAlpha">?android:attr/disabledAlpha</item>
     </style>
 
-    <style name="toggleButton" parent="@android:Theme.Light">
+    <style name="toggleButton" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:buttonStyleToggle">@style/Widget.Button.Toggle</item>
         <item name="android:textOn"></item>
         <item name="android:textOff"></item>

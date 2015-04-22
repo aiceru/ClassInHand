@@ -182,18 +182,21 @@ public class MainActivity extends ActionBarActivity {
         mCurrentSelectedPosition = position;
 
         FragmentManager fragmentManager = getSupportFragmentManager();
+        // 2015. 4. 22. wooseok.
+        // commit() must be executed before onSaveInstanceState(), so use commitAllowingStateLoss().
+        // http://www.kmshack.kr/fragment-%ED%8C%8C%ED%97%A4%EC%B9%98%EA%B8%B0-3-fragmentmanager-fragmenttransaction%EC%97%90-%EB%8C%80%ED%95%B4%EC%84%9C/
         switch(position+1) {
             case 1:
                 mTitle = getString(R.string.title_seatplan);
-                fragmentManager.beginTransaction().replace(R.id.main_contents, SeatplansFragment.getInstance()).commit();
+                fragmentManager.beginTransaction().replace(R.id.main_contents, SeatplansFragment.getInstance()).commitAllowingStateLoss();
                 break;
             case 3:
                 mTitle = getString(R.string.title_fillinfo);
-                fragmentManager.beginTransaction().replace(R.id.main_contents, FillInfoPagerFragment.getInstance()).commit();
+                fragmentManager.beginTransaction().replace(R.id.main_contents, FillInfoPagerFragment.getInstance()).commitAllowingStateLoss();
                 break;
             case 4:
                 mTitle = getString(R.string.title_setting);
-                fragmentManager.beginTransaction().replace(R.id.main_contents, SettingsFragment.getInstance()).commit();
+                fragmentManager.beginTransaction().replace(R.id.main_contents, SettingsFragment.getInstance()).commitAllowingStateLoss();
                 break;
             case 5:
                 exportDB();
