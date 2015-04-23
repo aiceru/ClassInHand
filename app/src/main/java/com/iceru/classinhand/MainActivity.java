@@ -304,19 +304,27 @@ public class MainActivity extends ActionBarActivity {
         DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                mNewDate.clear();
-                mNewDate.set(year, monthOfYear, dayOfMonth);
-                if(application.findSeatplan(mNewDate) != null) {
-                    confirmOverwrite();
-                }
-                else {
-                    runSeatplanActivity();
+                if(view.isShown()) {
+                    mNewDate.clear();
+                    mNewDate.set(year, monthOfYear, dayOfMonth);
+                    if (application.findSeatplan(mNewDate) != null) {
+                        confirmOverwrite();
+                    } else {
+                        runSeatplanActivity();
+                    }
                 }
             }
+
         };
         DatePickerDialog dateDialog = new DatePickerDialog(this,
                 dateSetListener, mNewDate.get(Calendar.YEAR), mNewDate.get(Calendar.MONTH),
                 mNewDate.get(Calendar.DAY_OF_MONTH));
+        dateDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                return;
+            }
+        });
         dateDialog.show();
     }
 

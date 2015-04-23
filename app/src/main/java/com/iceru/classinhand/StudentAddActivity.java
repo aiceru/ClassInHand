@@ -190,9 +190,11 @@ public class StudentAddActivity extends ActionBarActivity {
         DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                mInDate.clear();
-                mInDate.set(year, monthOfYear, dayOfMonth);
-                mInDateTextView.setText(getDateString(mInDate));
+                if(view.isShown()) {
+                    mInDate.clear();
+                    mInDate.set(year, monthOfYear, dayOfMonth);
+                    mInDateTextView.setText(getDateString(mInDate));
+                }
             }
         };
         DatePickerDialog dateDialog = new DatePickerDialog(this, dateSetListener,

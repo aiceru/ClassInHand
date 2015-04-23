@@ -272,9 +272,11 @@ public class StudentDetailActivity extends ActionBarActivity {
         DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                cal.clear();
-                cal.set(year, monthOfYear, dayOfMonth);
-                tv.setText(getDateString(cal));
+                if(view.isShown()) {
+                    cal.clear();
+                    cal.set(year, monthOfYear, dayOfMonth);
+                    tv.setText(getDateString(cal));
+                }
             }
         };
         GregorianCalendar todayCal = application.getValueOfTodayCalendar();

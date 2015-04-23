@@ -112,15 +112,15 @@ public class SeatplanDetailActivity extends ActionBarActivity {
         DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                // TODO : 선택한 날짜의 중복처리!!
-                mNewDate = new GregorianCalendar();
-                mNewDate.clear();
-                mNewDate.set(year, monthOfYear, dayOfMonth);
-                if(mNewDate.compareTo(mDate) != 0 && application.findSeatplan(mNewDate) != null) {
-                    confirmEditExistingPlan();
-                }
-                else {
-                    runSeatplanActivity();
+                if(view.isShown()) {
+                    mNewDate = new GregorianCalendar();
+                    mNewDate.clear();
+                    mNewDate.set(year, monthOfYear, dayOfMonth);
+                    if (mNewDate.compareTo(mDate) != 0 && application.findSeatplan(mNewDate) != null) {
+                        confirmEditExistingPlan();
+                    } else {
+                        runSeatplanActivity();
+                    }
                 }
             }
         };

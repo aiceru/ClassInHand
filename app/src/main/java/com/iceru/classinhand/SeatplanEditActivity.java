@@ -314,7 +314,8 @@ public class SeatplanEditActivity extends ActionBarActivity {
         if (id == R.id.action_done) {
             if(mOldPlan != null) application.removeSeatplan(mOldPlan);
             application.addSeatplan(mNewPlan);
-            finish();
+            //finish();
+            onBackPressed();
         }
         return super.onOptionsItemSelected(item);
     }
