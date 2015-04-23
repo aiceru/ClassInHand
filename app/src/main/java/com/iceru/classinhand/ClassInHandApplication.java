@@ -278,8 +278,14 @@ public class ClassInHandApplication extends Application {
             ArrayList<Seat> aSeats = new ArrayList<>();
             while (cursorForDate.moveToNext()) {
                 int seatId = cursorForDate.getInt(cursorForDate.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_ID));
-                int studentId = cursorForDate.getInt(cursorForDate.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_STUDENT_ID));
-                aSeats.add(new Seat(seatId, findStudentById(studentId)));
+                int studentId;
+                if(!cursorForDate.isNull(cursorForDate.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_STUDENT_ID))) {
+                    studentId = cursorForDate.getInt(cursorForDate.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_STUDENT_ID));
+                    aSeats.add(new Seat(seatId, findStudentById(studentId)));
+                }
+                else {
+                    aSeats.add(new Seat(seatId));
+                }
                 if(cursorForDate.getInt(cursorForDate.getColumnIndexOrThrow(ClassDBContract.SeatHistory.COLUMN_NAME_FIXED)) == 1) {
                     aSeats.get(seatId).setFixed(true);
                 }
