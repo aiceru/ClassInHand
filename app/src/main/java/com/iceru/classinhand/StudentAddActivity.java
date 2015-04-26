@@ -1,12 +1,19 @@
 package com.iceru.classinhand;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.telephony.PhoneNumberUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,6 +21,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -24,6 +32,8 @@ import java.util.GregorianCalendar;
 
 
 public class StudentAddActivity extends ActionBarActivity {
+    private static final String TAG = StudentAddActivity.class.getName();
+    private static final int IMAGE_CAPTURE_REQUEST_CODE = 100;
 
     /* Application Class */
     private ClassInHandApplication          application;
@@ -37,6 +47,7 @@ public class StudentAddActivity extends ActionBarActivity {
     private RecyclerView                    mStudentsList;
     private RecyclerView.Adapter            mStudentsListAdapter;
     private RecyclerView.LayoutManager      mStudentsListLayoutManager;
+    private ImageButton                     mPictureBtn;
     private ToggleButton                    mGenderTglbtn;
     private EditText                        mNameEditText;
     private EditText                        mAttendNumEditText;
@@ -104,6 +115,14 @@ public class StudentAddActivity extends ActionBarActivity {
                     return true;
                 }
                 return false;
+            }
+        });
+
+        mPictureBtn = (ImageButton)findViewById(R.id.imagebutton_student_add_picture);
+        mPictureBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setPicture();
             }
         });
     }
@@ -200,5 +219,33 @@ public class StudentAddActivity extends ActionBarActivity {
         DatePickerDialog dateDialog = new DatePickerDialog(this, dateSetListener,
                 mInDate.get(Calendar.YEAR), mInDate.get(Calendar.MONTH), mInDate.get(Calendar.DAY_OF_MONTH));
         dateDialog.show();
+    }
+
+    private void setPicture() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setItems(R.array.picture_source, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch(which) {
+                    case 0:     // camera
+                        Log.d(TAG, "camera");
+                        if(getApplicationContext().getPackageManager().hasSystemFeature(
+                                PackageManager.FEATURE_CAMERA)) {       // if camera exists...
+
+                        }
+                        break;
+                    case 1:     // pick from gallery
+                        Log.d(TAG, "gallery");
+                        break;
+                    case 2:     // pick from contacts
+                        Log.d(TAG, "contacts");
+                        break;
+                    default:
+                        Log.d(TAG, "invalid switch argument");
+                        break;
+                }
+            }
+        });
+        builder.create().show();
     }
 }

@@ -49,4 +49,10 @@
         <item>7</item>
         <item>8</item>
     </string-array>
+
+    <string-array name="picture_source">
+        <item>사진 새로 찍기</item>
+        <item>갤러리에서 불러오기</item>
+        <item>주소록에서 불러오기</item>
+    </string-array>
 </resources>

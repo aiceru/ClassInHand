@@ -15,11 +15,19 @@
             android:orientation="vertical"
             android:focusableInTouchMode="true">
 
-            <com.iceru.classinhand.SquareImageView
+            <com.iceru.classinhand.SquareImageButton
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@android:color/darker_gray"
-                android:src="@drawable/ic_person_white_48dp"/>
+                android:layout_height="0dp">
+
+                <ImageButton
+                    android:id="@+id/imagebutton_student_detail_picture"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/darker_gray"
+                    android:src="@drawable/ic_person_white_48dp"
+                    android:scaleType="fitXY"/>
+
+            </com.iceru.classinhand.SquareImageButton>
 
             <RelativeLayout
                 android:layout_width="match_parent"

@@ -7,6 +7,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.GridView;
@@ -22,6 +25,7 @@ import java.util.TreeMap;
  * Created by iceru on 14. 12. 19..
  */
 public class SeatplanDetailActivity extends ActionBarActivity {
+    private static final String TAG = SeatplanDetailActivity.class.getName();
 
     /* Application Class */
     private ClassInHandApplication application;
@@ -53,7 +57,7 @@ public class SeatplanDetailActivity extends ActionBarActivity {
         toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
 
         String dateString =
                 String.valueOf(mDate.get(Calendar.YEAR)) + ". " +
