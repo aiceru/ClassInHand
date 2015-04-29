@@ -14,10 +14,8 @@ android {
         versionName "0.80.2"
         applicationVariants.all { variant ->
             variant.outputs.each { output ->
-                def df = new SimpleDateFormat("yyMMdd")
-                df.setTimeZone(TimeZone.getDefault())
                 def file = output.outputFile
-                def newName = "${df.format(new Date())}_classinhand_${defaultConfig.versionName}(${defaultConfig.versionCode})"
+                def newName = "classinhand_${defaultConfig.versionName}(${defaultConfig.versionCode})"
                 newName += "_${variant.buildType.name}.apk"
                 output.outputFile = new File(file.parent, newName);
             }

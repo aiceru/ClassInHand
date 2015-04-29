@@ -1,5 +1,6 @@
 package com.iceru.classinhand;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
@@ -9,6 +10,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 
@@ -34,7 +37,8 @@ import android.widget.DatePicker;
 import android.widget.ListView;
 import android.widget.Toast;
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends AppCompatActivity {
+    private static final String TAG = MainActivity.class.getName();
 
     private ClassInHandApplication application;
 	private ArrayList<Role> mRoles;
@@ -52,16 +56,11 @@ public class MainActivity extends ActionBarActivity {
     private String  mDrawerTitle;
     private String  mTitle;
 
-    private int     mFragmentDepth = 1;
-    private boolean mFromSavedInstanceState;
-    private boolean mUserLearnedDrawer;
+    private boolean mFromSavedInstanceState = false;
+    private boolean mUserLearnedDrawer = false;
 
     private GregorianCalendar mNewDate;
     private GregorianCalendar mOldDate;
-
-    public void setmFragmentDepth(int mFragmentDepth) {
-        this.mFragmentDepth = mFragmentDepth;
-    }
 
     /**
      * Used to store the last screen title. For use in {link #restoreActionBar()}.
@@ -91,11 +90,6 @@ public class MainActivity extends ActionBarActivity {
 
         setContentView(R.layout.activity_main);
         initViews();
-
-        if (!mUserLearnedDrawer && !mFromSavedInstanceState) {
-            mDrawerLayout.openDrawer(Gravity.START);
-        }
-        else selectItem(mCurrentSelectedPosition);
     }
 
     private void initViews() {
@@ -162,7 +156,6 @@ public class MainActivity extends ActionBarActivity {
             }
         };
 
-
         // Set the drawer toggle as the DrawerListener
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
@@ -217,7 +210,11 @@ public class MainActivity extends ActionBarActivity {
     @Override
     public void onResume() {
         super.onResume();
-        this.selectItem(mCurrentSelectedPosition);
+        if (!mUserLearnedDrawer && !mFromSavedInstanceState) {
+            mDrawerLayout.openDrawer(mDrawerListView);
+        }
+        else selectItem(mCurrentSelectedPosition);
+        startActivity(new Intent(this, ShowcaseActivity.class));
     }
 
     /*@Override
