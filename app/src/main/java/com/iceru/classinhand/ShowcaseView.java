@@ -26,43 +26,42 @@ public class ShowcaseView extends View {
     private static final String TAG = ShowcaseView.class.getName();
 
     private Paint   paint;
-    private View    target;
     private int     msgId;
     private Context context;
     private Point   screen;
+    private Point   target;
 
     private RadialGradient rGrad;
     private PorterDuffXfermode mode;
 
     public ShowcaseView(Context context) {
         super(context);
-        context = context;
-        paint = new Paint();
-        screen = getScreenSize();
-        rGrad = new RadialGradient(200, 200, screen.y / 2, Color.WHITE, Color.BLACK, Shader.TileMode.CLAMP);
-        mode = new PorterDuffXfermode(PorterDuff.Mode.SRC_OUT);
+        init(context);
     }
 
     public ShowcaseView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        context = context;
-        paint = new Paint();
-        screen = getScreenSize();
-        rGrad = new RadialGradient(200, 200, screen.y / 2, Color.WHITE, Color.BLACK, Shader.TileMode.CLAMP);
-        mode = new PorterDuffXfermode(PorterDuff.Mode.SRC_OUT);
+        init(context);
     }
 
     public ShowcaseView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        init(context);
+    }
+
+    private void init(Context context) {
         context = context;
         paint = new Paint();
         screen = getScreenSize();
+        target = new Point();
         rGrad = new RadialGradient(200, 200, screen.y / 2, Color.WHITE, Color.BLACK, Shader.TileMode.CLAMP);
         mode = new PorterDuffXfermode(PorterDuff.Mode.SRC_OUT);
     }
 
-    public void setTarget(View v) {
-        this.target = v;
+    public void setTargetPosition(int x, int y) {
+        target.x = x;
+        target.y = y;
+        invalidate();
     }
 
     public void setMessageId(int msgId) {
@@ -78,13 +77,12 @@ public class ShowcaseView extends View {
         }
         paint.setAntiAlias(true);
 
-
         paint.setAlpha(100);
         paint.setShader(rGrad);
-        canvas.drawCircle(200, 200, screen.y, paint);
+        canvas.drawCircle(target.x, target.y, screen.y, paint);
 
         paint.setXfermode(mode);
-        canvas.drawCircle(200, 200, 300, paint);
+        canvas.drawCircle(target.x, target.y, 200, paint);
     }
 
     private Point getScreenSize() {

@@ -3,9 +3,11 @@ package com.iceru.classinhand;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
@@ -13,6 +15,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 
 import org.acra.annotation.ReportsCrashes;
@@ -34,7 +37,9 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.widget.AdapterView;
 import android.widget.DatePicker;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
@@ -212,7 +217,12 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         if (!mUserLearnedDrawer && !mFromSavedInstanceState) {
             mDrawerLayout.openDrawer(mDrawerListView);
-            startActivity(new Intent(this, ShowcaseActivity.class));
+            View v = mDrawerListView.getChildAt(2);
+            int[] location = new int[2];
+            v.getLocationOnScreen(location);
+            Intent showcaseIntent = new Intent(this, ShowcaseActivity.class);
+            showcaseIntent.putExtra(ClassInHandApplication.SHOWCASE_TARGET, location);
+            startActivity(showcaseIntent);
         } else selectItem(mCurrentSelectedPosition);
     }
 

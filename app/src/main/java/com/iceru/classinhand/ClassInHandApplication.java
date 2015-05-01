@@ -52,6 +52,8 @@ public class ClassInHandApplication extends Application {
     public static final String SEATPLAN_EDIT_NEWDATE = "com.iceru.classinhand.SEATPLAN_EDIT_NEWDATE";
     public static final String SEATPLAN_EDIT_OLDDATE = "com.iceru.classinhand.SEATPLAN_EDIT_OLDDATE";
 
+    public static final String SHOWCASE_TARGET = "com.iceru.classinhand.SHOWCASE_TARGET";
+
     /* Global Variables */
     public GlobalProperties globalProperties;
     public static int       NEXT_ID;
