@@ -1,25 +1,16 @@
 package com.iceru.classinhand;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
-
-import org.acra.annotation.ReportsCrashes;
-import org.acra.sender.HttpSender;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -32,14 +23,11 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.widget.AdapterView;
 import android.widget.DatePicker;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
@@ -217,12 +205,21 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         if (!mUserLearnedDrawer && !mFromSavedInstanceState) {
             mDrawerLayout.openDrawer(mDrawerListView);
-            View v = mDrawerListView.getChildAt(2);
-            int[] location = new int[2];
-            v.getLocationOnScreen(location);
-            Intent showcaseIntent = new Intent(this, ShowcaseActivity.class);
-            showcaseIntent.putExtra(ClassInHandApplication.SHOWCASE_TARGET, location);
-            startActivity(showcaseIntent);
+            mDrawerListView.post(new Runnable() {
+                @Override
+                public void run() {
+                    View v = mDrawerListView.getChildAt(2);
+                    int[] location = new int[2];
+                    int[] size = new int[2];
+                    v.getLocationOnScreen(location);
+                    size[0] = v.getMeasuredWidth();
+                    size[1] = v.getMeasuredHeight();
+                    Intent showcaseIntent = new Intent(getApplicationContext(), ShowcaseActivity.class);
+                    showcaseIntent.putExtra(ClassInHandApplication.SHOWCASE_TARGET_POSITION, location);
+                    showcaseIntent.putExtra(ClassInHandApplication.SHOWCASE_TARGET_SIZE, size);
+                    startActivity(showcaseIntent);
+                }
+            });
         } else selectItem(mCurrentSelectedPosition);
     }
 
