@@ -29,23 +29,36 @@ public class ShowcaseView extends View {
     private View    target;
     private int     msgId;
     private Context context;
+    private Point   screen;
+
+    private RadialGradient rGrad;
+    private PorterDuffXfermode mode;
 
     public ShowcaseView(Context context) {
         super(context);
         context = context;
         paint = new Paint();
+        screen = getScreenSize();
+        rGrad = new RadialGradient(200, 200, screen.y / 2, Color.WHITE, Color.BLACK, Shader.TileMode.CLAMP);
+        mode = new PorterDuffXfermode(PorterDuff.Mode.SRC_OUT);
     }
 
     public ShowcaseView(Context context, AttributeSet attrs) {
         super(context, attrs);
         context = context;
         paint = new Paint();
+        screen = getScreenSize();
+        rGrad = new RadialGradient(200, 200, screen.y / 2, Color.WHITE, Color.BLACK, Shader.TileMode.CLAMP);
+        mode = new PorterDuffXfermode(PorterDuff.Mode.SRC_OUT);
     }
 
     public ShowcaseView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         context = context;
         paint = new Paint();
+        screen = getScreenSize();
+        rGrad = new RadialGradient(200, 200, screen.y / 2, Color.WHITE, Color.BLACK, Shader.TileMode.CLAMP);
+        mode = new PorterDuffXfermode(PorterDuff.Mode.SRC_OUT);
     }
 
     public void setTarget(View v) {
@@ -59,21 +72,18 @@ public class ShowcaseView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+
         if(target == null || msgId == 0) {
             Log.d(TAG, "target or msg not set");
         }
         paint.setAntiAlias(true);
-        Point screen = getScreenSize();
-
-        /*paint.setARGB(200, 100, 100, 100);
-        canvas.drawRect(0, 0, screen.x, screen.y, paint);*/
 
 
         paint.setAlpha(100);
-        paint.setShader(new RadialGradient(200, 200, screen.y, Color.WHITE, Color.GRAY, Shader.TileMode.CLAMP));
+        paint.setShader(rGrad);
         canvas.drawCircle(200, 200, screen.y, paint);
 
-        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
+        paint.setXfermode(mode);
         canvas.drawCircle(200, 200, 300, paint);
     }
 

@@ -212,9 +212,8 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         if (!mUserLearnedDrawer && !mFromSavedInstanceState) {
             mDrawerLayout.openDrawer(mDrawerListView);
-        }
-        else selectItem(mCurrentSelectedPosition);
-        startActivity(new Intent(this, ShowcaseActivity.class));
+            startActivity(new Intent(this, ShowcaseActivity.class));
+        } else selectItem(mCurrentSelectedPosition);
     }
 
     /*@Override
@@ -228,11 +227,6 @@ public class MainActivity extends AppCompatActivity {
             super.onBackPressed();
         }
     }*/
-
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-    }
 
     /*@Override
     public void onNavigationDrawerItemSelected(int position) {
