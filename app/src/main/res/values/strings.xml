@@ -149,6 +149,8 @@
         <item>토요일</item>
     </string-array>
 
+    <string name="welcome_input_students_info">환영합니다. [기본정보 입력]을 누르고 학생 정보를 입력해주세요</string>
+
     <string name="log_error_tag">com.iceru.classinhand:Error</string>
     <string name="hello_world">Hello world!</string>
 

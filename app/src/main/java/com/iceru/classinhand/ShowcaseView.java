@@ -9,9 +9,15 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.RadialGradient;
 import android.graphics.Shader;
+import android.text.Layout;
+import android.text.StaticLayout;
+import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+
+import java.util.Locale;
 
 /**
  * Created by iceru on 15. 4. 29..
@@ -27,8 +33,11 @@ public class ShowcaseView extends View {
     private Point   targetSize;
     private Point   drawPos;
 
-    private RadialGradient rGrad;
+    private RadialGradient rGradBig;
+    private RadialGradient rGradSmall;
     private PorterDuffXfermode mode;
+
+    private static final String COLOR_BACKGROUND = "#AA000000";
 
     public ShowcaseView(Context context) {
         super(context);
@@ -52,7 +61,8 @@ public class ShowcaseView extends View {
         targetPos = new Point();
         targetSize = new Point();
         drawPos = new Point();
-        rGrad = new RadialGradient(drawPos.x, drawPos.y, screen.y / 2, Color.WHITE, Color.BLACK, Shader.TileMode.CLAMP);
+        //rGradBig = new RadialGradient();
+        //rGradSmall = new RadialGradient(drawPos.x, drawPos.y, screen.y / 6, Color.parseColor(COLOR_BACKGROUND), R.color.primary_dark, Shader.TileMode.CLAMP);
         mode = new PorterDuffXfermode(PorterDuff.Mode.SRC_OUT);
     }
 
@@ -64,9 +74,10 @@ public class ShowcaseView extends View {
     public void setTargetSize(int w, int h) {
         targetSize.x = w;
         targetSize.y = h;
-        drawPos.x = targetPos.x + targetSize.x/2;
+        drawPos.x = targetPos.x + targetSize.x/4;
         drawPos.y = targetPos.y;
-        rGrad = new RadialGradient(drawPos.x, drawPos.y, screen.y / 2, Color.BLUE, Color.WHITE, Shader.TileMode.CLAMP);
+        rGradBig = new RadialGradient(drawPos.x, drawPos.y, 500, R.color.primary_dark, Color.parseColor(COLOR_BACKGROUND), Shader.TileMode.CLAMP);
+        rGradSmall = new RadialGradient(drawPos.x, drawPos.y, 120, Color.parseColor("#AAFFFFFF"), R.color.primary_dark, Shader.TileMode.CLAMP);
     }
 
     public void setMessageId(int msgId) {
@@ -81,12 +92,25 @@ public class ShowcaseView extends View {
         }
         paint.setAntiAlias(true);
 
-        paint.setAlpha(100);
-        paint.setShader(rGrad);
+        paint.setShader(rGradBig);
         canvas.drawCircle(drawPos.x, drawPos.y, screen.y, paint);
+        paint.setShader(rGradSmall);
+        canvas.drawCircle(drawPos.x, drawPos.y, 110, paint);
 
         paint.setXfermode(mode);
         canvas.drawCircle(drawPos.x, drawPos.y, 100, paint);
+
+        TextPaint textPaint = new TextPaint();
+        textPaint.setColor(Color.WHITE);
+        textPaint.setTextSize(50);
+        StaticLayout textLayout = new StaticLayout(getContext().getString(R.string.welcome_input_students_info),
+                textPaint, canvas.getWidth() * 8 / 10, Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, true);
+        canvas.save();
+
+        float textY = drawPos.y > screen.y * 0.5 ? drawPos.y - 200 : drawPos.y + 200;
+        canvas.translate(screen.x * 0.1f, textY);
+        textLayout.draw(canvas);
+        canvas.restore();
     }
 
     private Point getScreenSize() {

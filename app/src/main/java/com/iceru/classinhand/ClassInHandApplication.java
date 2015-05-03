@@ -44,8 +44,11 @@ public class ClassInHandApplication extends Application {
     public static final byte SEATED_LEFT = 0x01;     // bit flag : 0000 0001
     public static final byte SEATED_RIGHT = 0x02;    // bit flag : 0000 0010
 
+    public static final int REQUESTCODE_SHOWCASE = 99;
+
     public static final String STATE_SELECTED_POSITION = "selected_navigation_drawer_position";
     public static final String PREF_USER_LEARNED_DRAWER = "navigation_drawer_learned";
+    public static final String PREF_FIRST_SHOWCASE = "first_showcase_shown";
 
     public static final String SEATPLAN_SELECTED_POSITION = "com.iceru.classinhand.SEATPLAN_SELECTED_POSITION";
     public static final String STUDENT_SELECTED_ID = "com.iceru.classinhand.STUDENT_SELECTED_ID";

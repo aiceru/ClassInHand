@@ -3,6 +3,8 @@ package com.iceru.classinhand;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MotionEvent;
+import android.view.View;
 
 /**
  * Created by iceru on 15. 4. 29..
@@ -24,8 +26,17 @@ public class ShowcaseActivity extends AppCompatActivity {
         int[] location = i.getIntArrayExtra(ClassInHandApplication.SHOWCASE_TARGET_POSITION);
         int[] size = i.getIntArrayExtra(ClassInHandApplication.SHOWCASE_TARGET_SIZE);
 
+        sv.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                Intent result = new Intent();
+                setResult(ClassInHandApplication.REQUESTCODE_SHOWCASE, result);
+                finish();
+                return true;
+            }
+        });
+
         sv.setTargetPosition(location[0], location[1]);
         sv.setTargetSize(size[0], size[1]);
-        //mLinearLayout_showcase.addView(sv);
     }
 }

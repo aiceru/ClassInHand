@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean mFromSavedInstanceState = false;
     private boolean mUserLearnedDrawer = false;
+    private boolean mFirstShowcaseShown = false;
 
     private GregorianCalendar mNewDate;
     private GregorianCalendar mOldDate;
@@ -74,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
 
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         mUserLearnedDrawer = sp.getBoolean(ClassInHandApplication.PREF_USER_LEARNED_DRAWER, false);
+        mFirstShowcaseShown = sp.getBoolean(ClassInHandApplication.PREF_FIRST_SHOWCASE, false);
 
         if (savedInstanceState != null) {
             mCurrentSelectedPosition = savedInstanceState.getInt(ClassInHandApplication.STATE_SELECTED_POSITION);
@@ -130,22 +132,7 @@ public class MainActivity extends AppCompatActivity {
             /** Called when a drawer has settled in a completely open state. */
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                /*InputMethodManager imm = (InputMethodManager)getSystemService(
-                        Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(drawerView.getWindowToken(),
-                        InputMethodManager.HIDE_NOT_ALWAYS);*/
-
-                if (!mUserLearnedDrawer) {
-                    // The user manually opened the drawer; store this flag to prevent auto-showing
-                    // the navigation drawer automatically in the future.
-                    mUserLearnedDrawer = true;
-                    SharedPreferences sp = PreferenceManager
-                            .getDefaultSharedPreferences(getApplicationContext());
-                    sp.edit().putBoolean(ClassInHandApplication.PREF_USER_LEARNED_DRAWER, true).apply();
-                }
-                //mDrawerToggle.syncState();
                 getSupportActionBar().setTitle(mDrawerTitle);
-                //invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
         };
 
@@ -164,6 +151,12 @@ public class MainActivity extends AppCompatActivity {
         }
         if (mDrawerLayout != null) {
             mDrawerLayout.closeDrawer(mDrawerListView);
+        }
+        if (!mUserLearnedDrawer) {
+            mUserLearnedDrawer = true;
+            SharedPreferences sp = PreferenceManager
+                    .getDefaultSharedPreferences(getApplicationContext());
+            sp.edit().putBoolean(ClassInHandApplication.PREF_USER_LEARNED_DRAWER, true).apply();
         }
         mCurrentSelectedPosition = position;
 
@@ -205,6 +198,8 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         if (!mUserLearnedDrawer && !mFromSavedInstanceState) {
             mDrawerLayout.openDrawer(mDrawerListView);
+        } else selectItem(mCurrentSelectedPosition);
+        if (!mFirstShowcaseShown) {
             mDrawerListView.post(new Runnable() {
                 @Override
                 public void run() {
@@ -217,10 +212,25 @@ public class MainActivity extends AppCompatActivity {
                     Intent showcaseIntent = new Intent(getApplicationContext(), ShowcaseActivity.class);
                     showcaseIntent.putExtra(ClassInHandApplication.SHOWCASE_TARGET_POSITION, location);
                     showcaseIntent.putExtra(ClassInHandApplication.SHOWCASE_TARGET_SIZE, size);
-                    startActivity(showcaseIntent);
+                    startActivityForResult(showcaseIntent, ClassInHandApplication.REQUESTCODE_SHOWCASE);
                 }
             });
-        } else selectItem(mCurrentSelectedPosition);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch(requestCode) {
+            case ClassInHandApplication.REQUESTCODE_SHOWCASE:
+                this.mFirstShowcaseShown = true;
+                SharedPreferences sp = PreferenceManager
+                        .getDefaultSharedPreferences(getApplicationContext());
+                sp.edit().putBoolean(ClassInHandApplication.PREF_FIRST_SHOWCASE, true).apply();
+                break;
+            default:
+                break;
+        }
     }
 
     /*@Override
