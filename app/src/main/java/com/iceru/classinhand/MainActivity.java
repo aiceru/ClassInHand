@@ -5,6 +5,7 @@ import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
@@ -25,9 +26,11 @@ import java.util.List;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.DatePicker;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
@@ -44,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     private ListView                mDrawerListView;
     private List<DrawerContent>     mDrawerList;
     private ActionBarDrawerToggle   mDrawerToggle;
+    private RelativeLayout          mMainLayout;
 
     private int     mCurrentSelectedPosition = 0;
     private String  mDrawerTitle;
@@ -91,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerListView = (ListView) findViewById(R.id.navigation_drawer);
+        mMainLayout = (RelativeLayout) findViewById(R.id.relativelayout_main);
 
         toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
         setSupportActionBar(toolbar);
@@ -199,7 +204,7 @@ public class MainActivity extends AppCompatActivity {
         if (!mUserLearnedDrawer && !mFromSavedInstanceState) {
             mDrawerLayout.openDrawer(mDrawerListView);
         } else selectItem(mCurrentSelectedPosition);
-        if (!mFirstShowcaseShown) {
+        //if (!mFirstShowcaseShown) {
             mDrawerListView.post(new Runnable() {
                 @Override
                 public void run() {
@@ -209,19 +214,24 @@ public class MainActivity extends AppCompatActivity {
                     v.getLocationOnScreen(location);
                     size[0] = v.getMeasuredWidth();
                     size[1] = v.getMeasuredHeight();
-                    Intent showcaseIntent = new Intent(getApplicationContext(), ShowcaseActivity.class);
+                    ShowcaseView sv = new ShowcaseView(getApplicationContext());
+                    sv.setTargetPosition(location[0], location[1]);
+                    sv.setTargetSize(size[0], size[1]);
+                    sv.setBackgroundColor(Color.TRANSPARENT);
+                    mMainLayout.addView(sv, 0, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                    /*Intent showcaseIntent = new Intent(getApplicationContext(), ShowcaseActivity.class);
                     showcaseIntent.putExtra(ClassInHandApplication.SHOWCASE_TARGET_POSITION, location);
                     showcaseIntent.putExtra(ClassInHandApplication.SHOWCASE_TARGET_SIZE, size);
-                    startActivityForResult(showcaseIntent, ClassInHandApplication.REQUESTCODE_SHOWCASE);
+                    startActivityForResult(showcaseIntent, ClassInHandApplication.REQUESTCODE_SHOWCASE);*/
                 }
             });
-        }
+        //}
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch(requestCode) {
+        /*switch(requestCode) {
             case ClassInHandApplication.REQUESTCODE_SHOWCASE:
                 this.mFirstShowcaseShown = true;
                 SharedPreferences sp = PreferenceManager
@@ -230,7 +240,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             default:
                 break;
-        }
+        }*/
     }
 
     /*@Override
