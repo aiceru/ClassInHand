@@ -1,10 +1,13 @@
 package com.iceru.classinhand;
 
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.content.Context;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.view.View;
+
+import java.util.List;
 
 /**
  * Created by iceru on 14. 8. 9.
@@ -48,36 +51,9 @@ public class FillInfoPagerAdapter extends FragmentPagerAdapter{
 		}
 		return null;
 	}
-/*
-    *//**
-     * Instantiate the {@link View} which should be displayed at {@code position}. Here we
-     * inflate a layout from the apps resources and then change the text view to signify the position.
-     *//*
-    @Override
-    public Object instantiateItem(ViewGroup container, int position) {
-        // Inflate a new layout from our resources
-        View view = getActivity().getLayoutInflater().inflate(R.layout.pager_item,
-                container, false);
-        // Add the newly created View to the ViewPager
-        container.addView(view);
 
-        // Retrieve a TextView from the inflated View, and update it's text
-        TextView title = (TextView) view.findViewById(R.id.item_title);
-        title.setText(String.valueOf(position + 1));
-
-        Log.i(LOG_TAG, "instantiateItem() [position: " + position + "]");
-
-        // Return the View
-        return view;
-    }
-
-    *//**
-     * Destroy the item from the {@link ViewPager}. In our case this is simply removing the
-     * {@link View}.
-     *//*
-    @Override
-    public void destroyItem(ViewGroup container, int position, Object object) {
-        container.removeView((View) object);
-        Log.i(LOG_TAG, "destroyItem() [position: " + position + "]");
-    }*/
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		mStudentListFragment.onActivityResult(requestCode, resultCode, data);
+		mFillRoleInfoFragment.onActivityResult(requestCode, resultCode, data);
+	}
 }

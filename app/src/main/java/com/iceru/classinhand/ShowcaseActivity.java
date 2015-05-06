@@ -25,12 +25,13 @@ public class ShowcaseActivity extends AppCompatActivity {
         Intent i = getIntent();
         int[] location = i.getIntArrayExtra(ClassInHandApplication.SHOWCASE_TARGET_POSITION);
         int[] size = i.getIntArrayExtra(ClassInHandApplication.SHOWCASE_TARGET_SIZE);
+        int message = i.getIntExtra(ClassInHandApplication.SHOWCASE_MESSAGE, 0);
 
         sv.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 Intent result = new Intent();
-                setResult(ClassInHandApplication.REQUESTCODE_SHOWCASE, result);
+                setResult(ClassInHandApplication.RESULT_OK, result);
                 finish();
                 return true;
             }
@@ -38,5 +39,6 @@ public class ShowcaseActivity extends AppCompatActivity {
 
         sv.setTargetPosition(location[0], location[1]);
         sv.setTargetSize(size[0], size[1]);
+        sv.setMessageId(message);
     }
 }

@@ -67,7 +67,7 @@ public class StudentListFragment extends Fragment {
         super.onResume();
         mStudentListAdapter.notifyDataSetChanged();
 
-        /*if(!mShowcaseShown) {
+        if(!mShowcaseShown) {
             mFABaddStudent.post(new Runnable() {
                 @Override
                 public void run() {
@@ -80,17 +80,18 @@ public class StudentListFragment extends Fragment {
                     Intent showcaseIntent = new Intent(getActivity(), ShowcaseActivity.class);
                     showcaseIntent.putExtra(ClassInHandApplication.SHOWCASE_TARGET_POSITION, location);
                     showcaseIntent.putExtra(ClassInHandApplication.SHOWCASE_TARGET_SIZE, size);
-                    startActivityForResult(showcaseIntent, ClassInHandApplication.REQUESTCODE_SHOWCASE);
+                    showcaseIntent.putExtra(ClassInHandApplication.SHOWCASE_MESSAGE, R.string.welcome_add_student);
+                    startActivityForResult(showcaseIntent, ClassInHandApplication.REQUESTCODE_STUDENTLIST_SHOWCASE);
                 }
             });
-        }*/
+        }
     }
 
-    /*@Override
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch(requestCode) {
-            case ClassInHandApplication.REQUESTCODE_SHOWCASE:
+            case ClassInHandApplication.REQUESTCODE_STUDENTLIST_SHOWCASE:
                 this.mShowcaseShown = true;
                 SharedPreferences sp = PreferenceManager
                         .getDefaultSharedPreferences(getActivity());
@@ -99,5 +100,5 @@ public class StudentListFragment extends Fragment {
             default:
                 break;
         }
-    }*/
+    }
 }

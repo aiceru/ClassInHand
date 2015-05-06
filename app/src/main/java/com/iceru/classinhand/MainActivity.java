@@ -5,10 +5,10 @@ import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -26,7 +26,6 @@ import java.util.List;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.DatePicker;
 import android.widget.ListView;
@@ -204,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
         if (!mUserLearnedDrawer && !mFromSavedInstanceState) {
             mDrawerLayout.openDrawer(mDrawerListView);
         } else selectItem(mCurrentSelectedPosition);
-        //if (!mFirstShowcaseShown) {
+        if (!mFirstShowcaseShown) {
             mDrawerListView.post(new Runnable() {
                 @Override
                 public void run() {
@@ -214,33 +213,47 @@ public class MainActivity extends AppCompatActivity {
                     v.getLocationOnScreen(location);
                     size[0] = v.getMeasuredWidth();
                     size[1] = v.getMeasuredHeight();
-                    ShowcaseView sv = new ShowcaseView(getApplicationContext());
-                    sv.setTargetPosition(location[0], location[1]);
-                    sv.setTargetSize(size[0], size[1]);
-                    sv.setBackgroundColor(Color.TRANSPARENT);
-                    mMainLayout.addView(sv, 0, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-                    /*Intent showcaseIntent = new Intent(getApplicationContext(), ShowcaseActivity.class);
+                    Intent showcaseIntent = new Intent(getApplicationContext(), ShowcaseActivity.class);
                     showcaseIntent.putExtra(ClassInHandApplication.SHOWCASE_TARGET_POSITION, location);
                     showcaseIntent.putExtra(ClassInHandApplication.SHOWCASE_TARGET_SIZE, size);
-                    startActivityForResult(showcaseIntent, ClassInHandApplication.REQUESTCODE_SHOWCASE);*/
+                    showcaseIntent.putExtra(ClassInHandApplication.SHOWCASE_MESSAGE, R.string.welcome_input_students_info);
+                    startActivityForResult(showcaseIntent, ClassInHandApplication.REQUESTCODE_FIRST_SHOWCASE);
                 }
             });
-        //}
+        }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        /*switch(requestCode) {
-            case ClassInHandApplication.REQUESTCODE_SHOWCASE:
-                this.mFirstShowcaseShown = true;
-                SharedPreferences sp = PreferenceManager
-                        .getDefaultSharedPreferences(getApplicationContext());
-                sp.edit().putBoolean(ClassInHandApplication.PREF_FIRST_SHOWCASE, true).apply();
-                break;
-            default:
-                break;
-        }*/
+        if(requestCode >> 16 != 0x0) { // this result is from fragment... maybe
+            // notifying nested fragments (support library bug fix)
+            final FragmentManager childFragmentManager = this.getSupportFragmentManager();
+
+            if (childFragmentManager != null) {
+                final List<Fragment> nestedFragments = childFragmentManager.getFragments();
+
+                if (nestedFragments == null || nestedFragments.size() == 0) return;
+
+                for (Fragment childFragment : nestedFragments) {
+                    if (childFragment != null && !childFragment.isDetached() && !childFragment.isRemoving()) {
+                        childFragment.onActivityResult(requestCode, resultCode, data);
+                    }
+                }
+            }
+        }
+        else {
+            switch (requestCode) {
+                case ClassInHandApplication.REQUESTCODE_FIRST_SHOWCASE:
+                    this.mFirstShowcaseShown = true;
+                    SharedPreferences sp = PreferenceManager
+                            .getDefaultSharedPreferences(getApplicationContext());
+                    sp.edit().putBoolean(ClassInHandApplication.PREF_FIRST_SHOWCASE, true).apply();
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
     /*@Override

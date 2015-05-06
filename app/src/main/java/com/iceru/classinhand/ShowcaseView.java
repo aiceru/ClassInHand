@@ -61,9 +61,6 @@ public class ShowcaseView extends View {
         targetPos = new Point();
         targetSize = new Point();
         drawPos = new Point();
-        //rGradBig = new RadialGradient();
-        //rGradSmall = new RadialGradient(drawPos.x, drawPos.y, screen.y / 6, Color.parseColor(COLOR_BACKGROUND), R.color.primary_dark, Shader.TileMode.CLAMP);
-        mode = new PorterDuffXfermode(PorterDuff.Mode.SRC_OUT);
     }
 
     public void setTargetPosition(int x, int y) {
@@ -74,10 +71,10 @@ public class ShowcaseView extends View {
     public void setTargetSize(int w, int h) {
         targetSize.x = w;
         targetSize.y = h;
-        drawPos.x = targetPos.x + targetSize.x/4;
+        drawPos.x = targetPos.x + targetSize.x/2;
         drawPos.y = targetPos.y;
-        rGradBig = new RadialGradient(drawPos.x, drawPos.y, 500, R.color.primary_dark, Color.parseColor(COLOR_BACKGROUND), Shader.TileMode.CLAMP);
-        rGradSmall = new RadialGradient(drawPos.x, drawPos.y, 120, Color.parseColor("#AAFFFFFF"), R.color.primary_dark, Shader.TileMode.CLAMP);
+        rGradBig = new RadialGradient(drawPos.x, drawPos.y, 500, R.color.primary, Color.parseColor(COLOR_BACKGROUND), Shader.TileMode.CLAMP);
+        rGradSmall = new RadialGradient(drawPos.x, drawPos.y, 120, R.color.primary_dark, R.color.primary, Shader.TileMode.CLAMP);
     }
 
     public void setMessageId(int msgId) {
@@ -90,24 +87,30 @@ public class ShowcaseView extends View {
         if(targetPos == null || msgId == 0) {
             Log.d(TAG, "targetPos or msg not set");
         }
-        paint.setAntiAlias(true);
 
+        paint.reset();
+        paint.setAntiAlias(true);
         paint.setShader(rGradBig);
         canvas.drawCircle(drawPos.x, drawPos.y, screen.y, paint);
+
+        paint.reset();
+        paint.setAntiAlias(true);
         paint.setShader(rGradSmall);
         canvas.drawCircle(drawPos.x, drawPos.y, 110, paint);
 
-        paint.setXfermode(mode);
+        paint.reset();
+        paint.setAntiAlias(true);
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OUT));
         canvas.drawCircle(drawPos.x, drawPos.y, 100, paint);
 
         TextPaint textPaint = new TextPaint();
         textPaint.setColor(Color.WHITE);
         textPaint.setTextSize(50);
-        StaticLayout textLayout = new StaticLayout(getContext().getString(R.string.welcome_input_students_info),
+        StaticLayout textLayout = new StaticLayout(getContext().getString(msgId),
                 textPaint, canvas.getWidth() * 8 / 10, Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, true);
         canvas.save();
 
-        float textY = drawPos.y > screen.y * 0.5 ? drawPos.y - 200 : drawPos.y + 200;
+        float textY = drawPos.y > screen.y * 0.5 ? drawPos.y - 200 - textLayout.getHeight() : drawPos.y + 200;
         canvas.translate(screen.x * 0.1f, textY);
         textLayout.draw(canvas);
         canvas.restore();
