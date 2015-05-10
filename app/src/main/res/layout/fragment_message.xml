@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.RecyclerView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/recyclerview_contacts"
+        android:scrollbars="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="@dimen/recyclerview_singleline_top_padding">
+
+    </android.support.v7.widget.RecyclerView>
+
+    <com.getbase.floatingactionbutton.FloatingActionsMenu
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        app:fab_addButtonColorNormal="@color/fab_color"
+        app:fab_addButtonColorPressed="@color/fab_color"
+        app:fab_labelsPosition="left"
+        app:fab_labelStyle="@style/fab_labels_style">
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_message_send"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_icon="@drawable/ic_message_white_18dp"
+            app:fab_colorNormal="@color/fab_color"
+            app:fab_colorPressed="@color/fab_color"
+            app:fab_size="mini"
+            app:fab_title="@string/title_message"/>
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_message_select_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_icon="@drawable/ic_select_all_white_18dp"
+            app:fab_colorNormal="@color/fab_color"
+            app:fab_colorPressed="@color/fab_color"
+            app:fab_size="mini"
+            app:fab_title="@string/action_select_all"/>
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_message_deselect_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_icon="@drawable/abc_ic_clear_mtrl_alpha"
+            app:fab_colorNormal="@color/fab_color"
+            app:fab_colorPressed="@color/fab_color"
+            app:fab_size="mini"
+            app:fab_title="@string/action_unselect_all"/>
+
+    </com.getbase.floatingactionbutton.FloatingActionsMenu>
+
+</RelativeLayout>

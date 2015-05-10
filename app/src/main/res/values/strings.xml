@@ -5,6 +5,7 @@
     <string name="title_seatplan">자리배치도</string>
     <string name="title_eachrole">1인 1역</string>
     <string name="title_classtime">수업시수관리</string>
+    <string name="title_message">문자보내기</string>
     <string name="title_fillinfo">기본정보 입력</string>
     <string name="title_setting">환경설정</string>
     <string name="title_dialog_select_date">날짜 선택</string>
@@ -35,6 +36,8 @@
     <string name="action_history">지난 좌석표</string>
     <string name="action_confirm">확인</string>
     <string name="action_settings">Settings</string>
+    <string name="action_select_all">전부 선택</string>
+    <string name="action_unselect_all">전부 해제</string>
     <string name="section">section</string>
     <string name="textview">textview</string>
     <string name="icon">icon</string>
@@ -56,6 +59,8 @@
     <string name="warning_existing_attendnum">이미 등록된 출석번호입니다</string>
     <string name="warning_existing_rolename">이미 등록된 역할입니다</string>
     <string name="warning_no_student_info">등록된 학생정보가 없습니다</string>
+    <string name="warning_no_recipient">메세지를 전송할 대상이 없습니다</string>
+    <string name="warning_no_message">메세지를 입력하세요</string>
     <string name="tabtitle_studentinfo">학생정보</string>
     <string name="tabtitle_roleinfo">역할정보</string>
     <string name="string_segment">분단</string>
@@ -134,6 +139,7 @@
     <string name="hint_edittext_indate">등록(전입)일자</string>
     <string name="hint_edittext_outdate">삭제(전출)일자</string>
     <string name="hint_edittext_phone">연락처</string>
+    <string name="hint_edittext_sendmessage">문자 내용 입력</string>
 
     <string name="year_string">년</string>
     <string name="month_string">월</string>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/linearlayout_studentlist"
+    android:id="@+id/linearlayout_contacts"
     android:layout_width="match_parent"
     android:layout_height="@dimen/recyclerview_singleline_tile_height"
     android:gravity="center_vertical"
@@ -12,16 +12,25 @@
         android:layout_width="@dimen/recyclerview_singleline_text_left_padding"
         android:layout_height="wrap_content">
         <ImageView
-            android:id="@+id/imageview_gender"
+            android:id="@+id/contacts_icon"
             android:layout_width="@dimen/recyclerview_singleline_avatar_width"
             android:layout_height="@dimen/recyclerview_singleline_avatar_height"
             android:gravity="center"
             android:contentDescription="gender_icon"/>
     </FrameLayout>
-    
-    <TextView 
-        android:id="@+id/textview_name"
-        android:layout_width="wrap_content"
+
+    <TextView
+        android:id="@+id/contacts_name"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="@dimen/recyclerview_singleline_text_font"/>
+
+    <TextView
+        android:id="@+id/contacts_phoneNumber"
+        android:layout_width="0dp"
+        android:layout_weight="3"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:textSize="@dimen/recyclerview_singleline_text_font"/>

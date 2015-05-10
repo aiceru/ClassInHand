@@ -55,6 +55,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
+            app:fab_labelsPosition="left"
+            app:fab_labelStyle="@style/fab_labels_style"
             app:fab_addButtonColorNormal="@color/fab_color"
             app:fab_addButtonColorPressed="@color/fab_color">
 
@@ -65,6 +67,7 @@
                 app:fab_colorNormal="@color/fab_color"
                 app:fab_colorPressed="@color/fab_color"
                 app:fab_size="mini"
+                app:fab_title="@string/action_edit"
                 android:onClick="onClickEditButton"/>
 
             <com.getbase.floatingactionbutton.FloatingActionButton
@@ -74,6 +77,7 @@
                 app:fab_colorNormal="@color/fab_color"
                 app:fab_colorPressed="@color/fab_color"
                 app:fab_size="mini"
+                app:fab_title="@string/action_delete"
                 android:onClick="onClickDeleteButton"/>
 
         </com.getbase.floatingactionbutton.FloatingActionsMenu>

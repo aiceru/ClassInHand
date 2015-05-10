@@ -101,8 +101,7 @@ public class MainActivity extends AppCompatActivity {
 
         mDrawerList = new ArrayList<>();
         mDrawerList.add(DrawerItem.create(101, getString(R.string.title_seatplan), "ic_grid_on_grey600_24dp", true, this));
-        //drawerContentList.add(DrawerItem.create(102, getString(R.string.title_eachrole), "ic_action_user", true, this.getActivity()));
-        //drawerContentList.add(DrawerItem.create(103, getString(R.string.title_classtime), "ic_action_alarm_clock", true, this.getActivity()));
+        mDrawerList.add(DrawerItem.create(102, getString(R.string.title_message), "ic_message_grey_600_24dp", true, this));
         mDrawerList.add(DrawerSection.create(200, "Settings"));
         mDrawerList.add(DrawerSubItem.create(201, getString(R.string.title_fillinfo), "ic_edit_grey600_24dp", true, this));
         mDrawerList.add(DrawerSubItem.create(301, getString(R.string.title_setting), "ic_settings_grey600_24dp", true, this));
@@ -173,22 +172,26 @@ public class MainActivity extends AppCompatActivity {
                 mTitle = getString(R.string.title_seatplan);
                 fragmentManager.beginTransaction().replace(R.id.main_contents, SeatplansFragment.getInstance()).commitAllowingStateLoss();
                 break;
-            case 3:
+            case 2:
+                mTitle = getString(R.string.title_message);
+                fragmentManager.beginTransaction().replace(R.id.main_contents, MessageFragment.getInstance()).commitAllowingStateLoss();
+                break;
+            case 4:
                 mTitle = getString(R.string.title_fillinfo);
                 fragmentManager.beginTransaction().replace(R.id.main_contents, FillInfoPagerFragment.getInstance()).commitAllowingStateLoss();
                 break;
-            case 4:
+            case 5:
                 mTitle = getString(R.string.title_setting);
                 fragmentManager.beginTransaction().replace(R.id.main_contents, SettingsFragment.getInstance()).commitAllowingStateLoss();
                 break;
-            case 5:
+            case 6:
                 exportDB();
                 break;
-            case 6:
+            case 7:
                 ClassInHandApplication.getInstance().removeAllStudents();
                 ClassInHandApplication.getInstance().removeAllSeatplans();
                 break;
-            case 7:
+            case 8:
                 ClassInHandApplication.getInstance().createTestData();
                 break;
             default:

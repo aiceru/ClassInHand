@@ -5,7 +5,9 @@
     <color name="accent">@color/pink_a200</color>
     <color name="text_primary">@color/white</color>
     <color name="text_secondary">@color/grey_900</color>
+    <color name="selected_background">@color/indigo_200</color>
     <color name="fab_color">@color/primary</color>
+    <color name="default_background">@color/background_material_light</color>
 
     <!-- RED -->
     <color name="red_50">#fde0dc</color>
