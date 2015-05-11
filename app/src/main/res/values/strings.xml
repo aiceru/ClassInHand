@@ -70,6 +70,9 @@
 
     <string name="button_toggle_empty_fix">빈자리 고정/해제</string>
 
+    <string name="confirm_cancel_message">문자보내기를 취소하시겠습니까?</string>
+    <string name="confirm_send_message">문자를 보내시겠습니까?</string>
+
     <!--<string name="sharedpref_student_name_list">com.iceru.teacherschores.PREF_KEY_STUDENT_LIST</string>
     <string name="sharedpref_boygirl_list">com.iceru.teacherschores.PREF_KEY_BOYGIRL_LIST</string>
     <string name="sharedpref_role_list">com.iceru.teacherschores.PREF_KEY_ROLE_LIST</string>-->
@@ -139,7 +142,12 @@
     <string name="hint_edittext_indate">등록(전입)일자</string>
     <string name="hint_edittext_outdate">삭제(전출)일자</string>
     <string name="hint_edittext_phone">연락처</string>
-    <string name="hint_edittext_sendmessage">문자 내용 입력</string>
+    <string name="hint_edittext_sendmessage">
+        문자 내용 입력\n
+        단체문자 발송 기능에 대해 충분한 검증을 거치지 못한 상태입니다.
+        중요한 공지문자인 경우, 문자 발송완료 후에 사용하고 계신 기본 SMS 어플에서 문자가 제대로
+        발송되었는지 꼭 확인하시기 바랍니다.
+    </string>
 
     <string name="year_string">년</string>
     <string name="month_string">월</string>
