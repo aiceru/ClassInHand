@@ -38,6 +38,7 @@
     <string name="action_settings">Settings</string>
     <string name="action_select_all">전부 선택</string>
     <string name="action_unselect_all">전부 해제</string>
+    <string name="donotshowagain">다시 보지 않기</string>
     <string name="section">section</string>
     <string name="textview">textview</string>
     <string name="icon">icon</string>
@@ -61,6 +62,14 @@
     <string name="warning_no_student_info">등록된 학생정보가 없습니다</string>
     <string name="warning_no_recipient">메세지를 전송할 대상이 없습니다</string>
     <string name="warning_no_message">메세지를 입력하세요</string>
+    <string name="warning_unsaved">
+        배치 정보가 저장되지 않았습니다. 무시하고 종료하시겠습니까?
+        (저장하려면 오른쪽 상단의 저장 버튼을 눌러주세요)
+    </string>
+    <string name="warning_student_remain">
+        자리를 배정받지 못한 학생이 남아있습니다. 자리를 모두 배정하고
+        저장해주세요.
+    </string>
     <string name="tabtitle_studentinfo">학생정보</string>
     <string name="tabtitle_roleinfo">역할정보</string>
     <string name="string_segment">분단</string>
@@ -143,10 +152,9 @@
     <string name="hint_edittext_outdate">삭제(전출)일자</string>
     <string name="hint_edittext_phone">연락처</string>
     <string name="hint_edittext_sendmessage">
-        문자 내용 입력\n
-        단체문자 발송 기능에 대해 충분한 검증을 거치지 못한 상태입니다.
+        문자 내용 입력 (단체문자 발송 기능에 대해 충분한 검증을 거치지 못한 상태입니다.
         중요한 공지문자인 경우, 문자 발송완료 후에 사용하고 계신 기본 SMS 어플에서 문자가 제대로
-        발송되었는지 꼭 확인하시기 바랍니다.
+        발송되었는지 꼭 확인하시기 바랍니다.)
     </string>
 
     <string name="year_string">년</string>
@@ -164,7 +172,21 @@
     </string-array>
 
     <string name="welcome_input_students_info">환영합니다. [기본정보 입력]을 누르고 학생 정보를 입력해주세요</string>
-    <string name="welcome_add_student">오른쪽 아래의 버튼을 눌러 학생정보를 추가하세요</string>
+    <string name="welcome_add_student">오른쪽 아래의 버튼을 눌러 학생정보를 추가하세요!</string>
+    <string name="welcome_no_student">
+        학생정보를 입력하지 않으셨나요? 왼쪽 위의 버튼을 누르고, [기본정보 입력]으로 가셔서
+        학생 정보를 추가해주세요!
+    </string>
+    <string name="welcome_create_seatplan">오른쪽 아래의 버튼을 눌러 자리배치도를 생성해 보세요!</string>
+
+    <string name="edit_seatplan_user_manual">
+        1. 화면 하단의 버튼을 누르면 자동으로 자리배치를 생성합니다. (과거에 앉았던 자리/짝 등을 고려하여 가능한 겹치지 않도록 배치합니다)\n\n
+        2. 학생이 배정된 좌석을 탭하여 자리를 맞바꾸거나 자리를 비우는 등 수동으로 배치를 수정할 수 있습니다.\n\n
+        3. 화면상의 빈 좌석을 탭하면 좌/우측에 슬라이드 메뉴가 나타납니다. 슬라이드 메뉴에서\n\n
+         - 해당 좌석을 빈자리로 설정 또는 해제 (“빈자리 설정/해제” 버튼 이용) 할 수 있습니다. 빈자리로 설정할 경우 자리는 [고정]됩니다.\n\n
+         - 아직 좌석이 배정되지 않은 학생을 수동으로 배정할 수 있습니다. 수동으로 배정한 자리는 [고정]됩니다.\n\n
+         - 좌석이 [고정]된 경우 파란 자물쇠 아이콘이 표시되며, [고정]된 자리는 자동 배치 생성에서 제외됩니다.
+    </string>
 
     <string name="log_error_tag">com.iceru.classinhand:Error</string>
     <string name="hello_world">Hello world!</string>

@@ -40,7 +40,7 @@ public class MessageDialog extends Dialog {
 
     // default constructor
     public MessageDialog(Context context, String dest, int recipeNums) {
-        super(context, R.style.AppTheme);
+        super(context, R.style.Theme_AppCompat_Light_Dialog_Alert);
         this.mDestinations = dest;
         this.mRecipeNums = recipeNums;
     }

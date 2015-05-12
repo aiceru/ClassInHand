@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -48,6 +49,22 @@ public class SeatplansFragment extends Fragment{
         mSeatplanRecyclerView.setLayoutManager(mSeatplanLayoutManager);
         mSeatplansAdapter = new SeatplansAdapter(mSeatplans, mainActivity);
         mSeatplanRecyclerView.setAdapter(mSeatplansAdapter);
+
+        TextView tv_no_plans = (TextView)rootView.findViewById(R.id.textview_welcome_create_seatplan);
+        TextView tv_no_students = (TextView)rootView.findViewById(R.id.textview_welcome_no_student);
+
+        if(application.getmStudents().size() <= 0) {
+            tv_no_students.setVisibility(View.VISIBLE);
+            tv_no_plans.setVisibility(View.GONE);
+        }
+        else if(mSeatplans.size() <= 0) {
+            tv_no_students.setVisibility(View.GONE);
+            tv_no_plans.setVisibility(View.VISIBLE);
+        }
+        else {
+            tv_no_plans.setVisibility(View.GONE);
+            tv_no_students.setVisibility(View.GONE);
+        }
 
         return rootView;
     }

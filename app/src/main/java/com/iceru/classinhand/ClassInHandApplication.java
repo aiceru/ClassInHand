@@ -52,6 +52,7 @@ public class ClassInHandApplication extends Application {
     public static final String PREF_USER_LEARNED_DRAWER = "navigation_drawer_learned";
     public static final String PREF_FIRST_SHOWCASE = "first_showcase_shown";
     public static final String PREF_STUDENTLIST_SHOWCASE = "studentlist_showcase_shown";
+    public static final String PREF_EDIT_SEATPLAN_SHOWCASE = "edit_seatplan_showcase_shown";
 
     public static final String SEATPLAN_SELECTED_POSITION = "com.iceru.classinhand.SEATPLAN_SELECTED_POSITION";
     public static final String STUDENT_SELECTED_ID = "com.iceru.classinhand.STUDENT_SELECTED_ID";

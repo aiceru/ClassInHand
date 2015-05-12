@@ -210,7 +210,7 @@ public class MainActivity extends AppCompatActivity {
             mDrawerListView.post(new Runnable() {
                 @Override
                 public void run() {
-                    View v = mDrawerListView.getChildAt(2);
+                    View v = mDrawerListView.getChildAt(3);
                     int[] location = new int[2];
                     int[] size = new int[2];
                     v.getLocationOnScreen(location);
