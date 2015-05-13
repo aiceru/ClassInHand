@@ -27,6 +27,9 @@ public class SeatplansFragment extends Fragment{
     private RecyclerView.LayoutManager  mSeatplanLayoutManager;
     private SeatplansAdapter            mSeatplansAdapter;
 
+    private TextView tv_no_plans;
+    private TextView tv_no_students;
+
     public static SeatplansFragment getInstance() {
         if(thisObject == null) thisObject = new SeatplansFragment();
         return thisObject;
@@ -50,9 +53,15 @@ public class SeatplansFragment extends Fragment{
         mSeatplansAdapter = new SeatplansAdapter(mSeatplans, mainActivity);
         mSeatplanRecyclerView.setAdapter(mSeatplansAdapter);
 
-        TextView tv_no_plans = (TextView)rootView.findViewById(R.id.textview_welcome_create_seatplan);
-        TextView tv_no_students = (TextView)rootView.findViewById(R.id.textview_welcome_no_student);
+        tv_no_plans = (TextView)rootView.findViewById(R.id.textview_welcome_create_seatplan);
+        tv_no_students = (TextView)rootView.findViewById(R.id.textview_welcome_no_student);
 
+        return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         if(application.getmStudents().size() <= 0) {
             tv_no_students.setVisibility(View.VISIBLE);
             tv_no_plans.setVisibility(View.GONE);
@@ -65,13 +74,6 @@ public class SeatplansFragment extends Fragment{
             tv_no_plans.setVisibility(View.GONE);
             tv_no_students.setVisibility(View.GONE);
         }
-
-        return rootView;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
         mSeatplansAdapter.notifyDataSetChanged();
     }
 }
