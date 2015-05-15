@@ -11,7 +11,25 @@ import android.widget.TextView;
  */
 public class FontFitTextView extends TextView {
 
+    public interface OnLayoutChagnedListener {
+        void onLayout(float size);
+    }
+
+    private OnLayoutChagnedListener layoutChagnedListener;
+
     private static float SIZE_MAX = 42.0f;
+
+    /*@Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        if(layoutChagnedListener != null) {
+            layoutChagnedListener.onLayout(changed, left, top, right, bottom);
+        }
+        super.onLayout(changed, left, top, right, bottom);
+    }*/
+
+    public void setLayoutChagnedListener(OnLayoutChagnedListener listener) {
+        this.layoutChagnedListener = listener;
+    }
 
     public FontFitTextView(Context context) {
         super(context);
@@ -53,6 +71,9 @@ public class FontFitTextView extends TextView {
         }
         // Use lo so that we undershoot rather than overshoot
         this.setTextSize(TypedValue.COMPLEX_UNIT_PX, lo > SIZE_MAX? SIZE_MAX : lo);
+        if(layoutChagnedListener != null) {
+            layoutChagnedListener.onLayout(lo > SIZE_MAX? SIZE_MAX : lo);
+        }
     }
 
     @Override

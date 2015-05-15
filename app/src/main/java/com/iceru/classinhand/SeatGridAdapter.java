@@ -33,6 +33,7 @@ public class SeatGridAdapter extends BaseAdapter {
     public static class InnerViewHolder implements View.OnClickListener {
         public ISeatClick   mListener;
         public int          mSeatId;
+        public int          mAdjustedViewHeight;
 
         public RelativeLayout  rlayout;
         public ImageView       imageviewFixed;
@@ -46,10 +47,23 @@ public class SeatGridAdapter extends BaseAdapter {
             mSeatId = seatId;
             mListener = listener;
 
+            FontFitTextView.OnLayoutChagnedListener viewsizeObserver = new FontFitTextView.OnLayoutChagnedListener() {
+                @Override
+                public void onLayout(float size) {
+                    imageviewGender.getLayoutParams().width = (int)size;
+                    imageviewGender.getLayoutParams().height = (int)size;
+                    imageviewSeatedLeft.getLayoutParams().width = (int)size;
+                    imageviewSeatedLeft.getLayoutParams().height = (int)size;
+                    imageviewSeatedRight.getLayoutParams().width = (int)size;
+                    imageviewSeatedRight.getLayoutParams().height = (int)size;
+                }
+            };
+
             if(seatId % 2 == 0) {
                 rlayout = (RelativeLayout) v.findViewById(R.id.relativelayout_seat_background_left);
                 imageviewFixed = (ImageView) v.findViewById(R.id.imageview_seat_fixed_left);
                 textviewNum = (FontFitTextView) v.findViewById(R.id.textview_seated_num_left);
+                textviewNum.setLayoutChagnedListener(viewsizeObserver);
                 imageviewGender = (ImageView) v.findViewById(R.id.imageview_seated_boygirl_left);
                 textviewName = (FontFitTextView) v.findViewById(R.id.textview_seated_name_left);
                 imageviewSeatedLeft = (ImageView) v.findViewById(R.id.imageview_recently_seated_left_left);
@@ -59,6 +73,7 @@ public class SeatGridAdapter extends BaseAdapter {
                 rlayout = (RelativeLayout) v.findViewById(R.id.relativelayout_seat_background_right);
                 imageviewFixed = (ImageView) v.findViewById(R.id.imageview_seat_fixed_right);
                 textviewNum = (FontFitTextView) v.findViewById(R.id.textview_seated_num_right);
+                textviewNum.setLayoutChagnedListener(viewsizeObserver);
                 imageviewGender = (ImageView) v.findViewById(R.id.imageview_seated_boygirl_right);
                 textviewName = (FontFitTextView) v.findViewById(R.id.textview_seated_name_right);
                 imageviewSeatedLeft = (ImageView) v.findViewById(R.id.imageview_recently_seated_left_right);
@@ -127,7 +142,7 @@ public class SeatGridAdapter extends BaseAdapter {
             ovh.lvh.textviewName.setText(leftStudent.getName());
             ovh.lvh.imageviewGender.setImageResource(
                     leftStudent.isBoy()? R.drawable.ic_gender_boy : R.drawable.ic_gender_girl);
-            ovh.lvh.rlayout.post(new Runnable() {
+            /*ovh.lvh.rlayout.post(new Runnable() {
                 @Override
                 public void run() {
                     int h = ovh.lvh.textviewNum.getHeight();
@@ -138,7 +153,7 @@ public class SeatGridAdapter extends BaseAdapter {
                     ovh.lvh.imageviewSeatedRight.getLayoutParams().width =
                             ovh.lvh.imageviewSeatedRight.getLayoutParams().height = h-8;
                 }
-            });
+            });*/
         }
         else {
             ovh.lvh.textviewNum.setText(null);
@@ -151,7 +166,7 @@ public class SeatGridAdapter extends BaseAdapter {
             ovh.rvh.textviewName.setText(rightStudent.getName());
             ovh.rvh.imageviewGender.setImageResource(
                     rightStudent.isBoy() ? R.drawable.ic_gender_boy : R.drawable.ic_gender_girl);
-            ovh.rvh.rlayout.post(new Runnable() {
+            /*ovh.rvh.rlayout.post(new Runnable() {
                 @Override
                 public void run() {
                     int h = ovh.rvh.textviewNum.getHeight();
@@ -162,7 +177,7 @@ public class SeatGridAdapter extends BaseAdapter {
                     ovh.rvh.imageviewSeatedRight.getLayoutParams().width =
                             ovh.rvh.imageviewSeatedRight.getLayoutParams().height = h - 8;
                 }
-            });
+            });*/
         }
         else {
             ovh.rvh.textviewNum.setText(null);
