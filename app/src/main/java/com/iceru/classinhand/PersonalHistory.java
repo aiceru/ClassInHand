@@ -9,10 +9,14 @@ public class PersonalHistory {
     public GregorianCalendar   applyDate;
     public int                 seatId;
     public int                 pairId;
+    public int                 totalRows;
+    public int                 totalCols;
 
-    public PersonalHistory(GregorianCalendar cal, int seatId, int pairId) {
+    public PersonalHistory(GregorianCalendar cal, int seatId, int pairId, int row, int col) {
         this.applyDate = cal;
         this.seatId = seatId;
         this.pairId = pairId;
+        this.totalRows = row;
+        this.totalCols = col;
     }
 }

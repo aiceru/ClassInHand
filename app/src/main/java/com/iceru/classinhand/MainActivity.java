@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
+        //super.onSaveInstanceState(outState);
         outState.putInt(ClassInHandApplication.STATE_SELECTED_POSITION, mCurrentSelectedPosition);
     }
 

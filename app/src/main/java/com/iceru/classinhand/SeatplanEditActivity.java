@@ -299,8 +299,6 @@ public class SeatplanEditActivity extends ActionBarActivity {
 
     public void assignRandom(View view) {
         mSaved = false;
-        ArrayList<Seat> seatArray = mNewPlan.getmSeats();
-        //TreeMap<Double, Student> pointedTreeMap = new TreeMap<>();
 
         clearAllocation();
         mRemainStudents.clear();
@@ -312,7 +310,7 @@ public class SeatplanEditActivity extends ActionBarActivity {
 
         AllocateExecutor AE = new AllocateExecutor(mNewPlan, mRemainStudents);
         AE.createRuleList();
-        mNewPlan = AE.allocateAllStudent(seatArray);
+        AE.allocateAllStudent(mNewPlan.getmSeats());
 
         mSeatGridAdapter.notifyDataSetChanged();
         mRemainStudentListAdapter.notifyDataSetChanged();
@@ -591,21 +589,23 @@ public class SeatplanEditActivity extends ActionBarActivity {
 
                 int historyCount = 1;
                 for (PersonalHistory p : selectedStudent.getHistories()) {
-                    String whenStr = String.format("%02d.%02d ~\n", p.applyDate.get(Calendar.MONTH) + 1, p.applyDate.get(Calendar.DAY_OF_MONTH));
-                    String whereStr = ConvertAbsSeatToSegAndRow(p.seatId) + ", ";
-                    Student pairStudent = application.findStudentById(p.pairId);
-                    String pairStr = pairStudent == null ? "" : pairStudent.getName();
-                    tv = new TextView(this);
-                    tv.setText(whenStr + whereStr + pairStr);
-                    tv.setTextSize(14);
-                    layout_onseatclick_left.addView(tv);
+                    if(p.applyDate.before(mNewDate)) {
+                        String whenStr = String.format("%02d.%02d ~\n", p.applyDate.get(Calendar.MONTH) + 1, p.applyDate.get(Calendar.DAY_OF_MONTH));
+                        String whereStr = ConvertAbsSeatToSegAndRow(p.seatId, p.totalRows, p.totalCols) + ", ";
+                        Student pairStudent = application.findStudentById(p.pairId);
+                        String pairStr = pairStudent == null ? "" : pairStudent.getName();
+                        tv = new TextView(this);
+                        tv.setText(whenStr + whereStr + pairStr);
+                        tv.setTextSize(14);
+                        layout_onseatclick_left.addView(tv);
 
-                    if (p.seatId < mNewPlan.getmSeats().size()) {
-                        Seat seat = mNewPlan.getmSeats().get(p.seatId);
-                        seat.setRecentSeatedFlag(ClassInHandApplication.SEATED_LEFT);
+                        if (p.seatId < mNewPlan.getmSeats().size()) {
+                            Seat seat = mNewPlan.getmSeats().get(p.seatId);
+                            seat.setRecentSeatedFlag(ClassInHandApplication.SEATED_LEFT);
+                        }
+
+                        if (++historyCount > application.globalProperties.num_histories) break;
                     }
-
-                    if (++historyCount > application.globalProperties.num_histories) break;
                 }
                 mLeftCancelButton.setVisibility(View.VISIBLE);
             }
@@ -645,21 +645,23 @@ public class SeatplanEditActivity extends ActionBarActivity {
 
                 int historyCount = 1;
                 for (PersonalHistory p : selectedStudent.getHistories()) {
-                    String whenStr = String.format("%02d.%02d ~\n", p.applyDate.get(Calendar.MONTH) + 1, p.applyDate.get(Calendar.DAY_OF_MONTH));
-                    String whereStr = ConvertAbsSeatToSegAndRow(p.seatId) + ", ";
-                    Student pairStudent = application.findStudentById(p.pairId);
-                    String pairStr = pairStudent == null ? "" : pairStudent.getName();
-                    tv = new TextView(this);
-                    tv.setText(whenStr + whereStr + pairStr);
-                    tv.setTextSize(14);
-                    layout_onseatclick_right.addView(tv);
+                    if(p.applyDate.before(mNewDate)) {
+                        String whenStr = String.format("%02d.%02d ~\n", p.applyDate.get(Calendar.MONTH) + 1, p.applyDate.get(Calendar.DAY_OF_MONTH));
+                        String whereStr = ConvertAbsSeatToSegAndRow(p.seatId, p.totalRows, p.totalCols) + ", ";
+                        Student pairStudent = application.findStudentById(p.pairId);
+                        String pairStr = pairStudent == null ? "" : pairStudent.getName();
+                        tv = new TextView(this);
+                        tv.setText(whenStr + whereStr + pairStr);
+                        tv.setTextSize(14);
+                        layout_onseatclick_right.addView(tv);
 
-                    if (p.seatId < mNewPlan.getmSeats().size()) {
-                        Seat seat = mNewPlan.getmSeats().get(p.seatId);
-                        seat.setRecentSeatedFlag(ClassInHandApplication.SEATED_RIGHT);
+                        if (p.seatId < mNewPlan.getmSeats().size()) {
+                            Seat seat = mNewPlan.getmSeats().get(p.seatId);
+                            seat.setRecentSeatedFlag(ClassInHandApplication.SEATED_RIGHT);
+                        }
+
+                        if (++historyCount > application.globalProperties.num_histories) break;
                     }
-
-                    if (++historyCount > application.globalProperties.num_histories) break;
                 }
                 mRightCancelButton.setVisibility(View.VISIBLE);
             }
@@ -679,15 +681,16 @@ public class SeatplanEditActivity extends ActionBarActivity {
         mSeatGridAdapter.notifyDataSetChanged();
     }
 
-    private String ConvertAbsSeatToSegAndRow(int seatId) {
-        int row = seatId / 6 + 1;
-        int seg = ((seatId % 6) / 2) + 1;
+    private String ConvertAbsSeatToSegAndRow(int seatId, int totalRows, int totalCols) {
+        int convertedId = totalRows * totalCols - seatId;
+        int row = convertedId / totalCols + 1;
+        int seg = (totalCols/2) - ((convertedId % totalCols) / 2);
         String segAndRow =
                 String.valueOf(seg) +
                         getString(R.string.string_segment) + " " +
                         String.valueOf(row) +
                         getString(R.string.string_row) + " ";
-        if (seatId % 2 == 0) segAndRow += getString(R.string.string_left);
+        if (convertedId % 2 == 1) segAndRow += getString(R.string.string_left);
         else segAndRow += getString(R.string.string_right);
         return segAndRow;
     }

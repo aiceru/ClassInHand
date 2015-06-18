@@ -336,10 +336,11 @@ public class ClassInHandApplication extends Application {
                 date = historyCursor.getLong(historyCursor.getColumnIndexOrThrow(
                         ClassDBContract.SeatHistory.COLUMN_NAME_APPLY_DATE));
                 cal.setTimeInMillis(date);
+                Seatplan s = findSeatplan(cal);
                 seatId = historyCursor.getInt(historyCursor.getColumnIndexOrThrow(
                         ClassDBContract.SeatHistory.COLUMN_NAME_ID));
                 pairId = dbHelper.getSeatedStudentId(seatId % 2 == 0 ? seatId + 1 : seatId - 1, date);
-                student.getHistories().add(new PersonalHistory(cal, seatId, pairId));
+                student.getHistories().add(new PersonalHistory(cal, seatId, pairId, s.getmRows(), s.getmColumns()));
             }
             historyCursor.close();
         }
