@@ -197,7 +197,7 @@ public class StudentAddActivity extends ActionBarActivity {
                 }
             }
         };
-        DatePickerDialog dateDialog = new DatePickerDialog(this, dateSetListener,
+        DatePickerDialog dateDialog = new DatePickerDialog(this, R.style.dialog_style, dateSetListener,
                 mInDate.get(Calendar.YEAR), mInDate.get(Calendar.MONTH), mInDate.get(Calendar.DAY_OF_MONTH));
         dateDialog.show();
     }

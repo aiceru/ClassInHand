@@ -69,7 +69,7 @@ public class SeatplanDetailActivity extends ActionBarActivity {
 
     public void onClickEditButton(View view) {
         /* Ask if changes ApplyDate or not */
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.dialog_style);
         builder.setMessage(R.string.contents_dialog_if_change_applydate);
         builder.setPositiveButton(R.string.edit_date_either, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
@@ -89,7 +89,7 @@ public class SeatplanDetailActivity extends ActionBarActivity {
     }
 
     public void onClickDeleteButton(View view) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.dialog_style);
         builder.setTitle(R.string.title_dialog_warning);
         builder.setMessage(R.string.contents_dialog_confirm_delete);
         builder.setPositiveButton(R.string.action_delete, new DialogInterface.OnClickListener() {
@@ -124,14 +124,14 @@ public class SeatplanDetailActivity extends ActionBarActivity {
                 }
             }
         };
-        DatePickerDialog dateDialog = new DatePickerDialog(this,
+        DatePickerDialog dateDialog = new DatePickerDialog(this, R.style.dialog_style,
                 dateSetListener, mDate.get(Calendar.YEAR), mDate.get(Calendar.MONTH),
                 mDate.get(Calendar.DAY_OF_MONTH));
         dateDialog.show();
     }
 
     private void confirmEditExistingPlan() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.dialog_style);
         String dateStr = String.valueOf(mNewDate.get(Calendar.YEAR)) + "년 " +
                 String.valueOf(mNewDate.get(Calendar.MONTH)+1) + "월 " +
                 String.valueOf(mNewDate.get(Calendar.DAY_OF_MONTH)) + "일" +

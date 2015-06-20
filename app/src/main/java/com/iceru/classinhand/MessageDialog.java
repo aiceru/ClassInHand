@@ -80,7 +80,7 @@ public class MessageDialog extends Dialog {
         ib_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.dialog_style);
                 builder.setMessage(R.string.confirm_cancel_message);
                 builder.setPositiveButton(R.string.yes, new OnClickListener() {
                     @Override
@@ -100,7 +100,7 @@ public class MessageDialog extends Dialog {
         ib_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.dialog_style);
                 builder.setMessage(R.string.confirm_send_message);
                 builder.setPositiveButton(R.string.yes, new OnClickListener() {
                     @Override

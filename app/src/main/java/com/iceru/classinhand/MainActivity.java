@@ -350,7 +350,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
         };
-        DatePickerDialog dateDialog = new DatePickerDialog(this,
+        DatePickerDialog dateDialog = new DatePickerDialog(this, R.style.dialog_style,
                 dateSetListener, mNewDate.get(Calendar.YEAR), mNewDate.get(Calendar.MONTH),
                 mNewDate.get(Calendar.DAY_OF_MONTH));
         dateDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
@@ -363,7 +363,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void confirmOverwrite() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.dialog_style);
         builder.setTitle(R.string.title_dialog_warning);
         builder.setMessage(R.string.contents_dialog_seatplan_already_exists);
         builder.setPositiveButton(R.string.action_overwrite, new DialogInterface.OnClickListener() {

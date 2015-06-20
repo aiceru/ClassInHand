@@ -96,7 +96,7 @@ public class SeatplanEditActivity extends ActionBarActivity {
 
             // 좌석 수 < 학생 수 인 경우!!
             if (row * col < mRemainStudents.size()) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.dialog_style);
                 builder.setTitle(R.string.title_dialog_warning);
                 builder.setMessage(R.string.contents_dialog_confirm_increase_row);
                 builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
@@ -127,7 +127,7 @@ public class SeatplanEditActivity extends ActionBarActivity {
         } else {
             /* 학생 목록에 변동 있을 시 수정 거부! */
             if (!mRemainStudents.equals(application.getDatedStudentsTreeMapKeybyAttendNum(oldDatelong))) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.dialog_style);
                 builder.setTitle(R.string.title_dialog_warning);
                 builder.setMessage(R.string.contents_dialog_remainstudents_not_equals);
                 builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
@@ -355,7 +355,7 @@ public class SeatplanEditActivity extends ActionBarActivity {
     @Override
     public void onBackPressed() {
         if (!mSaved) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.dialog_style);
             builder.setTitle(R.string.title_dialog_warning);
             builder.setMessage(R.string.warning_unsaved);
             builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
@@ -682,7 +682,7 @@ public class SeatplanEditActivity extends ActionBarActivity {
     }
 
     private String ConvertAbsSeatToSegAndRow(int seatId, int totalRows, int totalCols) {
-        int convertedId = totalRows * totalCols - seatId;
+        int convertedId = totalRows * totalCols - 1 - seatId;
         int row = convertedId / totalCols + 1;
         int seg = (totalCols/2) - ((convertedId % totalCols) / 2);
         String segAndRow =
@@ -690,8 +690,8 @@ public class SeatplanEditActivity extends ActionBarActivity {
                         getString(R.string.string_segment) + " " +
                         String.valueOf(row) +
                         getString(R.string.string_row) + " ";
-        if (convertedId % 2 == 1) segAndRow += getString(R.string.string_left);
-        else segAndRow += getString(R.string.string_right);
+        /*if (convertedId % 2 == 1) segAndRow += getString(R.string.string_left);
+        else segAndRow += getString(R.string.string_right);*/
         return segAndRow;
     }
 

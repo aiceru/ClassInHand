@@ -217,7 +217,7 @@ public class StudentDetailActivity extends ActionBarActivity {
     }
 
     private void recommendEdit() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.dialog_style);
         builder.setTitle(R.string.title_dialog_warning);
         builder.setMessage(R.string.contents_dialog_recommend_edit);
         builder.setPositiveButton(R.string.action_delete, new DialogInterface.OnClickListener() {
@@ -280,7 +280,7 @@ public class StudentDetailActivity extends ActionBarActivity {
             }
         };
         GregorianCalendar todayCal = application.getValueOfTodayCalendar();
-        DatePickerDialog dateDialog = new DatePickerDialog(this, dateSetListener,
+        DatePickerDialog dateDialog = new DatePickerDialog(this, R.style.dialog_style, dateSetListener,
                 todayCal.get(Calendar.YEAR), todayCal.get(Calendar.MONTH), todayCal.get(Calendar.DAY_OF_MONTH));
         dateDialog.show();
     }
@@ -317,7 +317,7 @@ public class StudentDetailActivity extends ActionBarActivity {
         }
 
         else {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.dialog_style);
             AlertDialog dialog = builder.setTitle(R.string.title_dialog_warning)
                                         .setMessage(R.string.warning_existing_attendnum)
                                         .setCancelable(false)
