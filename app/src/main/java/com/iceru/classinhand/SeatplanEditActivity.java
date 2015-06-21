@@ -487,7 +487,7 @@ public class SeatplanEditActivity extends ActionBarActivity {
         setRemainStrings();
     }
 
-    private void onSeatClick(int position) {
+    private void onSeatClick(int seatId) {
         mSaved = false;
         final LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         layout_onseatclick_inflated.setVisibility(View.VISIBLE);
@@ -579,7 +579,7 @@ public class SeatplanEditActivity extends ActionBarActivity {
 
         /* 선택된 seat 가 없거나, 오른쪽 자리만 선택되어 있는 상태 */
         if (mLeftSelectedSeat == null) {
-            mLeftSelectedSeat = mNewPlan.getmSeats().get(position);
+            mLeftSelectedSeat = mNewPlan.getmSeats().get(seatId);
 
             /* 중복 선택 검사! */
             if (mLeftSelectedSeat == mRightSelectedSeat) {
@@ -640,7 +640,7 @@ public class SeatplanEditActivity extends ActionBarActivity {
         }
         /* 왼쪽 자리만 선택되어 있는 상태 */
         else if (mRightSelectedSeat == null) {
-            mRightSelectedSeat = mNewPlan.getmSeats().get(position);
+            mRightSelectedSeat = mNewPlan.getmSeats().get(seatId);
             /* 중복 선택 검사! */
             if (mLeftSelectedSeat == mRightSelectedSeat) {
                 mRightSelectedSeat = null;

@@ -11,11 +11,11 @@ import android.widget.TextView;
  */
 public class FontFitTextView extends TextView {
 
-    public interface OnLayoutChagnedListener {
+    public interface OnLayoutChangedListener {
         void onLayout(float size);
     }
 
-    private OnLayoutChagnedListener layoutChagnedListener;
+    private OnLayoutChangedListener layoutChagnedListener;
 
     private static float SIZE_MAX = 42.0f;
 
@@ -27,7 +27,7 @@ public class FontFitTextView extends TextView {
         super.onLayout(changed, left, top, right, bottom);
     }*/
 
-    public void setLayoutChagnedListener(OnLayoutChagnedListener listener) {
+    public void setLayoutChagnedListener(OnLayoutChangedListener listener) {
         this.layoutChagnedListener = listener;
     }
 

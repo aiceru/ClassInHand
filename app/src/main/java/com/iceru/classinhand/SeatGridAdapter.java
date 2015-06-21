@@ -47,7 +47,7 @@ public class SeatGridAdapter extends BaseAdapter {
             mSeatId = seatId;
             mListener = listener;
 
-            FontFitTextView.OnLayoutChagnedListener viewsizeObserver = new FontFitTextView.OnLayoutChagnedListener() {
+            FontFitTextView.OnLayoutChangedListener viewsizeObserver = new FontFitTextView.OnLayoutChangedListener() {
                 @Override
                 public void onLayout(float size) {
                     imageviewGender.getLayoutParams().width = (int)size;
