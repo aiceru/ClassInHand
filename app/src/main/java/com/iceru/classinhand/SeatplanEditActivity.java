@@ -341,6 +341,34 @@ public class SeatplanEditActivity extends ActionBarActivity {
             }
             else {
                 mSaved = true;
+                // Clear all flags of selected seats
+                Seat seat;
+                if (mLeftSelectedSeat != null) {
+                    if (mLeftSelectedSeat.getItsStudent() != null) {
+                        for (PersonalHistory p : mLeftSelectedSeat.getItsStudent().getHistories()) {
+                            if (p.seatId < mNewPlan.getmSeats().size()) {
+                                seat = mNewPlan.getmSeats().get(p.seatId);
+                                seat.clrRecentSeatedFlag(ClassInHandApplication.SEATED_LEFT);
+                            }
+                        }
+                    }
+                    mLeftSelectedSeat.clrSelectedFlag(ClassInHandApplication.SEATED_LEFT);
+                    mLeftSelectedSeat = null;
+                }
+                if(mRightSelectedSeat != null) {
+                    if (mRightSelectedSeat.getItsStudent() != null) {
+                        for (PersonalHistory p : mRightSelectedSeat.getItsStudent().getHistories()) {
+                            if (p.seatId < mNewPlan.getmSeats().size()) {
+                                seat = mNewPlan.getmSeats().get(p.seatId);
+                                seat.clrRecentSeatedFlag(ClassInHandApplication.SEATED_RIGHT);
+                            }
+                        }
+                    }
+                    mRightSelectedSeat.clrSelectedFlag(ClassInHandApplication.SEATED_RIGHT);
+                    mRightSelectedSeat = null;
+                }
+
+                // Switch old and new plan simply
                 if (mOldPlan != null) application.removeSeatplan(mOldPlan);
                 application.addSeatplan(mNewPlan);
                 finish();

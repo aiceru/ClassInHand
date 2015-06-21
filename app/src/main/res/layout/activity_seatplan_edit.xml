@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#FFFFFF">
+    android:background="@color/background_material_light">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/seatplanactivity_toolbar"
@@ -48,7 +48,7 @@
                         android:id="@+id/gridview_newseatplan"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@color/white"
+                        android:background="@color/background_material_light"
                         android:horizontalSpacing="5dp"
                         android:verticalSpacing="-1dp"
                         tools:listitem="@layout/seat"/>
@@ -112,7 +112,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="left"
             android:gravity="center"
-            android:background="@color/white"
+            android:background="@color/background_material_light"
             android:orientation="vertical">
             <Button
                 android:layout_width="wrap_content"
@@ -134,7 +134,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="right"
             android:gravity="center"
-            android:background="@color/white"
+            android:background="@color/background_material_light"
             android:orientation="vertical">
             <Button
                 android:layout_width="wrap_content"
