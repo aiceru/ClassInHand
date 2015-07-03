@@ -93,13 +93,13 @@ public class MainActivity extends AppCompatActivity {
     private void initViews() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerListView = (ListView) findViewById(R.id.navigation_drawer);
-        mMainLayout = (RelativeLayout) findViewById(R.id.relativelayout_main);
+        //mDrawerListView = (ListView) findViewById(R.id.navigation_drawer);
+        //mMainLayout = (RelativeLayout) findViewById(R.id.relativelayout_main);
 
         toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
         setSupportActionBar(toolbar);
 
-        mDrawerList = new ArrayList<>();
+        /*mDrawerList = new ArrayList<>();
         mDrawerList.add(DrawerItem.create(101, getString(R.string.title_seatplan), "ic_grid_on_grey600_24dp", true, this));
         mDrawerList.add(DrawerItem.create(102, getString(R.string.title_message), "ic_message_grey_600_24dp", true, this));
         mDrawerList.add(DrawerSection.create(200, "Settings"));
@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 selectItem(position);
             }
-        });
+        });*/
 
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar,
                 R.string.drawer_open, R.string.drawer_close) {
@@ -152,9 +152,9 @@ public class MainActivity extends AppCompatActivity {
         if (mDrawerListView != null) {
             mDrawerListView.setItemChecked(position, false);
         }
-        if (mDrawerLayout != null) {
+/*        if (mDrawerLayout != null) {
             mDrawerLayout.closeDrawer(mDrawerListView);
-        }
+        }*/
         if (!mUserLearnedDrawer) {
             mUserLearnedDrawer = true;
             SharedPreferences sp = PreferenceManager
