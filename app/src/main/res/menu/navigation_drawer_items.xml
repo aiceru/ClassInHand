@@ -14,9 +14,9 @@
     <group
         android:id="@+id/menugroup_settings">
         <item
-            android:id="@+id/menuitem_fillinfo"
+            android:id="@+id/menuitem_studentinfo"
             android:icon="@drawable/ic_edit_grey600_24dp"
-            android:title="@string/title_fillinfo"/>
+            android:title="@string/title_studentinfo"/>
         <item
             android:id="@+id/menuitem_setting"
             android:icon="@drawable/ic_settings_grey600_24dp"

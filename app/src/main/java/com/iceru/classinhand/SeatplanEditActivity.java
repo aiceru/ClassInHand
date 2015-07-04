@@ -283,7 +283,7 @@ public class SeatplanEditActivity extends ActionBarActivity {
 
         // user manual
         if(!mShowcaseShown) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.dialog_style);
             builder.setMessage(R.string.edit_seatplan_user_manual);
             builder.setPositiveButton(R.string.donotshowagain, new DialogInterface.OnClickListener() {
                 @Override

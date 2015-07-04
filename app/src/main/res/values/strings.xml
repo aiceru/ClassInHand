@@ -7,6 +7,7 @@
     <string name="title_classtime">수업시수관리</string>
     <string name="title_message">문자보내기</string>
     <string name="title_fillinfo">기본정보 입력</string>
+    <string name="title_studentinfo">학생정보 입력</string>
     <string name="title_setting">환경설정</string>
     <string name="title_dialog_select_date">날짜 선택</string>
     <string name="title_dialog_student_edit">학생정보 수정</string>

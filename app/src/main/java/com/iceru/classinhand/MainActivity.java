@@ -56,11 +56,6 @@ public class MainActivity extends AppCompatActivity {
     private GregorianCalendar mNewDate;
     private GregorianCalendar mOldDate;
 
-    /**
-     * Used to store the last screen title. For use in {link #restoreActionBar()}.
-     */
-    //private CharSequence mTitle;
-
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         //super.onSaveInstanceState(outState);
@@ -117,15 +112,12 @@ public class MainActivity extends AppCompatActivity {
             /** Called when a drawer has settled in a completely closed state. */
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
-                //mDrawerToggle.syncState();
                 getSupportActionBar().setTitle(mTitle);
-                //invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
 
             /** Called when a drawer has settled in a completely open state. */
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                getSupportActionBar().setTitle(mDrawerTitle);
             }
         };
 
@@ -160,9 +152,9 @@ public class MainActivity extends AppCompatActivity {
                 mTitle = getString(R.string.title_message);
                 fragmentManager.beginTransaction().replace(R.id.main_contents, MessageFragment.getInstance()).commitAllowingStateLoss();
                 break;
-            case R.id.menuitem_fillinfo:
-                mTitle = getString(R.string.title_fillinfo);
-                fragmentManager.beginTransaction().replace(R.id.main_contents, FillInfoPagerFragment.getInstance()).commitAllowingStateLoss();
+            case R.id.menuitem_studentinfo:
+                mTitle = getString(R.string.title_studentinfo);
+                fragmentManager.beginTransaction().replace(R.id.main_contents, StudentListFragment.getInstance()).commitAllowingStateLoss();
                 break;
             case R.id.menuitem_setting:
                 mTitle = getString(R.string.title_setting);
@@ -190,24 +182,6 @@ public class MainActivity extends AppCompatActivity {
         if (!mUserLearnedDrawer && !mFromSavedInstanceState) {
             mDrawerLayout.openDrawer(mNavigationView);
         } else selectItem(mCurrentSelectedItemId);
-        if (!mFirstShowcaseShown) {
-            mNavigationView.post(new Runnable() {
-                @Override
-                public void run() {
-                    View v = mNavigationView.getChildAt(3);
-                    int[] location = new int[2];
-                    int[] size = new int[2];
-                    v.getLocationOnScreen(location);
-                    size[0] = v.getMeasuredWidth();
-                    size[1] = v.getMeasuredHeight();
-                    Intent showcaseIntent = new Intent(getApplicationContext(), ShowcaseActivity.class);
-                    showcaseIntent.putExtra(ClassInHandApplication.SHOWCASE_TARGET_POSITION, location);
-                    showcaseIntent.putExtra(ClassInHandApplication.SHOWCASE_TARGET_SIZE, size);
-                    showcaseIntent.putExtra(ClassInHandApplication.SHOWCASE_MESSAGE, R.string.welcome_input_students_info);
-                    startActivityForResult(showcaseIntent, ClassInHandApplication.REQUESTCODE_FIRST_SHOWCASE);
-                }
-            });
-        }
     }
 
     @Override
@@ -243,42 +217,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /*@Override
-    public void onBackPressed() {
-        if(mFragmentDepth > 1) {
-            getFragmentManager().popBackStackImmediate();
-            mFragmentDepth--;
-            getSupportActionBar().setTitle(mTitle);
-        }
-        else {
-            super.onBackPressed();
-        }
-    }*/
-
-    /*@Override
-    public void onNavigationDrawerItemSelected(int position) {
-        // update the main content by replacing fragments
-        FragmentManager fragmentManager = getFragmentManager();
-        switch(position+1) {
-	        case 1:
-		        fragmentManager.beginTransaction().replace(R.id.main_contents, SeatFragment.newInstance()).commit();
-		        break;
-	        case 3:
-	            fragmentManager.beginTransaction().replace(R.id.main_contents, FillInfoPagerFragment.newInstance()).commit();
-	            break;
-	        default:
-	            break;
-        }
-    }*/
-    
-    //public boolean isDrawerOpen() {
-    //	return mNavigationDrawerFragment.isDrawerOpen();
-    //}
-
-    /*public ClassDBHelper getDbHelper() {
-        return dbHelper;
-    }*/
-
 	public int getNum_roleConsume() {
 		return num_roleConsume;
 	}
@@ -286,30 +224,6 @@ public class MainActivity extends AppCompatActivity {
 	public ArrayList<Role> getmRoles() {
 		return mRoles;
 	}
-
-	/*public boolean addRole(Role role) {
-		boolean success = mRoles.add(role);
-		if(success) {
-			num_roleConsume += role.getConsume();
-
-			SharedPreferences.Editor editor = mShPrefRoleList.edit();
-			editor.putInt(role.getName(), role.getConsume());
-			editor.apply();
-		}
-		return success;
-	}
-
-	public boolean removeRole(Role role) {
-		boolean success = mRoles.remove(role);
-		if(success) {
-			num_roleConsume -= role.getConsume();
-
-			SharedPreferences.Editor editor = mShPrefRoleList.edit();
-			editor.remove(role.getName());
-			editor.apply();
-		}
-		return success;
-	}*/
 
     public void onClickNewPersonButton(View view) {
         Intent intent = new Intent(this, StudentAddActivity.class);
@@ -373,30 +287,6 @@ public class MainActivity extends AppCompatActivity {
                 mOldDate == null? 0 : mOldDate.getTimeInMillis());
         startActivity(intent);
     }
-
-    
-
-/*    public void restoreActionBar() {
-        ActionBar actionBar = getActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        actionBar.setDisplayShowTitleEnabled(true);
-        actionBar.setTitle(mTitle);
-    }*/
-
-/*
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        if (!mNavigationDrawerFragment.isDrawerOpen()) {
-            // Only show items in the action bar relevant to this screen
-            // if the drawer is not showing. Otherwise, let the drawer
-            // decide what to show in the action bar.
-            //getMenuInflater().inflate(R.menu.menu_fillinfo, menu);
-            restoreActionBar();
-            return true;
-        }
-        return super.onCreateOptionsMenu(menu);
-    }
-    */
 
     private void exportDB() {
         File sd = Environment.getExternalStorageDirectory();

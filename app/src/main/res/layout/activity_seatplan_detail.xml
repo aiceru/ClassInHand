@@ -41,13 +41,6 @@
                     android:layout_marginTop="32dp"
                     android:background="@drawable/lectern"/>
 
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="10dp"
-                    android:layout_marginTop="32dp"
-                    android:layout_marginBottom="16dp"
-                    android:background="@drawable/board"/>
-
             </LinearLayout>
 
         <com.getbase.floatingactionbutton.FloatingActionsMenu

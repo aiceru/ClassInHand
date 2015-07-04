@@ -23,6 +23,7 @@ public class StudentListFragment extends Fragment {
     private MainActivity                    mainActivity;
     private ArrayList<Student>              mStudents;
 
+    private static StudentListFragment      thisObject;
     private RecyclerView                    mStudentListRecyclerView;
     private StudentListAdapter              mStudentListAdapter;
     private RecyclerView.LayoutManager      mStudentListLayoutManager;
@@ -30,9 +31,11 @@ public class StudentListFragment extends Fragment {
 
     private boolean                         mShowcaseShown;
 
-    public static StudentListFragment newInstance() {
-        StudentListFragment fragment = new StudentListFragment();
-        return fragment;
+    public static StudentListFragment getInstance() {
+        if(thisObject == null) {
+            thisObject = new StudentListFragment();
+        }
+        return thisObject;
     }
 
     @Override
@@ -67,7 +70,7 @@ public class StudentListFragment extends Fragment {
         super.onResume();
         mStudentListAdapter.notifyDataSetChanged();
 
-        if(!mShowcaseShown) {
+        /*if(!mShowcaseShown) {
             mFABaddStudent.post(new Runnable() {
                 @Override
                 public void run() {
@@ -84,7 +87,7 @@ public class StudentListFragment extends Fragment {
                     startActivityForResult(showcaseIntent, ClassInHandApplication.REQUESTCODE_STUDENTLIST_SHOWCASE);
                 }
             });
-        }
+        }*/
     }
 
     @Override
