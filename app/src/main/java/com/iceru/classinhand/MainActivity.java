@@ -8,9 +8,11 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 import android.view.View;
 
 import java.io.File;
@@ -26,10 +28,7 @@ import java.util.List;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.widget.AdapterView;
 import android.widget.DatePicker;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
@@ -43,12 +42,10 @@ public class MainActivity extends AppCompatActivity {
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
     private DrawerLayout            mDrawerLayout;
-    private ListView                mDrawerListView;
-    private List<DrawerContent>     mDrawerList;
+    private NavigationView          mNavigationView;
     private ActionBarDrawerToggle   mDrawerToggle;
-    private RelativeLayout          mMainLayout;
 
-    private int     mCurrentSelectedPosition = 0;
+    private int mCurrentSelectedItemId = R.id.menuitem_seatplan;
     private String  mDrawerTitle;
     private String  mTitle;
 
@@ -67,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         //super.onSaveInstanceState(outState);
-        outState.putInt(ClassInHandApplication.STATE_SELECTED_POSITION, mCurrentSelectedPosition);
+        outState.putInt(ClassInHandApplication.STATE_SELECTED_POSITION, mCurrentSelectedItemId);
     }
 
     @Override
@@ -81,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
         mFirstShowcaseShown = sp.getBoolean(ClassInHandApplication.PREF_FIRST_SHOWCASE, false);
 
         if (savedInstanceState != null) {
-            mCurrentSelectedPosition = savedInstanceState.getInt(ClassInHandApplication.STATE_SELECTED_POSITION);
+            mCurrentSelectedItemId = savedInstanceState.getInt(ClassInHandApplication.STATE_SELECTED_POSITION);
             mFromSavedInstanceState = true;
         }
         mDrawerTitle = getString(R.string.app_name);
@@ -93,33 +90,26 @@ public class MainActivity extends AppCompatActivity {
     private void initViews() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        //mDrawerListView = (ListView) findViewById(R.id.navigation_drawer);
-        //mMainLayout = (RelativeLayout) findViewById(R.id.relativelayout_main);
+        mNavigationView = (NavigationView) findViewById(R.id.navigation);
 
         toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
         setSupportActionBar(toolbar);
 
-        /*mDrawerList = new ArrayList<>();
-        mDrawerList.add(DrawerItem.create(101, getString(R.string.title_seatplan), "ic_grid_on_grey600_24dp", true, this));
-        mDrawerList.add(DrawerItem.create(102, getString(R.string.title_message), "ic_message_grey_600_24dp", true, this));
-        mDrawerList.add(DrawerSection.create(200, "Settings"));
-        mDrawerList.add(DrawerSubItem.create(201, getString(R.string.title_fillinfo), "ic_edit_grey600_24dp", true, this));
-        mDrawerList.add(DrawerSubItem.create(301, getString(R.string.title_setting), "ic_settings_grey600_24dp", true, this));
-
-        // DEBUG 빌드에만 포함!
         if(BuildConfig.DEBUG) {
-            mDrawerList.add(DrawerSubItem.create(901, "DB추출(개발자용)", "ic_settings_grey600_24dp", false, this));
-            mDrawerList.add(DrawerSubItem.create(902, "DB삭제(개발자용)", "ic_settings_grey600_24dp", false, this));
-            mDrawerList.add(DrawerSubItem.create(903, "TestDB생성(개발자용)", "ic_settings_grey600_24dp", false, this));
+            mNavigationView.inflateMenu(R.menu.navigation_drawer_items_debug);
+        } else {
+            mNavigationView.inflateMenu(R.menu.navigation_drawer_items);
         }
 
-        mDrawerListView.setAdapter(new DrawerContentAdapter(getSupportActionBar().getThemedContext(), R.layout.drawer_item, mDrawerList));
-        mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                selectItem(position);
+            public boolean onNavigationItemSelected(MenuItem menuItem) {
+                menuItem.setChecked(true);
+                mDrawerLayout.closeDrawers();
+                selectItem(menuItem.getItemId());
+                return true;
             }
-        });*/
+        });
 
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar,
                 R.string.drawer_open, R.string.drawer_close) {
@@ -148,50 +138,44 @@ public class MainActivity extends AppCompatActivity {
         mDrawerToggle.syncState();
     }
 
-    private void selectItem(int position) {
-        if (mDrawerListView != null) {
-            mDrawerListView.setItemChecked(position, false);
-        }
-/*        if (mDrawerLayout != null) {
-            mDrawerLayout.closeDrawer(mDrawerListView);
-        }*/
+    private void selectItem(int navViewItemId) {
         if (!mUserLearnedDrawer) {
             mUserLearnedDrawer = true;
             SharedPreferences sp = PreferenceManager
                     .getDefaultSharedPreferences(getApplicationContext());
             sp.edit().putBoolean(ClassInHandApplication.PREF_USER_LEARNED_DRAWER, true).apply();
         }
-        mCurrentSelectedPosition = position;
+        mCurrentSelectedItemId = navViewItemId;
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         // 2015. 4. 22. wooseok.
         // commit() must be executed before onSaveInstanceState(), so use commitAllowingStateLoss().
         // http://www.kmshack.kr/fragment-%ED%8C%8C%ED%97%A4%EC%B9%98%EA%B8%B0-3-fragmentmanager-fragmenttransaction%EC%97%90-%EB%8C%80%ED%95%B4%EC%84%9C/
-        switch(position+1) {
-            case 1:
+        switch(navViewItemId) {
+            case R.id.menuitem_seatplan:
                 mTitle = getString(R.string.title_seatplan);
                 fragmentManager.beginTransaction().replace(R.id.main_contents, SeatplansFragment.getInstance()).commitAllowingStateLoss();
                 break;
-            case 2:
+            case R.id.menuitem_message:
                 mTitle = getString(R.string.title_message);
                 fragmentManager.beginTransaction().replace(R.id.main_contents, MessageFragment.getInstance()).commitAllowingStateLoss();
                 break;
-            case 4:
+            case R.id.menuitem_fillinfo:
                 mTitle = getString(R.string.title_fillinfo);
                 fragmentManager.beginTransaction().replace(R.id.main_contents, FillInfoPagerFragment.getInstance()).commitAllowingStateLoss();
                 break;
-            case 5:
+            case R.id.menuitem_setting:
                 mTitle = getString(R.string.title_setting);
                 fragmentManager.beginTransaction().replace(R.id.main_contents, SettingsFragment.getInstance()).commitAllowingStateLoss();
                 break;
-            case 6:
+            case R.id.menuitem_dev_exportdb:
                 exportDB();
                 break;
-            case 7:
+            case R.id.menuitem_dev_deletedb:
                 ClassInHandApplication.getInstance().removeAllStudents();
                 ClassInHandApplication.getInstance().removeAllSeatplans();
                 break;
-            case 8:
+            case R.id.menuitem_dev_createdb:
                 ClassInHandApplication.getInstance().createTestData();
                 break;
             default:
@@ -204,13 +188,13 @@ public class MainActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
         if (!mUserLearnedDrawer && !mFromSavedInstanceState) {
-            mDrawerLayout.openDrawer(mDrawerListView);
-        } else selectItem(mCurrentSelectedPosition);
+            mDrawerLayout.openDrawer(mNavigationView);
+        } else selectItem(mCurrentSelectedItemId);
         if (!mFirstShowcaseShown) {
-            mDrawerListView.post(new Runnable() {
+            mNavigationView.post(new Runnable() {
                 @Override
                 public void run() {
-                    View v = mDrawerListView.getChildAt(3);
+                    View v = mNavigationView.getChildAt(3);
                     int[] location = new int[2];
                     int[] size = new int[2];
                     v.getLocationOnScreen(location);

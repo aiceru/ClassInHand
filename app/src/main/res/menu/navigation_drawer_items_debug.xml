@@ -22,4 +22,16 @@
             android:icon="@drawable/ic_settings_grey600_24dp"
             android:title="@string/title_setting"/>
     </group>
+    <group
+        android:id="@+id/menugroup_dev">
+        <item
+            android:id="@+id/menuitem_dev_exportdb"
+            android:title="export DB"/>
+        <item
+            android:id="@+id/menuitem_dev_deletedb"
+            android:title="delete DB"/>
+        <item
+            android:id="@+id/menuitem_dev_createdb"
+            android:title="create DB"/>
+    </group>
 </menu>
