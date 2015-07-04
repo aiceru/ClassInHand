@@ -2,11 +2,12 @@
 <resources>
     <color name="primary">@color/indigo_500</color>
     <color name="primary_dark">@color/indigo_700</color>
-    <color name="accent">@color/pink_a200</color>
-    <color name="text_primary">@color/white</color>
-    <color name="text_secondary">@color/grey_900</color>
+    <color name="primary_light">@color/indigo_100</color>
+    <color name="accent">@color/orange_500</color>
+    <color name="text_primary">@color/grey_900</color>
+    <color name="text_secondary">@color/grey_600</color>
     <color name="selected_background">@color/indigo_200</color>
-    <color name="fab_color">@color/primary</color>
+    <color name="divider">@color/grey_400</color>
     <color name="default_background">@color/background_material_light</color>
 
     <!-- RED -->

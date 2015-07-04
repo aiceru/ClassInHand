@@ -12,6 +12,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
@@ -35,6 +37,7 @@ public class MessageFragment extends Fragment {
     // views
     private RecyclerView            mContactsRecyclerView;
     private RecyclerView.LayoutManager  mLayoutManager;
+    private android.support.design.widget.FloatingActionButton mMainFab;
     private FloatingActionButton    mFABselectall;
     private FloatingActionButton    mFABdeselectall;
     private FloatingActionButton    mFABsend;
@@ -56,16 +59,26 @@ public class MessageFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_message, container, false);
         mContactsRecyclerView = (RecyclerView)v.findViewById(R.id.recyclerview_contacts);
-        mFABselectall = (FloatingActionButton)v.findViewById(R.id.fab_message_select_all);
+        mMainFab = (android.support.design.widget.FloatingActionButton)v.findViewById(R.id.fab_message_main);
+        /*mFABselectall = (FloatingActionButton)v.findViewById(R.id.fab_message_select_all);
         mFABdeselectall = (FloatingActionButton)v.findViewById(R.id.fab_message_deselect_all);
-        mFABsend = (FloatingActionButton)v.findViewById(R.id.fab_message_send);
+        mFABsend = (FloatingActionButton)v.findViewById(R.id.fab_message_send);*/
 
         mLayoutManager = new LinearLayoutManager(application.getApplicationContext());
         mContactsRecyclerView.setLayoutManager(mLayoutManager);
         mContactsAdapter = new ContactsAdapter(mContacts, application.getApplicationContext());
         mContactsRecyclerView.setAdapter(mContactsAdapter);
 
-        mFABselectall.setOnClickListener(new View.OnClickListener() {
+        mMainFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate);
+                mMainFab.setImageDrawable(getActivity().getDrawable(R.drawable.ic_message_white_18dp));
+                mMainFab.startAnimation(animation);
+            }
+        });
+
+/*        mFABselectall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mContactsAdapter.setAllChecked(true);
@@ -82,7 +95,7 @@ public class MessageFragment extends Fragment {
             public void onClick(View v) {
                 composeMessage();
             }
-        });
+        });*/
         return v;
     }
 

@@ -60,7 +60,7 @@ public class StudentListFragment extends Fragment {
         mStudentListRecyclerView.setLayoutManager(mStudentListLayoutManager);
         mStudentListAdapter = new StudentListAdapter(mStudents, mainActivity);
         mStudentListRecyclerView.setAdapter(mStudentListAdapter);
-        mFABaddStudent = (FloatingActionButton)rootView.findViewById(R.id.fab_add_student);
+        //mFABaddStudent = (FloatingActionButton)rootView.findViewById(R.id.fab_add_student);
 
         return rootView;
     }

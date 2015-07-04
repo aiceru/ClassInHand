@@ -275,7 +275,7 @@ public class SeatplanEditActivity extends ActionBarActivity {
             }
         });
 
-        mRandomAssignButton = (FloatingActionButton) findViewById(R.id.btn_random_assign);
+        /*mRandomAssignButton = (FloatingActionButton) findViewById(R.id.btn_random_assign);*/
 
         tvRemainSeats = (TextView) findViewById(R.id.textview_seatplan_edit_remainseats);
         tvRemainStudents = (TextView) findViewById(R.id.textview_seatplan_edit_remainstudents);

@@ -83,7 +83,7 @@
 
                 </LinearLayout>
 
-                <com.getbase.floatingactionbutton.FloatingActionButton
+                <!--<com.getbase.floatingactionbutton.FloatingActionButton
                     android:id="@+id/btn_random_assign"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -93,7 +93,7 @@
                     app:fab_icon="@drawable/ic_loop_white_18dp"
                     app:fab_colorNormal="@color/fab_color"
                     app:fab_colorPressed="@color/fab_color"
-                    android:onClick="assignRandom"/>
+                    android:onClick="assignRandom"/>-->
 
             </RelativeLayout>
 

@@ -43,7 +43,7 @@
 
             </LinearLayout>
 
-        <com.getbase.floatingactionbutton.FloatingActionsMenu
+        <!--<com.getbase.floatingactionbutton.FloatingActionsMenu
             android:id="@+id/fab_seatplan_detail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -74,7 +74,7 @@
                 app:fab_title="@string/action_delete"
                 android:onClick="onClickDeleteButton"/>
 
-        </com.getbase.floatingactionbutton.FloatingActionsMenu>
+        </com.getbase.floatingactionbutton.FloatingActionsMenu>-->
     </RelativeLayout>
 
 </LinearLayout>
