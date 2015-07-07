@@ -12,6 +12,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
@@ -39,12 +40,9 @@ public class MessageFragment extends Fragment {
     // views
     private RecyclerView            mContactsRecyclerView;
     private RecyclerView.LayoutManager  mLayoutManager;
-    private android.support.design.widget.FloatingActionButton mMainFab;
+    private android.support.design.widget.FloatingActionButton mMainFab, mSelectAllFab, mDeselectAllFab;
     private boolean                 mFabExpanded;
     private View                    mDimView;
-    private FloatingActionButton    mFABselectall;
-    private FloatingActionButton    mFABdeselectall;
-    private FloatingActionButton    mFABsend;
 
     private TextView                mMainFabLabel;
     private LinearLayout            mSelectAllFabLayout, mDeselectAllFabLayout;
@@ -77,6 +75,8 @@ public class MessageFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_message, container, false);
         mContactsRecyclerView = (RecyclerView)v.findViewById(R.id.recyclerview_contacts);
         mMainFab = (android.support.design.widget.FloatingActionButton)v.findViewById(R.id.fab_message_main);
+        mSelectAllFab = (android.support.design.widget.FloatingActionButton)v.findViewById(R.id.fab_message_selectall);
+        mDeselectAllFab = (android.support.design.widget.FloatingActionButton)v.findViewById(R.id.fab_message_deselectall);
         mDimView = v.findViewById(R.id.dimview_message);
         mDimView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,14 +87,26 @@ public class MessageFragment extends Fragment {
         mSelectAllFabLayout = (LinearLayout)v.findViewById(R.id.linearlayout_message_fab_selectall);
         mDeselectAllFabLayout = (LinearLayout)v.findViewById(R.id.linearlayout_message_fab_deselectall);
         mMainFabLabel = (TextView)v.findViewById(R.id.textview_sendsms);
-        /*mFABselectall = (FloatingActionButton)v.findViewById(R.id.fab_message_select_all);
-        mFABdeselectall = (FloatingActionButton)v.findViewById(R.id.fab_message_deselect_all);
-        mFABsend = (FloatingActionButton)v.findViewById(R.id.fab_message_send);*/
 
         mLayoutManager = new LinearLayoutManager(application.getApplicationContext());
         mContactsRecyclerView.setLayoutManager(mLayoutManager);
         mContactsAdapter = new ContactsAdapter(mContacts, application.getApplicationContext());
         mContactsRecyclerView.setAdapter(mContactsAdapter);
+
+        mSelectAllFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mContactsAdapter.setAllChecked(true);
+                hideFabComponents();
+            }
+        });
+        mDeselectAllFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mContactsAdapter.setAllChecked(false);
+                hideFabComponents();
+            }
+        });
 
         mMainFab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -118,25 +130,13 @@ public class MessageFragment extends Fragment {
             }
         });
 
-/*        mFABselectall.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mContactsAdapter.setAllChecked(true);
-            }
-        });
-        mFABdeselectall.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mContactsAdapter.setAllChecked(false);
-            }
-        });
-        mFABsend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                composeMessage();
-            }
-        });*/
         return v;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
     }
 
     private void hideFabComponents() {

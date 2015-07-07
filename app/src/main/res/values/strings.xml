@@ -39,6 +39,7 @@
     <string name="action_settings">Settings</string>
     <string name="action_select_all">전부 선택</string>
     <string name="action_unselect_all">전부 해제</string>
+    <string name="action_send_sms">SMS 보내기</string>
     <string name="donotshowagain">다시 보지 않기</string>
     <string name="section">section</string>
     <string name="textview">textview</string>

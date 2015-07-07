@@ -38,7 +38,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/activity_horizontal_oneside_margin"
-                android:text="SMS 보내기"
+                android:text="@string/action_send_sms"
+                android:background="@drawable/label_bg"
                 android:visibility="gone"/>
 
             <FrameLayout
@@ -76,8 +77,9 @@
                 android:id="@+id/textview_selectall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@drawable/label_bg"
                 android:layout_marginRight="@dimen/activity_horizontal_margin"
-                android:text="전부 선택"/>
+                android:text="@string/action_select_all"/>
 
             <FrameLayout
                 android:layout_width="@dimen/fab_size_normal"
@@ -113,8 +115,9 @@
                 android:id="@+id/textview_deselectall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@drawable/label_bg"
                 android:layout_marginRight="@dimen/activity_horizontal_margin"
-                android:text="전부 해제"/>
+                android:text="@string/action_unselect_all"/>
 
             <FrameLayout
                 android:layout_width="@dimen/fab_size_normal"
