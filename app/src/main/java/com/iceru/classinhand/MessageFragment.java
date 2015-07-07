@@ -14,6 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
@@ -38,10 +40,19 @@ public class MessageFragment extends Fragment {
     private RecyclerView            mContactsRecyclerView;
     private RecyclerView.LayoutManager  mLayoutManager;
     private android.support.design.widget.FloatingActionButton mMainFab;
+    private boolean                 mFabExpanded;
+    private View                    mDimView;
     private FloatingActionButton    mFABselectall;
     private FloatingActionButton    mFABdeselectall;
     private FloatingActionButton    mFABsend;
-    // adapter!!
+
+    private TextView                mMainFabLabel;
+    private LinearLayout            mSelectAllFabLayout, mDeselectAllFabLayout;
+
+    // animations
+    private Animation rotateAni;
+    private Animation alphaAni;
+    private Animation translateAni;
 
     public static MessageFragment getInstance() {
         if(thisObject == null) thisObject = new MessageFragment();
@@ -53,6 +64,12 @@ public class MessageFragment extends Fragment {
         super.onCreate(savedInstanceState);
         application = ClassInHandApplication.getInstance();
         mContacts = application.getmStudents();
+
+        rotateAni = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate);
+        alphaAni = AnimationUtils.loadAnimation(getActivity(), R.anim.alpha);
+        translateAni = AnimationUtils.loadAnimation(getActivity(), R.anim.translate);
+
+        mFabExpanded = false;
     }
 
     @Override
@@ -60,6 +77,16 @@ public class MessageFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_message, container, false);
         mContactsRecyclerView = (RecyclerView)v.findViewById(R.id.recyclerview_contacts);
         mMainFab = (android.support.design.widget.FloatingActionButton)v.findViewById(R.id.fab_message_main);
+        mDimView = v.findViewById(R.id.dimview_message);
+        mDimView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hideFabComponents();
+            }
+        });
+        mSelectAllFabLayout = (LinearLayout)v.findViewById(R.id.linearlayout_message_fab_selectall);
+        mDeselectAllFabLayout = (LinearLayout)v.findViewById(R.id.linearlayout_message_fab_deselectall);
+        mMainFabLabel = (TextView)v.findViewById(R.id.textview_sendsms);
         /*mFABselectall = (FloatingActionButton)v.findViewById(R.id.fab_message_select_all);
         mFABdeselectall = (FloatingActionButton)v.findViewById(R.id.fab_message_deselect_all);
         mFABsend = (FloatingActionButton)v.findViewById(R.id.fab_message_send);*/
@@ -72,9 +99,22 @@ public class MessageFragment extends Fragment {
         mMainFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate);
-                mMainFab.setImageDrawable(getActivity().getDrawable(R.drawable.ic_message_white_18dp));
-                mMainFab.startAnimation(animation);
+                if(!mFabExpanded) {
+                    mMainFab.setImageResource(R.drawable.ic_message_white_18dp);
+                    mMainFab.startAnimation(rotateAni);
+                    mMainFabLabel.setVisibility(View.VISIBLE);
+                    mDimView.setVisibility(View.VISIBLE);
+                    mDimView.startAnimation(alphaAni);
+                    mSelectAllFabLayout.setVisibility(View.VISIBLE);
+                    mSelectAllFabLayout.startAnimation(translateAni);
+                    mDeselectAllFabLayout.setVisibility(View.VISIBLE);
+                    mDeselectAllFabLayout.startAnimation(translateAni);
+                    mFabExpanded = true;
+                }
+                else {
+                    hideFabComponents();
+                    composeMessage();
+                }
             }
         });
 
@@ -97,6 +137,18 @@ public class MessageFragment extends Fragment {
             }
         });*/
         return v;
+    }
+
+    private void hideFabComponents() {
+        mFabExpanded = false;
+        mMainFab.setImageResource(R.drawable.ic_add_white_18dp);
+        mMainFabLabel.setVisibility(View.GONE);
+        mDimView.clearAnimation();
+        mDimView.setVisibility(View.GONE);
+        mSelectAllFabLayout.clearAnimation();
+        mSelectAllFabLayout.setVisibility(View.GONE);
+        mDeselectAllFabLayout.clearAnimation();
+        mDeselectAllFabLayout.setVisibility(View.GONE);
     }
 
     private void composeMessage() {
