@@ -133,12 +133,6 @@ public class MessageFragment extends Fragment {
         return v;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-    }
-
     private void hideFabComponents() {
         mFabExpanded = false;
         mMainFab.setImageResource(R.drawable.ic_add_white_18dp);

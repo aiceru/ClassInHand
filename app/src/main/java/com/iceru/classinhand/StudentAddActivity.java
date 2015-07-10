@@ -3,6 +3,7 @@ package com.iceru.classinhand;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -23,7 +24,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 
-public class StudentAddActivity extends ActionBarActivity {
+public class StudentAddActivity extends AppCompatActivity {
 
     /* Application Class */
     private ClassInHandApplication          application;
@@ -70,13 +71,13 @@ public class StudentAddActivity extends ActionBarActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-        mStudentsList = (RecyclerView)findViewById(R.id.recyclerview_student_add_studentlist);
+        /*mStudentsList = (RecyclerView)findViewById(R.id.recyclerview_student_add_studentlist);
         mStudentsList.setHasFixedSize(true);
         mStudentsListLayoutManager = new LinearLayoutManager(this);
         mStudentsList.setLayoutManager(mStudentsListLayoutManager);
         mStudentsListAdapter = new StudentListAdapter(mStudents, this);
         mStudentsList.setAdapter(mStudentsListAdapter);
-        mStudentsList.scrollToPosition(mStudents.size()-1);
+        mStudentsList.scrollToPosition(mStudents.size()-1);*/
 
         mAttendNumEditText = (EditText)findViewById(R.id.edittext_student_add_attendnum);
         while(mAttendNumArray[attendNum]) attendNum++;

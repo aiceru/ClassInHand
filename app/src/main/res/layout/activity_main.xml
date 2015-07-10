@@ -26,23 +26,12 @@
 
         </android.support.design.widget.AppBarLayout>
 
-
         <FrameLayout
             android:id="@+id/main_contents"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/background_material_light"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
-
-        <!--<ListView
-            android:id="@+id/navigation_drawer"
-            android:layout_width="240dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="left"
-            android:background="@color/background_material_light"
-            android:choiceMode="singleChoice"
-            android:divider="@android:color/transparent"
-            android:dividerHeight="0dp" />-->
 
     </android.support.design.widget.CoordinatorLayout>
 
