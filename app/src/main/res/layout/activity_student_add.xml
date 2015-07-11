@@ -23,121 +23,89 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <!--<android.support.v7.widget.RecyclerView
+        <android.support.v7.widget.RecyclerView
             xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/recyclerview_student_add_studentlist"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"/>-->
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            android:isScrollContainer="true"/>
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        <GridLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            android:orientation="horizontal"
+            android:columnCount="2">
 
             <ImageButton
                 android:id="@+id/imagebutton_student_add_picture"
                 android:layout_width="104dp"
                 android:layout_height="104dp"
-                android:layout_alignParentLeft="true"
                 android:src="@drawable/ic_person_white_48dp"
-                android:padding="@dimen/activity_horizontal_margin"/>
+                android:padding="@dimen/activity_horizontal_margin"
+                android:layout_columnSpan="2"/>
 
-            <EditText
-                android:id="@+id/edittext_student_add_attendnum"
-                android:layout_width="52dp"
-                android:layout_height="52dp"
-                android:layout_toRightOf="@id/imagebutton_student_add_picture"
-                android:gravity="center"
-                android:textSize="16sp"
-                android:textColor="@color/text_secondary"
-                android:hint="@string/hint_edittext_attendnum"
-                android:maxLength="2"
-                android:singleLine="true"
-                android:inputType="number"
-                android:imeOptions="actionNext"
-                android:nextFocusDown="@+id/edittext_student_add_name"/>
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <EditText
+                    android:id="@+id/edittext_student_add_attendnum"
+                    android:layout_width="52dp"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/hint_edittext_attendnum"
+                    android:maxLength="2"
+                    android:singleLine="true"
+                    android:inputType="number"
+                    android:imeOptions="actionNext"
+                    android:nextFocusDown="@+id/edittext_student_add_name"/>
+            </android.support.design.widget.TextInputLayout>
 
             <ToggleButton
                 android:id="@+id/tglbtn_student_add_gender"
                 style="@style/toggleButton"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
-                android:layout_marginRight="@dimen/activity_horizontal_oneside_margin"
-                android:layout_alignBaseline="@id/edittext_student_add_attendnum"
-                android:layout_alignParentRight="true"
                 android:background="@drawable/tglbtn_boygirl_layerlist" />
 
-            <EditText
-                android:id="@id/edittext_student_add_name"
-                android:layout_height="52dp"
-                android:layout_width="match_parent"
-                android:layout_toRightOf="@id/imagebutton_student_add_picture"
-                android:layout_below="@id/edittext_student_add_attendnum"
-                android:paddingLeft="16dp"
-                android:gravity="center"
-                android:textSize="16sp"
-                android:textColor="@color/text_secondary"
-                android:hint="@string/hint_edittext_name"
-                android:maxLength="6"
-                android:singleLine="true"
-                android:inputType="textPersonName"
-                android:imeOptions="actionNext"
-                android:nextFocusDown="@+id/edittext_student_add_phone"/>
+                <EditText
+                    android:id="@id/edittext_student_add_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/hint_edittext_name"
+                    android:maxLength="6"
+                    android:singleLine="true"
+                    android:inputType="textPersonName"
+                    android:imeOptions="actionNext"
+                    android:nextFocusDown="@+id/edittext_student_add_phone"
+                    android:layout_columnSpan="2"/>
 
-        </RelativeLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+                <EditText
+                    android:id="@id/edittext_student_add_phone"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:inputType="phone"
+                    android:imeOptions="actionDone"
+                    android:layout_columnSpan="2"/>
 
             <TextView
-                android:layout_width="0dp"
                 android:layout_height="@dimen/recyclerview_singleline_tile_height"
-                android:layout_weight="3"
                 android:textSize="16sp"
-                android:gravity="center"
-                android:text="@string/hint_edittext_phone"/>
-
-            <EditText
-                android:id="@id/edittext_student_add_phone"
-                android:layout_width="0dp"
-                android:layout_height="@dimen/recyclerview_singleline_tile_height"
-                android:layout_weight="6"
-                android:gravity="center"
-                android:textColor="@color/text_secondary"
-                android:textSize="16sp"
-                android:inputType="phone"
-                android:imeOptions="actionDone"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="@dimen/recyclerview_singleline_tile_height"
-                android:layout_weight="3"
-                android:textSize="16sp"
-                android:gravity="center"
-                android:text="@string/hint_edittext_indate"/>
+                android:text="@string/hint_edittext_indate"
+                android:layout_columnSpan="2"/>
 
             <TextView
                 android:id="@+id/textview_student_add_indate"
-                android:layout_width="0dp"
                 android:layout_height="@dimen/recyclerview_singleline_tile_height"
-                android:layout_weight="6"
-                android:gravity="center"
                 android:textColor="@color/text_secondary"
-                android:textSize="16sp"/>
+                android:textSize="16sp"
+                android:layout_columnSpan="2"/>
 
-        </LinearLayout>
+        </GridLayout>
+
     </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>

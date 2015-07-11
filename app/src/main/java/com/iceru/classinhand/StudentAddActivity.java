@@ -71,13 +71,12 @@ public class StudentAddActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-        /*mStudentsList = (RecyclerView)findViewById(R.id.recyclerview_student_add_studentlist);
-        mStudentsList.setHasFixedSize(true);
+        mStudentsList = (RecyclerView)findViewById(R.id.recyclerview_student_add_studentlist);
         mStudentsListLayoutManager = new LinearLayoutManager(this);
         mStudentsList.setLayoutManager(mStudentsListLayoutManager);
         mStudentsListAdapter = new StudentListAdapter(mStudents, this);
         mStudentsList.setAdapter(mStudentsListAdapter);
-        mStudentsList.scrollToPosition(mStudents.size()-1);*/
+        mStudentsList.scrollToPosition(mStudents.size()-1);
 
         mAttendNumEditText = (EditText)findViewById(R.id.edittext_student_add_attendnum);
         while(mAttendNumArray[attendNum]) attendNum++;
