@@ -6,24 +6,13 @@
     android:orientation="vertical"
     android:background="@color/background_material_light">
 
-    <android.support.design.widget.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/addpersonactivity_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-    </android.support.design.widget.AppBarLayout>
-
-    <ScrollView
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        app:layout_behavior="com.iceru.classinhand.PatchedScrollingViewBehavior">
+        <!--Design support library bug에 따른 임시 패치
+        from https://code.google.com/p/android/issues/detail?id=176373#c5-->
+        <!--app:layout_behavior="@string/appbar_scrolling_view_behavior"-->
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -98,6 +87,12 @@
                 android:paddingLeft="16dp"
                 android:layout_marginTop="-16dp">
 
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="left|center_vertical"
+                    android:src="@drawable/ic_person_grey_700_24dp"/>
+
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -117,13 +112,34 @@
 
             </FrameLayout>
 
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="72dp"
+                android:paddingRight="16dp"
+                android:paddingLeft="16dp"
+                android:layout_marginTop="-16dp">
 
-                <EditText
-                    android:id="@id/edittext_student_add_phone"
-                    android:layout_height="wrap_content"
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="left|center_vertical"
+                    android:src="@drawable/ic_call_grey_700_24dp"/>
+
+                <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
-                    android:inputType="phone"
-                    android:imeOptions="actionDone" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="56dp"
+                    android:layout_gravity="left|top">
+                    <EditText
+                        android:id="@id/edittext_student_add_phone"
+                        android:layout_height="wrap_content"
+                        android:layout_width="match_parent"
+                        android:hint="@string/hint_edittext_phone"
+                        android:inputType="phone"
+                        android:imeOptions="actionDone" />
+                </android.support.design.widget.TextInputLayout>
+
+            </FrameLayout>
 
             <TextView
                 android:layout_width="match_parent"
@@ -140,6 +156,20 @@
 
         </LinearLayout>
 
-    </ScrollView>
+    </android.support.v4.widget.NestedScrollView>
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/addpersonactivity_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    </android.support.design.widget.AppBarLayout>
 
 </android.support.design.widget.CoordinatorLayout>
