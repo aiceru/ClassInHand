@@ -20,92 +20,126 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <android.support.v7.widget.RecyclerView
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/recyclerview_student_add_studentlist"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.5"
-            android:isScrollContainer="true"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-        <GridLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.5"
-            android:orientation="horizontal"
-            android:columnCount="2">
-
-            <ImageButton
-                android:id="@+id/imagebutton_student_add_picture"
-                android:layout_width="104dp"
-                android:layout_height="104dp"
-                android:src="@drawable/ic_person_white_48dp"
-                android:padding="@dimen/activity_horizontal_margin"
-                android:layout_columnSpan="2"/>
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="wrap_content"
+            <FrameLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-                <EditText
-                    android:id="@+id/edittext_student_add_attendnum"
-                    android:layout_width="52dp"
+
+                <ImageView
+                    android:id="@+id/imageview_student_add_picture"
+                    android:layout_width="match_parent"
+                    android:layout_height="256dp"
+                    android:src="@drawable/ic_person_white_48dp"
+                    android:scaleType="fitCenter"
+                    android:background="@color/dim_foreground_disabled_material_light"/>
+
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:src="@drawable/ic_photo_camera_white_18dp"
+                    android:layout_gravity="bottom|right"
+                    android:layout_margin="16dp"/>
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="72dp"
+                android:paddingRight="16dp"
+                android:paddingLeft="16dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="left|center_vertical"
+                    android:src="@drawable/ic_attendnum_grey_700_24dp"/>
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:hint="@string/hint_edittext_attendnum"
-                    android:maxLength="2"
-                    android:singleLine="true"
-                    android:inputType="number"
-                    android:imeOptions="actionNext"
-                    android:nextFocusDown="@+id/edittext_student_add_name"/>
-            </android.support.design.widget.TextInputLayout>
+                    android:layout_marginLeft="56dp"
+                    android:layout_gravity="left|top">
+                    <EditText
+                        android:id="@+id/edittext_student_add_attendnum"
+                        android:layout_width="52dp"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/hint_edittext_attendnum"
+                        android:maxLength="2"
+                        android:singleLine="true"
+                        android:inputType="number"
+                        android:imeOptions="actionNext"
+                        android:nextFocusDown="@+id/edittext_student_add_name"/>
+                </android.support.design.widget.TextInputLayout>
 
-            <ToggleButton
-                android:id="@+id/tglbtn_student_add_gender"
-                style="@style/toggleButton"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:background="@drawable/tglbtn_boygirl_layerlist" />
+                <ToggleButton
+                    android:id="@+id/tglbtn_student_add_gender"
+                    style="@style/toggleButton"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_gravity="right|center_vertical"
+                    android:background="@drawable/tglbtn_boygirl_layerlist" />
 
-                <EditText
-                    android:id="@id/edittext_student_add_name"
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="72dp"
+                android:paddingRight="16dp"
+                android:paddingLeft="16dp"
+                android:layout_marginTop="-16dp">
+
+                <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/hint_edittext_name"
-                    android:maxLength="6"
-                    android:singleLine="true"
-                    android:inputType="textPersonName"
-                    android:imeOptions="actionNext"
-                    android:nextFocusDown="@+id/edittext_student_add_phone"
-                    android:layout_columnSpan="2"/>
+                    android:layout_marginLeft="56dp"
+                    android:layout_gravity="left|top">
+                    <EditText
+                        android:id="@id/edittext_student_add_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/hint_edittext_name"
+                        android:maxLength="6"
+                        android:singleLine="true"
+                        android:inputType="textPersonName"
+                        android:imeOptions="actionNext"
+                        android:nextFocusDown="@+id/edittext_student_add_phone" />
+                </android.support.design.widget.TextInputLayout>
+
+            </FrameLayout>
+
 
                 <EditText
                     android:id="@id/edittext_student_add_phone"
                     android:layout_height="wrap_content"
                     android:layout_width="match_parent"
                     android:inputType="phone"
-                    android:imeOptions="actionDone"
-                    android:layout_columnSpan="2"/>
+                    android:imeOptions="actionDone" />
 
             <TextView
+                android:layout_width="match_parent"
                 android:layout_height="@dimen/recyclerview_singleline_tile_height"
                 android:textSize="16sp"
-                android:text="@string/hint_edittext_indate"
-                android:layout_columnSpan="2"/>
+                android:text="@string/hint_edittext_indate" />
 
             <TextView
+                android:layout_width="match_parent"
                 android:id="@+id/textview_student_add_indate"
                 android:layout_height="@dimen/recyclerview_singleline_tile_height"
                 android:textColor="@color/text_secondary"
-                android:textSize="16sp"
-                android:layout_columnSpan="2"/>
+                android:textSize="16sp" />
 
-        </GridLayout>
+        </LinearLayout>
 
-    </LinearLayout>
+    </ScrollView>
 
 </android.support.design.widget.CoordinatorLayout>

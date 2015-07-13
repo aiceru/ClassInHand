@@ -35,7 +35,7 @@
         <activity
             android:name=".StudentAddActivity"
             android:label="@string/title_activity_student_add"
-            android:windowSoftInputMode="adjustPan|adjustNothing"
+            android:windowSoftInputMode="adjustResize|adjustPan"
             android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
