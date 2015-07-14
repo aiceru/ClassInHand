@@ -52,6 +52,8 @@
     <string name="no">아니오</string>
     <string name="edit_location_only">아니요. 배치만 바꿀래요</string>
     <string name="edit_date_either">네. 날짜도 바꿀래요</string>
+    <string name="action_added">추가됨</string>
+    <string name="action_dismiss">사라져!</string>
 
     <string name="remain_seats">남은 자리\n</string>
     <string name="remain_students">남은 학생\n</string>

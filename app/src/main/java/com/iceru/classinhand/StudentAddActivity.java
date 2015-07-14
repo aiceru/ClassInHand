@@ -1,10 +1,12 @@
 package com.iceru.classinhand;
 
 import android.app.DatePickerDialog;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.design.widget.Snackbar;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.telephony.PhoneNumberUtils;
@@ -18,6 +20,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -35,9 +39,10 @@ public class StudentAddActivity extends AppCompatActivity {
     private GregorianCalendar               mInDate;
 
     /* Views */
-    private RecyclerView                    mStudentsList;
+    private NestedScrollView                mRootScrollView;
+    /*private RecyclerView                    mStudentsList;
     private RecyclerView.Adapter            mStudentsListAdapter;
-    private RecyclerView.LayoutManager      mStudentsListLayoutManager;
+    private RecyclerView.LayoutManager      mStudentsListLayoutManager;*/
     private ToggleButton                    mGenderTglbtn;
     private EditText                        mNameEditText;
     private EditText                        mAttendNumEditText;
@@ -78,6 +83,8 @@ public class StudentAddActivity extends AppCompatActivity {
         mStudentsList.setAdapter(mStudentsListAdapter);
         mStudentsList.scrollToPosition(mStudents.size()-1);*/
 
+        mRootScrollView = (NestedScrollView)findViewById(R.id.root_scrollview_student_add);
+
         mAttendNumEditText = (EditText)findViewById(R.id.edittext_student_add_attendnum);
         while(mAttendNumArray[attendNum]) attendNum++;
         mAttendNumEditText.setText(String.valueOf(attendNum));
@@ -99,8 +106,8 @@ public class StudentAddActivity extends AppCompatActivity {
         mPhoneEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if(actionId == EditorInfo.IME_ACTION_DONE) {
-                    addStudent();
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    showSnackbar(addStudent());
                     return true;
                 }
                 return false;
@@ -108,12 +115,37 @@ public class StudentAddActivity extends AppCompatActivity {
         });
     }
 
-    private void addStudent() {
+    private void showSnackbar(Student student) {
+        final Snackbar bar;
+        if(student != null) {
+            StringBuilder builder = new StringBuilder();
+            builder.append("\"").append(student.getAttendNum()).append(". ")
+                    .append(student.getName()).append("\"")
+                    .append(getString(R.string.action_added));
+            bar = Snackbar.make(mRootScrollView, builder.toString(), Snackbar.LENGTH_LONG);
+            bar.setAction(R.string.action_dismiss, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    bar.dismiss();
+                }
+            });
+            View view = bar.getView();
+            view.setBackgroundColor(getResources().getColor(R.color.accent));
+            TextView tv = (TextView)view.findViewById(android.support.design.R.id.snackbar_text);
+            tv.setTextColor(Color.WHITE);
+            tv = (TextView)view.findViewById(android.support.design.R.id.snackbar_action);
+            tv.setTextColor(Color.WHITE);
+            bar.show();
+        }
+    }
+
+    private Student addStudent() {
         Student student;
         String name, numStr;
         String phone;
         int attendNum;
         boolean isboy;
+        boolean ret;
 
         long inDate = mInDate.getTimeInMillis();
         long today = application.getValueOfTodayCalendar().getTimeInMillis();
@@ -125,37 +157,38 @@ public class StudentAddActivity extends AppCompatActivity {
 
         if(numStr.equals("")) {
             Toast.makeText(this, R.string.warning_edittext_num_is_null, Toast.LENGTH_SHORT).show();
-            return;
+            return null;
         }
 
         if(name.equals("")) {
             Toast.makeText(this, R.string.warning_edittext_name_is_null, Toast.LENGTH_SHORT).show();
-            return;
+            return null;
         }
 
         attendNum = Integer.valueOf(numStr);
 
         if(mAttendNumArray[attendNum]) {
             Toast.makeText(this, R.string.warning_existing_attendnum, Toast.LENGTH_SHORT).show();
-            return;
+            return null;
         }
 
         student = new Student(ClassInHandApplication.NEXT_ID, attendNum, name, isboy,
                 phone, (inDate <= today), inDate, Long.MAX_VALUE);
         ClassInHandApplication.NEXT_ID++;
 
-        application.addStudent(student);
-        mAttendNumArray[attendNum] = true;
+        ret = application.addStudent(student);
+        if(ret) {
+            mAttendNumArray[attendNum] = true;
+            while(mAttendNumArray[attendNum]) attendNum++;
+            mAttendNumEditText.setText(String.valueOf(attendNum));
+            mNameEditText.setText(null);
+            mPhoneEditText.setText(null);
 
-        mStudentsListAdapter.notifyDataSetChanged();
-        mStudentsList.scrollToPosition(mStudents.size()-1);
+            mAttendNumEditText.requestFocus();
+            return student;
+        }
 
-        while(mAttendNumArray[attendNum]) attendNum++;
-        mAttendNumEditText.setText(String.valueOf(attendNum));
-        mNameEditText.setText(null);
-        mPhoneEditText.setText(null);
-
-        mAttendNumEditText.requestFocus();
+        return null;
     }
 
     @Override

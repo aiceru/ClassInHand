@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
     private NavigationView          mNavigationView;
     private ActionBarDrawerToggle   mDrawerToggle;
 
-    private int mCurrentSelectedItemId = R.id.menuitem_seatplan;
+    private int mCurrentSelectedItemId = R.id.menuitem_studentinfo;
     private String  mDrawerTitle;
     private String  mTitle;
 

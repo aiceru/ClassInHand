@@ -7,6 +7,7 @@
     android:background="@color/background_material_light">
 
     <android.support.v4.widget.NestedScrollView
+        android:id="@+id/root_scrollview_student_add"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="com.iceru.classinhand.PatchedScrollingViewBehavior">
@@ -85,7 +86,7 @@
                 android:layout_height="72dp"
                 android:paddingRight="16dp"
                 android:paddingLeft="16dp"
-                android:layout_marginTop="-16dp">
+                android:layout_marginTop="-8dp">
 
                 <ImageView
                     android:layout_width="24dp"
@@ -117,7 +118,7 @@
                 android:layout_height="72dp"
                 android:paddingRight="16dp"
                 android:paddingLeft="16dp"
-                android:layout_marginTop="-16dp">
+                android:layout_marginTop="-8dp">
 
                 <ImageView
                     android:layout_width="24dp"
@@ -136,23 +137,34 @@
                         android:layout_width="match_parent"
                         android:hint="@string/hint_edittext_phone"
                         android:inputType="phone"
-                        android:imeOptions="actionDone" />
+                        android:imeOptions="actionDone"/>
                 </android.support.design.widget.TextInputLayout>
 
             </FrameLayout>
 
-            <TextView
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/recyclerview_singleline_tile_height"
-                android:textSize="16sp"
-                android:text="@string/hint_edittext_indate" />
+                android:layout_height="72dp"
+                android:paddingRight="16dp"
+                android:paddingLeft="16dp"
+                android:layout_marginTop="-8dp">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:id="@+id/textview_student_add_indate"
-                android:layout_height="@dimen/recyclerview_singleline_tile_height"
-                android:textColor="@color/text_secondary"
-                android:textSize="16sp" />
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="left|center_vertical"
+                    android:src="@drawable/ic_date_in_grey_700_24dp"/>
+
+                <TextView
+                    android:id="@+id/textview_student_add_indate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="60dp"
+                    android:layout_gravity="left|center_vertical"
+                    android:textColor="@color/text_primary"
+                    android:textSize="16sp" />
+
+            </FrameLayout>
 
         </LinearLayout>
 
