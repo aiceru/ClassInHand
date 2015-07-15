@@ -12,6 +12,7 @@
     <string name="title_dialog_select_date">날짜 선택</string>
     <string name="title_dialog_student_edit">학생정보 수정</string>
     <string name="title_dialog_warning">Warning</string>
+    <string name="title_dialog_notyetsupported">아직 지원되지 않는 기능입니다</string>
     <string name="contents_dialog_seatplan_already_exists">해당 날짜의 자리배치가 존재합니다.</string>
     <string name="contents_dialog_if_change_applydate">이 자리배치의 적용 날짜를 바꾸시겠습니까?</string>
     <string name="contents_dialog_if_edit_existing_plan">의 자리배치가 이미 존재합니다. 해당 배치도를 편집하시겠습니까?</string>
@@ -25,6 +26,8 @@
         하나 이상의 다른 자리의 빈자리 고정을 해제하고 다시 시도해 주세요.</string>
     <string name="contents_dialog_remainstudents_not_equals">학생 명단에 변경이 있어 자리배치도를 올바르게 수정할 수 없습니다.
         배치도를 새로 생성해 주세요.</string>
+    <string name="contents_dialog_notyetsupported">다음 메이저 버전 업데이트를 통해 지원 예정입니다.
+        조금만 기다려 주세요 ㅠㅠ</string>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
     <string name="action_new">새로 생성</string>

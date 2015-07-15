@@ -1,6 +1,8 @@
 package com.iceru.classinhand;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -15,6 +17,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -36,9 +39,8 @@ public class StudentAddActivity extends AppCompatActivity {
 
     /* Views */
     private NestedScrollView                mRootScrollView;
-    /*private RecyclerView                    mStudentsList;
-    private RecyclerView.Adapter            mStudentsListAdapter;
-    private RecyclerView.LayoutManager      mStudentsListLayoutManager;*/
+    private ImageView                       mImageViewPicture;
+    private ImageView                       mImageViewCamera;
     private ToggleButton                    mGenderTglbtn;
     private EditText                        mNameEditText;
     private EditText                        mAttendNumEditText;
@@ -72,14 +74,10 @@ public class StudentAddActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-        /*mStudentsList = (RecyclerView)findViewById(R.id.recyclerview_student_add_studentlist);
-        mStudentsListLayoutManager = new LinearLayoutManager(this);
-        mStudentsList.setLayoutManager(mStudentsListLayoutManager);
-        mStudentsListAdapter = new StudentListAdapter(mStudents, this);
-        mStudentsList.setAdapter(mStudentsListAdapter);
-        mStudentsList.scrollToPosition(mStudents.size()-1);*/
-
         mRootScrollView = (NestedScrollView)findViewById(R.id.root_scrollview);
+
+        mImageViewPicture = (ImageView)findViewById(R.id.imageview_picture);
+        mImageViewCamera = (ImageView)findViewById(R.id.imageview_camera);
 
         mAttendNumEditText = (EditText)findViewById(R.id.edittext_attendnum);
         while(mAttendNumArray[attendNum]) attendNum++;
@@ -229,5 +227,13 @@ public class StudentAddActivity extends AppCompatActivity {
         DatePickerDialog dateDialog = new DatePickerDialog(this, R.style.dialog_style, dateSetListener,
                 mInDate.get(Calendar.YEAR), mInDate.get(Calendar.MONTH), mInDate.get(Calendar.DAY_OF_MONTH));
         dateDialog.show();
+    }
+
+    public void notYetSupported(View view) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.dialog_style);
+        builder.setTitle(R.string.title_dialog_notyetsupported);
+        builder.setMessage(R.string.contents_dialog_notyetsupported);
+        builder.setPositiveButton(R.string.confirm, null);
+        builder.create().show();
     }
 }

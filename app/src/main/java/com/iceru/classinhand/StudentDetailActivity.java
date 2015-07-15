@@ -44,6 +44,8 @@ public class StudentDetailActivity extends ActionBarActivity {
     private Student mStudent;
     private ClassInHandApplication application;
 
+    private ImageView       mImageViewPicture;
+    private ImageView       mImageViewCamera;
     private EditText        mEdittextAttendNum;
     private EditText        mEdittextName;
     private ToggleButton    mTglbtnGender;
@@ -127,6 +129,8 @@ public class StudentDetailActivity extends ActionBarActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
+        mImageViewPicture = (ImageView)findViewById(R.id.imageview_picture);
+        mImageViewCamera = (ImageView)findViewById(R.id.imageview_camera);
         mTglbtnGender = (ToggleButton)findViewById(R.id.tglbtn_gender);
         mEdittextAttendNum = (EditText)findViewById(R.id.edittext_attendnum);
         mEdittextName = (EditText)findViewById(R.id.edittext_name);
@@ -274,6 +278,7 @@ public class StudentDetailActivity extends ActionBarActivity {
     }
 
     private void setEditEnable(boolean enable) {
+        mImageViewCamera.setVisibility(enable? View.VISIBLE : View.GONE);
         mEdittextAttendNum.setEnabled(enable);
         mEdittextName.setEnabled(enable);
         mTglbtnGender.setClickable(enable);
@@ -322,13 +327,7 @@ public class StudentDetailActivity extends ActionBarActivity {
             mStudent.setInClass(mStudent.getInDate() <= today && mStudent.getOutDate() > today);
             application.updateStudent(mStudent);
 
-            mEdittextAttendNum.setEnabled(false);
-            mEdittextName.setEnabled(false);
-            mTglbtnGender.setClickable(false);
-            mEdittextPhone.setEnabled(false);
-            mSpinnerCallorSms.setEnabled(true);
-            mTextviewIndate.setClickable(false);
-            mTextviewOutdate.setClickable(false);
+            setEditEnable(false);
         }
 
         else {
@@ -359,5 +358,13 @@ public class StudentDetailActivity extends ActionBarActivity {
         if (intent.resolveActivity(getPackageManager()) != null) {
             startActivity(intent);
         }
+    }
+
+    public void notYetSupported(View view) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.dialog_style);
+        builder.setTitle(R.string.title_dialog_notyetsupported);
+        builder.setMessage(R.string.contents_dialog_notyetsupported);
+        builder.setPositiveButton(R.string.confirm, null);
+        builder.create().show();
     }
 }
