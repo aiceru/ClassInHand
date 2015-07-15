@@ -7,7 +7,7 @@
     android:background="@color/background_material_light">
 
     <android.support.v4.widget.NestedScrollView
-        android:id="@+id/root_scrollview_student_add"
+        android:id="@+id/root_scrollview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="com.iceru.classinhand.PatchedScrollingViewBehavior">
@@ -25,7 +25,7 @@
                 android:layout_height="wrap_content">
 
                 <ImageView
-                    android:id="@+id/imageview_student_add_picture"
+                    android:id="@+id/imageview_picture"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
                     android:src="@drawable/ic_person_white_48dp"
@@ -33,6 +33,7 @@
                     android:background="@color/dim_foreground_disabled_material_light"/>
 
                 <ImageView
+                    android:id="@+id/imageview_camera"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:src="@drawable/ic_photo_camera_white_18dp"
@@ -59,7 +60,7 @@
                     android:layout_marginLeft="56dp"
                     android:layout_gravity="left|top">
                     <android.support.v7.widget.AppCompatEditText
-                        android:id="@+id/edittext_student_add_attendnum"
+                        android:id="@+id/edittext_attendnum"
                         android:layout_width="52dp"
                         android:layout_height="wrap_content"
                         android:hint="@string/hint_edittext_attendnum"
@@ -67,11 +68,11 @@
                         android:singleLine="true"
                         android:inputType="number"
                         android:imeOptions="actionNext"
-                        android:nextFocusDown="@+id/edittext_student_add_name"/>
+                        android:nextFocusDown="@+id/edittext_name"/>
                 </android.support.design.widget.TextInputLayout>
 
                 <ToggleButton
-                    android:id="@+id/tglbtn_student_add_gender"
+                    android:id="@+id/tglbtn_gender"
                     style="@style/toggleButton"
                     android:layout_width="36dp"
                     android:layout_height="36dp"
@@ -100,7 +101,7 @@
                     android:layout_marginLeft="56dp"
                     android:layout_gravity="left|top">
                     <android.support.v7.widget.AppCompatEditText
-                        android:id="@id/edittext_student_add_name"
+                        android:id="@id/edittext_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/hint_edittext_name"
@@ -108,12 +109,12 @@
                         android:singleLine="true"
                         android:inputType="textPersonName"
                         android:imeOptions="actionNext"
-                        android:nextFocusDown="@+id/edittext_student_add_phone" />
+                        android:nextFocusDown="@+id/edittext_phone" />
                 </android.support.design.widget.TextInputLayout>
 
             </FrameLayout>
 
-            <FrameLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="72dp"
                 android:paddingRight="16dp"
@@ -127,12 +128,14 @@
                     android:src="@drawable/ic_call_grey_700_24dp"/>
 
                 <android.support.design.widget.TextInputLayout
-                    android:layout_width="match_parent"
+                    android:id="@+id/textinputlayout_phone"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="56dp"
+                    android:layout_marginLeft="32dp"
                     android:layout_gravity="left|top">
                     <android.support.v7.widget.AppCompatEditText
-                        android:id="@id/edittext_student_add_phone"
+                        android:id="@id/edittext_phone"
                         android:layout_height="wrap_content"
                         android:layout_width="match_parent"
                         android:hint="@string/hint_edittext_phone"
@@ -140,7 +143,19 @@
                         android:imeOptions="actionDone"/>
                 </android.support.design.widget.TextInputLayout>
 
-            </FrameLayout>
+                <!-- only in student detail/edit activity -->
+                <Spinner
+                    android:id="@+id/spinner_callorsms"
+                    android:layout_width="36dp"
+                    android:layout_height="wrap_content"
+                    android:dropDownWidth="36dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_gravity="right|center_vertical"
+                    android:spinnerMode="dropdown"
+                    android:visibility="gone"/>
+
+            </LinearLayout>
 
             <FrameLayout
                 android:layout_width="match_parent"
@@ -156,7 +171,34 @@
                     android:src="@drawable/ic_date_in_grey_700_24dp"/>
 
                 <TextView
-                    android:id="@+id/textview_student_add_indate"
+                    android:id="@+id/textview_indate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="60dp"
+                    android:layout_gravity="left|center_vertical"
+                    android:textColor="@color/text_primary"
+                    android:textSize="16sp" />
+
+            </FrameLayout>
+
+            <!-- only in student detail/edit activity -->
+            <FrameLayout
+                android:id="@+id/framelayout_outdate"
+                android:layout_width="match_parent"
+                android:layout_height="72dp"
+                android:paddingRight="16dp"
+                android:paddingLeft="16dp"
+                android:layout_marginTop="-8dp"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="left|center_vertical"
+                    android:src="@drawable/ic_date_out_grey_700_24dp"/>
+
+                <TextView
+                    android:id="@+id/textview_outdate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="60dp"
@@ -175,7 +217,7 @@
         android:layout_height="wrap_content">
 
         <android.support.v7.widget.Toolbar
-            android:id="@+id/addpersonactivity_toolbar"
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"

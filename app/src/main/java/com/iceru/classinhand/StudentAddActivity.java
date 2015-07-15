@@ -1,13 +1,11 @@
 package com.iceru.classinhand;
 
 import android.app.DatePickerDialog;
-import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.telephony.PhoneNumberUtils;
 import android.view.KeyEvent;
@@ -20,8 +18,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -63,13 +59,13 @@ public class StudentAddActivity extends AppCompatActivity {
             mAttendNumArray[s.getAttendNum()] = true;
         }
 
-        setContentView(R.layout.activity_student_add);
+        setContentView(R.layout.activity_student_common);
         initViews();
     }
 
     private void initViews() {
         int attendNum = 1;
-        Toolbar toolbar = (Toolbar) findViewById(R.id.addpersonactivity_toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
         setSupportActionBar(toolbar);
@@ -83,17 +79,17 @@ public class StudentAddActivity extends AppCompatActivity {
         mStudentsList.setAdapter(mStudentsListAdapter);
         mStudentsList.scrollToPosition(mStudents.size()-1);*/
 
-        mRootScrollView = (NestedScrollView)findViewById(R.id.root_scrollview_student_add);
+        mRootScrollView = (NestedScrollView)findViewById(R.id.root_scrollview);
 
-        mAttendNumEditText = (EditText)findViewById(R.id.edittext_student_add_attendnum);
+        mAttendNumEditText = (EditText)findViewById(R.id.edittext_attendnum);
         while(mAttendNumArray[attendNum]) attendNum++;
         mAttendNumEditText.setText(String.valueOf(attendNum));
 
-        mGenderTglbtn = (ToggleButton)findViewById(R.id.tglbtn_student_add_gender);
+        mGenderTglbtn = (ToggleButton)findViewById(R.id.tglbtn_gender);
 
-        mNameEditText = (EditText)findViewById(R.id.edittext_student_add_name);
+        mNameEditText = (EditText)findViewById(R.id.edittext_name);
 
-        mInDateTextView = (TextView)findViewById(R.id.textview_student_add_indate);
+        mInDateTextView = (TextView)findViewById(R.id.textview_indate);
         mInDateTextView.setText(getDateString(mInDate));
         mInDateTextView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -102,7 +98,7 @@ public class StudentAddActivity extends AppCompatActivity {
             }
         });
 
-        mPhoneEditText = (EditText)findViewById(R.id.edittext_student_add_phone);
+        mPhoneEditText = (EditText)findViewById(R.id.edittext_phone);
         mPhoneEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {

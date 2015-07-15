@@ -7,7 +7,7 @@
     <string name="title_classtime">수업시수관리</string>
     <string name="title_message">문자보내기</string>
     <string name="title_fillinfo">기본정보 입력</string>
-    <string name="title_studentinfo">학생정보 입력</string>
+    <string name="title_studentinfo">학생정보</string>
     <string name="title_setting">환경설정</string>
     <string name="title_dialog_select_date">날짜 선택</string>
     <string name="title_dialog_student_edit">학생정보 수정</string>
@@ -143,7 +143,7 @@
     <string name="title_activity_student_add">학생정보 등록</string>
     <string name="title_activity_seatplan_add">새로 만들기</string>
     <string name="title_activity_seatplan_detail">자리배치도</string>
-    <string name="title_activity_student_detail"></string>
+    <string name="title_activity_student_detail">학생 정보</string>
 
     <string-array name="gender_array">
         <item>남자</item>
@@ -155,6 +155,7 @@
     <string name="hint_edittext_indate">등록(전입)일자</string>
     <string name="hint_edittext_outdate">삭제(전출)일자</string>
     <string name="hint_edittext_phone">연락처</string>
+    <string name="hint_textview_outdate">전출 일자 등록</string>
     <string name="hint_edittext_sendmessage">
         문자 내용 입력 (단체문자 발송 기능에 대해 충분한 검증을 거치지 못한 상태입니다.
         중요한 공지문자인 경우, 문자 발송완료 후에 사용하고 계신 기본 SMS 어플에서 문자가 제대로

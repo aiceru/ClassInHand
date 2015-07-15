@@ -33,16 +33,6 @@
             android:launchMode="singleInstance"
             android:theme="@android:style/Theme.Holo.Light.Dialog" />
         <activity
-            android:name=".StudentAddActivity"
-            android:label="@string/title_activity_student_add"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"
-            android:parentActivityName=".MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.iceru.classinhand.MainActivity" />
-        </activity>
-        <activity
             android:name=".SeatplanEditActivity"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait">
@@ -60,9 +50,20 @@
                 android:value="com.iceru.classinhand.MainActivity" />
         </activity>
         <activity
+            android:name=".StudentAddActivity"
+            android:label="@string/title_activity_student_add"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.iceru.classinhand.MainActivity" />
+        </activity>
+        <activity
             android:name=".StudentDetailActivity"
             android:label="@string/title_activity_student_detail"
             android:parentActivityName=".MainActivity"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
