@@ -140,7 +140,7 @@
     <string name="crash_dialog_ok_toast">에러 로그가 전송되었습니다</string>
 
 
-    <string name="title_activity_student_add">학생 정보 등록</string>
+    <string name="title_activity_student_add">학생정보 등록</string>
     <string name="title_activity_seatplan_add">새로 만들기</string>
     <string name="title_activity_seatplan_detail">자리배치도</string>
     <string name="title_activity_student_detail"></string>

@@ -27,7 +27,7 @@
                 <ImageView
                     android:id="@+id/imageview_student_add_picture"
                     android:layout_width="match_parent"
-                    android:layout_height="256dp"
+                    android:layout_height="200dp"
                     android:src="@drawable/ic_person_white_48dp"
                     android:scaleType="fitCenter"
                     android:background="@color/dim_foreground_disabled_material_light"/>
@@ -58,7 +58,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="56dp"
                     android:layout_gravity="left|top">
-                    <EditText
+                    <android.support.v7.widget.AppCompatEditText
                         android:id="@+id/edittext_student_add_attendnum"
                         android:layout_width="52dp"
                         android:layout_height="wrap_content"
@@ -99,7 +99,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="56dp"
                     android:layout_gravity="left|top">
-                    <EditText
+                    <android.support.v7.widget.AppCompatEditText
                         android:id="@id/edittext_student_add_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -131,7 +131,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="56dp"
                     android:layout_gravity="left|top">
-                    <EditText
+                    <android.support.v7.widget.AppCompatEditText
                         android:id="@id/edittext_student_add_phone"
                         android:layout_height="wrap_content"
                         android:layout_width="match_parent"
