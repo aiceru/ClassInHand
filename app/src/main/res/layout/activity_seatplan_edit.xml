@@ -45,7 +45,7 @@
                 android:numColumns="6"
                 android:horizontalSpacing="1dp"
                 android:verticalSpacing="1dp"
-                android:isScrollContainer="false"/>
+                android:isScrollContainer="false" />
 
             <com.iceru.classinhand.ExpandableGridView
                 android:id="@+id/gridview_seats"
