@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="4dp"
+    android:background="?attr/selectableItemBackground">
+
+    <com.iceru.classinhand.FontFitTextView
+        android:id="@+id/textview_attendnum"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="2dp"
+        android:layout_marginLeft="2dp"
+        android:layout_alignParentLeft="true"/>
+
+    <ImageView
+        android:id="@+id/imageview_gender"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="2dp"
+        android:layout_marginTop="4dp"
+        android:scaleType="fitCenter"/>
+
+    <com.iceru.classinhand.FontFitTextView
+        android:id="@+id/textview_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@id/textview_attendnum"
+        android:gravity="center"
+        android:singleLine="true"/>
+
+</RelativeLayout>
+<!--
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:gravity="left"
+android:orientation="vertical"
+android:background="?android:selectableItemBackground"
+android:clickable="true">
+
+<FrameLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+    <ImageView
+        android:id="@+id/imageview_gender"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        android:gravity="center"
+        android:contentDescription="gender_icon"/>
+</FrameLayout>
+
+<TextView
+    android:id="@+id/textview_name"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="left"
+    android:singleLine="true"
+    android:textSize="@dimen/recyclerview_singleline_text_font"/>
+
+</LinearLayout>-->

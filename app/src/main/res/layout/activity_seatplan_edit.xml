@@ -1,148 +1,95 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/background_material_light">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/seatplanactivity_toolbar"
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar" />
+        android:layout_height="wrap_content">
 
-    <android.support.v4.widget.DrawerLayout
-        android:id="@+id/seatplanactivity_drawerlayout"
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@android:color/transparent"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="com.iceru.classinhand.MainActivity" >
+        app:layout_behavior="com.iceru.classinhand.PatchedScrollingViewBehavior">
+        <!--Design support library bug에 따른 임시 패치
+        from https://code.google.com/p/android/issues/detail?id=176373#c5&ndash;&gt;
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"-->
 
-        <FrameLayout
-            android:id="@+id/seatplanactivity_mainframe"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="@dimen/activity_horizontal_margin"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:id="@+id/linearlayout_onseatclick_inflated"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_below="@id/linearlayout_onseatclick_inflated"
-                    android:orientation="vertical">
-
-                    <GridView
-                        android:id="@+id/gridview_newseatplan"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@color/background_material_light"
-                        android:horizontalSpacing="5dp"
-                        android:verticalSpacing="-1dp"
-                        tools:listitem="@layout/seat"/>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="32dp"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/textview_seatplan_edit_remainstudents"
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"/>
-
-                        <ImageView
-                            android:layout_width="100dp"
-                            android:layout_height="40dp"
-                            android:layout_gravity="center"
-                            android:background="@drawable/lectern" />
-
-                        <TextView
-                            android:id="@+id/textview_seatplan_edit_remainseats"
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"/>
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-                <!--<com.getbase.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/btn_random_assign"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_centerHorizontal="true"
-                    android:layout_margin="@dimen/activity_horizontal_margin"
-                    app:fab_icon="@drawable/ic_loop_white_18dp"
-                    app:fab_colorNormal="@color/fab_color"
-                    app:fab_colorPressed="@color/fab_color"
-                    android:onClick="assignRandom"/>-->
-
-            </RelativeLayout>
-
-        </FrameLayout>
-
-        <LinearLayout
-            android:id="@+id/linearlayout_left_drawer"
-            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_gravity="left"
-            android:gravity="center"
-            android:background="@color/background_material_light"
-            android:orientation="vertical">
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/button_toggle_empty_fix"
-                android:onClick="toggleEmptyFixed"/>
-            <ListView
-                android:id="@+id/seatplanactivity_left_drawer"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:orientation="vertical"
+            app:layout_behavior="com.iceru.classinhand.PatchedScrollingViewBehavior">
+
+            <com.iceru.classinhand.ExpandableGridView
+                android:id="@+id/gridview_remain_students"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:choiceMode="singleChoice"
-                android:divider="@android:color/transparent"
-                android:dividerHeight="0dp" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@color/background_material_light"
+                android:numColumns="6"
+                android:horizontalSpacing="1dp"
+                android:verticalSpacing="1dp"
+                android:isScrollContainer="false"/>
+
+            <com.iceru.classinhand.ExpandableGridView
+                android:id="@+id/gridview_seats"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:background="@color/background_material_light"
+                android:horizontalSpacing="5dp"
+                android:verticalSpacing="-1dp"
+                android:isScrollContainer="false"/>
+
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="32dp"
+                android:background="@drawable/lectern" />
+
+            <LinearLayout
+                android:id="@+id/history_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+            </LinearLayout>
+            
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="32dp" />
+
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/linearlayout_right_drawer"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="right"
-            android:gravity="center"
-            android:background="@color/background_material_light"
-            android:orientation="vertical">
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/button_toggle_empty_fix"
-                android:onClick="toggleEmptyFixed"/>
-            <ListView
-                android:id="@+id/seatplanactivity_right_drawer"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:choiceMode="singleChoice"
-                android:divider="@android:color/transparent"
-                android:dividerHeight="0dp" />
-        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
 
-    </android.support.v4.widget.DrawerLayout>
+    <android.support.design.widget.FloatingActionButton
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_marginBottom="@dimen/fab_margin_bottom"
+        android:layout_marginRight="@dimen/fab_margin_right"
+        android:src="@drawable/ic_add_white_18dp"
+        app:fabSize="normal"
+        app:borderWidth="0dp"
+        app:elevation="6dp"
+        app:pressedTranslationZ="12dp"
+        app:rippleColor="@color/ripple_material_light"/>
 
-</LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

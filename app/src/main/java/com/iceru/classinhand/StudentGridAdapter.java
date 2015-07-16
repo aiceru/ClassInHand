@@ -8,18 +8,20 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import java.util.Collection;
 import java.util.TreeMap;
 
 /**
  * Created by iceru on 15. 1. 12..
  */
-class TreeMapListViewAdapter extends BaseAdapter {
+class StudentGridAdapter extends BaseAdapter {
     private TreeMap<Integer, Student> mDataset;
     private Collection<Student> mDataCollection;
     private LayoutInflater inflater;
 
-    public TreeMapListViewAdapter(Context context, TreeMap<Integer, Student> dataset) {
+    public StudentGridAdapter(Context context, TreeMap<Integer, Student> dataset) {
         this.mDataset = dataset;
         inflater = LayoutInflater.from(context);
         mDataCollection = mDataset.values();
@@ -51,11 +53,13 @@ class TreeMapListViewAdapter extends BaseAdapter {
         Student s = (Student)getItem(position);
 
         ImageView iv = (ImageView)v.findViewById(R.id.imageview_gender);
+        TextView tv_num = (TextView)v.findViewById(R.id.textview_attendnum);
         TextView tv = (TextView)v.findViewById(R.id.textview_name);
 
         iv.setImageResource(
                 s.isBoy() ? R.drawable.ic_gender_boy : R.drawable.ic_gender_girl);
-        tv.setText(s.getAttendNum() + ". " + s.getName());
+        tv_num.setText(Integer.toString(s.getAttendNum()));
+        tv.setText(s.getName());
 
         return v;
     }
