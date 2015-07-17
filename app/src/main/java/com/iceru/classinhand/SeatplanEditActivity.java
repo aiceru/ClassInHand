@@ -7,9 +7,13 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
+import android.view.DragEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -27,7 +31,10 @@ import java.util.TreeMap;
 /**
  * Created by iceru on 14. 12. 19..
  */
-public class SeatplanEditActivity extends ActionBarActivity {
+public class SeatplanEditActivity extends AppCompatActivity {
+    private static final int TOP = 1;
+    private static final int BOTTOM = 2;
+
     /* Application Class */
     private ClassInHandApplication application;
 
@@ -41,10 +48,14 @@ public class SeatplanEditActivity extends ActionBarActivity {
     private boolean mShowcaseShown;
 
     /* Views */
+    private NestedScrollView    mRootScrollView;
     private ExpandableGridView mSeatsGridView;
     private ExpandableGridView mRemainStudentGridView;
     private SeatGridAdapter mSeatGridAdapter;
     private StudentGridAdapter mStudentGridAdapter;
+
+    private View mTopRegion;
+    private View mBottomRegion;
 
     private LinearLayout mHistoryLayout, layout_onseatclick_left, layout_onseatclick_right;
     private LinearLayout layout_left_drawer, layout_right_drawer;
@@ -174,6 +185,8 @@ public class SeatplanEditActivity extends ActionBarActivity {
 
         //mRemainStudentListAdapter = new TreeMapListViewAdapter(this, mRemainStudents);
 
+        mRootScrollView = (NestedScrollView) findViewById(R.id.root_scrollview);
+
         mSeatsGridView = (ExpandableGridView) findViewById(R.id.gridview_seats);
         mSeatsGridView.setExpanded(true);
         mHistoryLayout = (LinearLayout) findViewById(R.id.history_layout);
@@ -198,6 +211,12 @@ public class SeatplanEditActivity extends ActionBarActivity {
         mRemainStudentGridView.setExpanded(true);
         mStudentGridAdapter = new StudentGridAdapter(this, mRemainStudents);
         mRemainStudentGridView.setAdapter(mStudentGridAdapter);
+
+        mTopRegion = findViewById(R.id.screen_top_region);
+        mBottomRegion = findViewById(R.id.screen_bottom_region);
+
+        mTopRegion.setOnDragListener(new EdgeDragEventListener(TOP, mRootScrollView));
+        mBottomRegion.setOnDragListener(new EdgeDragEventListener(BOTTOM, mRootScrollView));
 
         /*mRandomAssignButton = (FloatingActionButton) findViewById(R.id.btn_random_assign);*/
 
@@ -691,4 +710,39 @@ public class SeatplanEditActivity extends ActionBarActivity {
             setRemainStrings();
         }
     }*/
+
+    protected class EdgeDragEventListener implements View.OnDragListener {
+        private int direction;
+        private int screenHeight;
+        private NestedScrollView rootView;
+
+        EdgeDragEventListener(int dir, NestedScrollView scrollView) {
+            direction = dir;
+            rootView = scrollView;
+
+            DisplayMetrics metrics = new DisplayMetrics();
+            getWindowManager().getDefaultDisplay().getMetrics(metrics);
+            screenHeight = metrics.heightPixels;
+        }
+
+        @Override
+        public boolean onDrag(View v, DragEvent event) {
+            final int action = event.getAction();
+            switch(action) {
+                case DragEvent.ACTION_DRAG_STARTED:
+                    return true;
+                case DragEvent.ACTION_DRAG_ENTERED:
+                    if(direction == TOP) {
+                        rootView.smoothScrollBy(0, -screenHeight);
+                    }
+                    else if(direction == BOTTOM) {
+                        rootView.smoothScrollBy(0, screenHeight);
+                    }
+                    return true;
+                default:
+                    break;
+            }
+            return false;
+        }
+    }
 }

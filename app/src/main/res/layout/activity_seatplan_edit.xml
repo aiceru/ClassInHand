@@ -20,7 +20,27 @@
 
     </android.support.design.widget.AppBarLayout>
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize">
+
+        <View
+            android:id="@+id/screen_top_region"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_gravity="top" />
+
+        <View
+            android:id="@+id/screen_bottom_region"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_gravity="bottom" />
+
+    </FrameLayout>
+
     <android.support.v4.widget.NestedScrollView
+        android:id="@+id/root_scrollview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="com.iceru.classinhand.PatchedScrollingViewBehavior">
