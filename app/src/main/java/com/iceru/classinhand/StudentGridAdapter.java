@@ -1,6 +1,7 @@
 package com.iceru.classinhand;
 
 import android.content.ClipData;
+import android.content.ClipDescription;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,9 +32,15 @@ class StudentGridAdapter extends BaseAdapter {
         mItemLongClickListener = new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                ClipData cData = ClipData.newPlainText(Constants.DRAGLABEL_FROM_STUDENTGRID, String.valueOf((int) v.getTag()));
+                String[] descriptions = {
+                        ClipDescription.MIMETYPE_TEXT_PLAIN
+                };
+                ClipData.Item item = new ClipData.Item(String.valueOf((int)v.getTag()));
+
+                ClipData clipData = new ClipData(Constants.DRAGLABEL_FROM_STUDENTGRID, descriptions, item);
+
                 View.DragShadowBuilder shadow = new View.DragShadowBuilder(v);
-                v.startDrag(cData, shadow, null, 0);
+                v.startDrag(clipData, shadow, null, 0);
                 return true;
             }
         };
@@ -73,7 +80,7 @@ class StudentGridAdapter extends BaseAdapter {
         tv_num.setText(Integer.toString(s.getAttendNum()));
         tv.setText(s.getName());
 
-        v.setTag(s.getId());
+        v.setTag(s.getAttendNum());
         v.setOnLongClickListener(mItemLongClickListener);
 
         return v;

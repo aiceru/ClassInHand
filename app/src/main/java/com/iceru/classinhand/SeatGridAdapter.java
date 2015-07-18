@@ -1,11 +1,9 @@
 package com.iceru.classinhand;
 
 import android.content.ClipData;
+import android.content.ClipDescription;
 import android.content.Context;
-import android.graphics.Point;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -19,13 +17,14 @@ import java.util.ArrayList;
  */
 public class SeatGridAdapter extends BaseAdapter {
 
-    private ArrayList<Seat> mDataset;
+    private ArrayList<Seat> mSeats;
     private Context         mContext;
     private int             mSegment;
     //private Point           mTouchPoint;
     private InnerViewHolder.ISeatClick mListener;
+    private SeatplanEditActivity.DragEventListenerOfSeats mDragListener;
 
-    private View.OnLongClickListener mItemLongClickListener;
+    private InnerViewHolderLongClickListener mItemLongClickListener;
     //private View.OnTouchListener mItemTouchListener;
 
     /*private void setXY(int x, int y) {
@@ -33,28 +32,20 @@ public class SeatGridAdapter extends BaseAdapter {
     }*/
 
     public SeatGridAdapter(ArrayList<Seat> seats, Context context, int segment,
-                           InnerViewHolder.ISeatClick listener) {
-        this.mDataset = seats;
+                           InnerViewHolder.ISeatClick listener,
+                           SeatplanEditActivity.DragEventListenerOfSeats dListener) {
+        this.mSeats = seats;
         this.mContext = context;
         this.mSegment = segment;
         this.mListener = listener;
+        this.mDragListener = dListener;
 
-        mItemLongClickListener = new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                if(v.getTag() != null) {
-                    ClipData cData = ClipData.newPlainText(Constants.DRAGLABEL_FROM_SEATGRID, String.valueOf((int) v.getTag()));
-                    View.DragShadowBuilder shadow = new View.DragShadowBuilder(v);
-                    v.startDrag(cData, shadow, null, 0);
-                }
-                return true;
-            }
-        };
+        mItemLongClickListener = new InnerViewHolderLongClickListener(this);
     }
 
     @Override
     public int getCount() {
-        return (mDataset.size()+1) / 2;
+        return (mSeats.size()+1) / 2;
     }
 
     @Override
@@ -71,8 +62,8 @@ public class SeatGridAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         View view = convertView;
         final OuterViewHolder ovh;
-        Seat leftSeat = mDataset.get(position*2);
-        Seat rightSeat = position*2+1 >= mDataset.size()? null : mDataset.get(position*2+1);
+        Seat leftSeat = mSeats.get(position*2);
+        Seat rightSeat = mSeats.get(position*2+1);
         Student leftStudent = leftSeat.getItsStudent();
         Student rightStudent = rightSeat.getItsStudent();
 
@@ -87,10 +78,13 @@ public class SeatGridAdapter extends BaseAdapter {
             ovh = (OuterViewHolder)view.getTag();
         }
 
-        ovh.lvh.rlayout.setTag(leftStudent == null? null : String.valueOf(leftStudent.getId()));
-        ovh.rvh.rlayout.setTag(rightStudent == null? null : String.valueOf(rightStudent.getId()));
+        ovh.lvh.rlayout.setTag(leftSeat.getId());
+        ovh.rvh.rlayout.setTag(rightSeat.getId());
         ovh.lvh.rlayout.setOnLongClickListener(mItemLongClickListener);
         ovh.rvh.rlayout.setOnLongClickListener(mItemLongClickListener);
+
+        ovh.lvh.rlayout.setOnDragListener(mDragListener);
+        ovh.rvh.rlayout.setOnDragListener(mDragListener);
 
         if(leftStudent != null) {
             ovh.lvh.textviewNum.setText(String.valueOf(leftStudent.getAttendNum()));
@@ -249,6 +243,34 @@ public class SeatGridAdapter extends BaseAdapter {
 
         public static interface ISeatClick {
             public void seatClick(View v, int seatId);
+        }
+    }
+
+    public class InnerViewHolderLongClickListener implements View.OnLongClickListener {
+        private SeatGridAdapter adapter;
+
+        public InnerViewHolderLongClickListener(SeatGridAdapter adapter) {
+            this.adapter = adapter;
+        }
+
+        @Override
+        public boolean onLongClick(View v) {
+            Seat clicked = mSeats.get((int)v.getTag());
+            if(clicked.getItsStudent() == null) {
+                clicked.setFixed(!clicked.isFixed());
+                adapter.notifyDataSetChanged();
+            }
+            else {
+                String[] descriptions = {
+                        ClipDescription.MIMETYPE_TEXT_PLAIN
+                };
+                ClipData.Item item = new ClipData.Item(String.valueOf((int)v.getTag()));
+                ClipData clipData = new ClipData(Constants.DRAGLABEL_FROM_SEATGRID, descriptions, item);
+
+                View.DragShadowBuilder shadow = new View.DragShadowBuilder(v);
+                v.startDrag(clipData, shadow, null, 0);
+            }
+            return true;
         }
     }
 }
