@@ -51,7 +51,6 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean mFromSavedInstanceState = false;
     private boolean mUserLearnedDrawer = false;
-    private boolean mFirstShowcaseShown = false;
 
     private GregorianCalendar mNewDate;
     private GregorianCalendar mOldDate;
@@ -70,7 +69,6 @@ public class MainActivity extends AppCompatActivity {
 
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         mUserLearnedDrawer = sp.getBoolean(ClassInHandApplication.PREF_USER_LEARNED_DRAWER, false);
-        mFirstShowcaseShown = sp.getBoolean(ClassInHandApplication.PREF_FIRST_SHOWCASE, false);
 
         if (savedInstanceState != null) {
             mCurrentSelectedItemId = savedInstanceState.getInt(ClassInHandApplication.STATE_SELECTED_POSITION);
@@ -184,39 +182,6 @@ public class MainActivity extends AppCompatActivity {
         } else selectItem(mCurrentSelectedItemId);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode >> 16 != 0x0) { // this result is from fragment... maybe
-            // notifying nested fragments (support library bug fix)
-            final FragmentManager childFragmentManager = this.getSupportFragmentManager();
-
-            if (childFragmentManager != null) {
-                final List<Fragment> nestedFragments = childFragmentManager.getFragments();
-
-                if (nestedFragments == null || nestedFragments.size() == 0) return;
-
-                for (Fragment childFragment : nestedFragments) {
-                    if (childFragment != null && !childFragment.isDetached() && !childFragment.isRemoving()) {
-                        childFragment.onActivityResult(requestCode, resultCode, data);
-                    }
-                }
-            }
-        }
-        else {
-            switch (requestCode) {
-                case ClassInHandApplication.REQUESTCODE_FIRST_SHOWCASE:
-                    this.mFirstShowcaseShown = true;
-                    SharedPreferences sp = PreferenceManager
-                            .getDefaultSharedPreferences(getApplicationContext());
-                    sp.edit().putBoolean(ClassInHandApplication.PREF_FIRST_SHOWCASE, true).apply();
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
-
 	public int getNum_roleConsume() {
 		return num_roleConsume;
 	}
@@ -274,9 +239,16 @@ public class MainActivity extends AppCompatActivity {
         builder.setNegativeButton(R.string.action_cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 // User cancelled the dialog, Do nothing
+                mOldDate = null;
             }
         });
         AlertDialog dialog = builder.create();
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                mOldDate = null;
+            }
+        });
         dialog.show();
     }
 

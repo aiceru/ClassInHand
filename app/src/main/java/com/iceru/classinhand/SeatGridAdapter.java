@@ -20,27 +20,21 @@ public class SeatGridAdapter extends BaseAdapter {
     private ArrayList<Seat> mSeats;
     private Context         mContext;
     private int             mSegment;
-    //private Point           mTouchPoint;
+
     private InnerViewHolder.ISeatClick mListener;
+    private InnerViewHolder.ISeatLongClick mLongClickListener;
     private SeatplanEditActivity.DragEventListenerOfSeats mDragListener;
-
-    private InnerViewHolderLongClickListener mItemLongClickListener;
-    //private View.OnTouchListener mItemTouchListener;
-
-    /*private void setXY(int x, int y) {
-        mTouchPoint.set(x, y);
-    }*/
 
     public SeatGridAdapter(ArrayList<Seat> seats, Context context, int segment,
                            InnerViewHolder.ISeatClick listener,
+                           InnerViewHolder.ISeatLongClick llistener,
                            SeatplanEditActivity.DragEventListenerOfSeats dListener) {
         this.mSeats = seats;
         this.mContext = context;
         this.mSegment = segment;
         this.mListener = listener;
+        this.mLongClickListener = llistener;
         this.mDragListener = dListener;
-
-        mItemLongClickListener = new InnerViewHolderLongClickListener(this);
     }
 
     @Override
@@ -70,7 +64,7 @@ public class SeatGridAdapter extends BaseAdapter {
         if(convertView == null) {
             view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.seat, parent, false);
-            ovh = new OuterViewHolder(view, mListener, position);
+            ovh = new OuterViewHolder(view, mListener, mLongClickListener, position);
 
             view.setTag(ovh);
         }
@@ -80,8 +74,6 @@ public class SeatGridAdapter extends BaseAdapter {
 
         ovh.lvh.rlayout.setTag(leftSeat.getId());
         ovh.rvh.rlayout.setTag(rightSeat.getId());
-        ovh.lvh.rlayout.setOnLongClickListener(mItemLongClickListener);
-        ovh.rvh.rlayout.setOnLongClickListener(mItemLongClickListener);
 
         ovh.lvh.rlayout.setOnDragListener(mDragListener);
         ovh.rvh.rlayout.setOnDragListener(mDragListener);
@@ -151,16 +143,17 @@ public class SeatGridAdapter extends BaseAdapter {
         public InnerViewHolder lvh;
         public InnerViewHolder rvh;
 
-        public OuterViewHolder(View v, InnerViewHolder.ISeatClick listener, int position) {
-            lvh = new InnerViewHolder(v, listener, position*2);
-            rvh = new InnerViewHolder(v, listener, position*2+1);
+        public OuterViewHolder(View v, InnerViewHolder.ISeatClick listener,
+                               InnerViewHolder.ISeatLongClick llistener, int position) {
+            lvh = new InnerViewHolder(v, listener, llistener, position*2);
+            rvh = new InnerViewHolder(v, listener, llistener, position*2+1);
         }
     }
 
-    public static class InnerViewHolder implements View.OnClickListener {
-        public ISeatClick   mListener;
+    public static class InnerViewHolder implements View.OnClickListener, View.OnLongClickListener {
+        public ISeatClick   mOnClickListener;
+        public ISeatLongClick mOnLongClickListener;
         public int          mSeatId;
-        public int          mAdjustedViewHeight;
 
         public RelativeLayout  rlayout;
         public ImageView       imageviewFixed;
@@ -169,9 +162,10 @@ public class SeatGridAdapter extends BaseAdapter {
         public FontFitTextView textviewName;
         public ImageView       imageViewSeated;
 
-        public InnerViewHolder(View v, ISeatClick listener, int seatId) {
+        public InnerViewHolder(View v, ISeatClick listener, ISeatLongClick llistener, int seatId) {
             mSeatId = seatId;
-            mListener = listener;
+            mOnClickListener = listener;
+            mOnLongClickListener = llistener;
 
             FontFitTextView.OnLayoutChagnedListener viewsizeObserver = new FontFitTextView.OnLayoutChagnedListener() {
                 @Override
@@ -202,45 +196,30 @@ public class SeatGridAdapter extends BaseAdapter {
                 imageViewSeated = (ImageView) v.findViewById(R.id.imageview_recently_seated_right);
             }
             rlayout.setOnClickListener(this);
+            rlayout.setOnLongClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
-            if(mListener != null) {
-                mListener.seatClick(v);
+            if(mOnClickListener != null) {
+                mOnClickListener.seatClick(v);
             }
+        }
+
+        @Override
+        public boolean onLongClick(View v) {
+            if(mOnLongClickListener != null) {
+                return mOnLongClickListener.seatLongClick(v);
+            }
+            return true;
         }
 
         public static interface ISeatClick {
             public void seatClick(View v);
         }
-    }
 
-    public class InnerViewHolderLongClickListener implements View.OnLongClickListener {
-        private SeatGridAdapter adapter;
-
-        public InnerViewHolderLongClickListener(SeatGridAdapter adapter) {
-            this.adapter = adapter;
-        }
-
-        @Override
-        public boolean onLongClick(View v) {
-            Seat clicked = mSeats.get((int)v.getTag());
-            if(clicked.getItsStudent() == null) {
-                clicked.setFixed(!clicked.isFixed());
-                adapter.notifyDataSetChanged();
-            }
-            else {
-                String[] descriptions = {
-                        ClipDescription.MIMETYPE_TEXT_PLAIN
-                };
-                ClipData.Item item = new ClipData.Item(String.valueOf((int)v.getTag()));
-                ClipData clipData = new ClipData(Constants.DRAGLABEL_FROM_SEATGRID, descriptions, item);
-
-                View.DragShadowBuilder shadow = new View.DragShadowBuilder(v);
-                v.startDrag(clipData, shadow, null, 0);
-            }
-            return true;
+        public static interface ISeatLongClick {
+            public boolean seatLongClick(View v);
         }
     }
 }

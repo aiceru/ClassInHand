@@ -22,8 +22,7 @@
     <string name="contents_dialog_confirm_delete">정말 삭제하시겠습니까?</string>
     <string name="contents_dialog_confirm_increase_row">학생 수가 전체 자리 수보다 많아 전부 배치할 수 없습니다.
         환경 설정에서 좌석 배치의 줄 수(행)를 늘려주세요.</string>
-    <string name="contents_dialog_cannot_set_emtpy">남은 자리 수가 학생수보다 적어 빈자리로 고정시킬 수 없습니다.
-        하나 이상의 다른 자리의 빈자리 고정을 해제하고 다시 시도해 주세요.</string>
+    <string name="contents_dialog_cannot_auto_assign">남은 자리 수가 학생수보다 작아 자동 배치를 수행할 수 없습니다.</string>
     <string name="contents_dialog_remainstudents_not_equals">학생 명단에 변경이 있어 자리배치도를 올바르게 수정할 수 없습니다.
         배치도를 새로 생성해 주세요.</string>
     <string name="contents_dialog_notyetsupported">다음 메이저 버전 업데이트를 통해 지원 예정입니다.
@@ -89,10 +88,6 @@
     <string name="confirm_cancel_message">문자보내기를 취소하시겠습니까?</string>
     <string name="confirm_send_message">문자를 보내시겠습니까?</string>
 
-    <!--<string name="sharedpref_student_name_list">com.iceru.teacherschores.PREF_KEY_STUDENT_LIST</string>
-    <string name="sharedpref_boygirl_list">com.iceru.teacherschores.PREF_KEY_BOYGIRL_LIST</string>
-    <string name="sharedpref_role_list">com.iceru.teacherschores.PREF_KEY_ROLE_LIST</string>-->
-
     <string name="sharedpref_key_applying_rules">com.iceru.classinhand.SHAREDPREF_APPLYING_RULES</string>
     <string name="sharedpref_key_num_histories">com.iceru.classinhand.SHAREDPREF_NUM_HISTORIES</string>
     <string name="sharedpref_key_is_boy_right">com.iceru.classinhand.SHAREDPREF_IS_BOY_RIGHT</string>
@@ -115,14 +110,6 @@
     <string name="sharedpref_summary_boy_is_right">여학생 | 남학생</string>
     <string name="sharedpref_summary_boy_is_left">남학생 | 여학생</string>
 
-    <!--<string name="showcase_title_input_students_info">학생정보를 입력하세요</string>
-    <string name="showcase_detail_input_students_info">        등록된 학생정보가 없습니다. \"기본정보 입력\" 을 탭하여 학생정보를 입력하세요.</string>
-    <string name="showcase_title_student_input_form">학생정보 입력</string>
-    <string name="showcase_detail_student_input_form">        번호와 이름을 입력하고 성별을 선택하세요. 키보드의 \"확인\" 을 눌러도 입력이 가능합니다.</string>
-    <string name="showcase_title_new_plan">새로운 배치를 생성하세요</string>
-    <string name="showcase_detail_new_plan">메뉴를 열어 \"새로 생성\"을 선택하세요</string>
-    <string name="showcase_title_history">이전 자리배치를 조회할 수 있습니다</string>
-    <string name="showcase_detail_history">날짜를 탭하여 과거 자리배치도를 조회하세요</string>-->
     <string name="sorry_developing">기능 추가 예정입니다</string>
     <string name="text_empty_seat">빈 자리</string>
 
@@ -179,21 +166,18 @@
         <item>토요일</item>
     </string-array>
 
-    <string name="welcome_input_students_info">환영합니다. [기본정보 입력]을 누르고 학생 정보를 입력해주세요</string>
-    <string name="welcome_add_student">오른쪽 아래의 버튼을 눌러 학생정보를 추가하세요!</string>
     <string name="welcome_no_student">
-        학생정보를 입력하지 않으셨나요? 왼쪽 위의 버튼을 누르고, [기본정보 입력]으로 가셔서
+        학생정보를 입력하지 않으셨나요? 왼쪽 위의 버튼을 누르고, [학생 정보] 를 눌러
         학생 정보를 추가해주세요!
     </string>
     <string name="welcome_create_seatplan">오른쪽 아래의 버튼을 눌러 자리배치도를 생성해 보세요!</string>
 
     <string name="edit_seatplan_user_manual">
-        1. 화면 하단의 버튼을 누르면 자동으로 자리배치를 생성합니다. (과거에 앉았던 자리/짝 등을 고려하여 가능한 겹치지 않도록 배치합니다)\n\n
-        2. 학생이 배정된 좌석을 탭하여 자리를 맞바꾸거나 자리를 비우는 등 수동으로 배치를 수정할 수 있습니다.\n\n
-        3. 화면상의 빈 좌석을 탭하면 좌/우측에 슬라이드 메뉴가 나타납니다. 슬라이드 메뉴에서\n\n
-         - 해당 좌석을 빈자리로 설정 또는 해제 (“빈자리 설정/해제” 버튼 이용) 할 수 있습니다. 빈자리로 설정할 경우 자리는 [고정]됩니다.\n\n
-         - 아직 좌석이 배정되지 않은 학생을 수동으로 배정할 수 있습니다. 수동으로 배정한 자리는 [고정]됩니다.\n\n
-         - 좌석이 [고정]된 경우 파란 자물쇠 아이콘이 표시되며, [고정]된 자리는 자동 배치 생성에서 제외됩니다.
+        1. Long Click and Drag-and-Drop 으로 자리를 수동으로 배정할 수 있습니다.\n\n
+        2. 빈 자리를 Long Click 하면 좌석이 [고정] 됩니다.\n\n
+         - 좌석이 [고정]된 경우 파란 자물쇠 아이콘이 표시되며, [고정]된 자리는 자동 배치 대상에서 제외됩니다.\n\n
+         - [고정]된 자리에도 위 1번의 방법으로 학생을 배치 또는 해제할 수 있습니다.\n\n
+         - [고정]된 자리를 다시 한 번 Long Click 하면 [고정]이 해제됩니다.
     </string>
 
     <string name="log_error_tag">com.iceru.classinhand:Error</string>

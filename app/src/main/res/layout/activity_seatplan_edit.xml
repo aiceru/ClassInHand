@@ -51,7 +51,8 @@
             <LinearLayout
                 android:id="@+id/linearlayout_inflating"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"/>
 
             <com.iceru.classinhand.ExpandableGridView
                 android:id="@+id/gridview_seats"

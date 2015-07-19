@@ -69,9 +69,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.iceru.classinhand.MainActivity" />
         </activity>
-        <!--<activity android:name=".ShowcaseActivity"
-            android:theme="@style/Theme.Transparent">
-        </activity>-->
     </application>
 
 </manifest>

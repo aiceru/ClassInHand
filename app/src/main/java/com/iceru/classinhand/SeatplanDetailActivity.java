@@ -8,8 +8,11 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.DatePicker;
 import android.widget.GridView;
+import android.widget.TextView;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
@@ -32,7 +35,14 @@ public class SeatplanDetailActivity extends ActionBarActivity {
     private SeatGridAdapter mSeatGridAdapter;
 
     /* Views */
-    private GridView gv_seats;
+    private ExpandableGridView mSeatGridView;
+    private android.support.design.widget.FloatingActionButton mPlusFab, mEditFab, mDeleteFab;
+    private TextView mEditLabel, mDeleteLabel;
+
+    private Animation mFabRotateAppearAni, mFabRotateDisappearAni,
+            mDimViewOnAni, mLabelAppearAni, mFabScaleAppearAni;
+
+    private View mDimView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,63 +59,34 @@ public class SeatplanDetailActivity extends ActionBarActivity {
 
         setContentView(R.layout.activity_seatplan_detail);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_seatplan_detail);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         //getSupportActionBar().setHomeButtonEnabled(true);
 
-        String dateString =
-                String.valueOf(mDate.get(Calendar.YEAR)) + ". " +
-                        String.valueOf(mDate.get(Calendar.MONTH) + 1) + ". " +
-                        String.valueOf(mDate.get(Calendar.DAY_OF_MONTH)) + " ~";
-        getSupportActionBar().setTitle(dateString);
+        getSupportActionBar().setTitle(application.getDateString(mDate));
 
-        gv_seats = (GridView) findViewById(R.id.gridview_seatplan_detail);
-        gv_seats.setNumColumns(mSeatplan.getmColumns()/2);
-        mSeatGridAdapter = new SeatGridAdapter(mSeatplan.getmSeats(), this, mSeatplan.getmColumns()/2, null, null);
-        gv_seats.setAdapter(mSeatGridAdapter);
-    }
+        mSeatGridView = (ExpandableGridView) findViewById(R.id.gridview_seats);
+        mPlusFab = (android.support.design.widget.FloatingActionButton)findViewById(R.id.fab_plus);
+        mEditFab = (android.support.design.widget.FloatingActionButton)findViewById(R.id.fab_edit);
+        mDeleteFab = (android.support.design.widget.FloatingActionButton)findViewById(R.id.fab_delete);
 
-    public void onClickEditButton(View view) {
-        /* Ask if changes ApplyDate or not */
-        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.dialog_style);
-        builder.setMessage(R.string.contents_dialog_if_change_applydate);
-        builder.setPositiveButton(R.string.edit_date_either, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                // YES, display datepicker to get new ApplyDate
-                displayDatepicker();
-            }
-        });
-        builder.setNegativeButton(R.string.edit_location_only, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                // No, set mNewDate to mDate (same)
-                mNewDate = mDate;
-                runSeatplanActivity();
-            }
-        });
-        AlertDialog dialog = builder.create();
-        dialog.show();
-    }
+        mEditLabel = (TextView)findViewById(R.id.label_edit);
+        mDeleteLabel = (TextView)findViewById(R.id.label_delete);
 
-    public void onClickDeleteButton(View view) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.dialog_style);
-        builder.setTitle(R.string.title_dialog_warning);
-        builder.setMessage(R.string.contents_dialog_confirm_delete);
-        builder.setPositiveButton(R.string.action_delete, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                // User clicked OK button
-                application.removeSeatplan(mSeatplan);
-                finish();
-            }
-        });
-        builder.setNegativeButton(R.string.action_cancel, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                // User cancelled the dialog, Do nothing
-            }
-        });
-        AlertDialog dialog = builder.create();
-        dialog.show();
+        mDimView = findViewById(R.id.dimview);
+
+        mFabRotateAppearAni = AnimationUtils.loadAnimation(this, R.anim.fab_rotate_appear);
+        mFabRotateDisappearAni = AnimationUtils.loadAnimation(this, R.anim.fab_rotate_disappear);
+        mFabScaleAppearAni = AnimationUtils.loadAnimation(this, R.anim.fab_scale_appear);
+        mLabelAppearAni = AnimationUtils.loadAnimation(this, R.anim.toalpha_1_0);
+        mDimViewOnAni = AnimationUtils.loadAnimation(this, R.anim.toalpha_0_7);
+
+        mSeatGridView.setExpanded(true);
+        mSeatGridView.setNumColumns(mSeatplan.getmColumns()/2);
+        mSeatGridAdapter = new SeatGridAdapter(mSeatplan.getmSeats(), this, mSeatplan.getmColumns()/2, null, null, null);
+        mSeatGridView.setAdapter(mSeatGridAdapter);
     }
 
     private void displayDatepicker() {
@@ -163,5 +144,80 @@ public class SeatplanDetailActivity extends ActionBarActivity {
         startActivity(intent);
 
         finish();
+    }
+
+    public void onClickPlus(View v) {
+        mDimView.setVisibility(View.VISIBLE);
+        mEditFab.setVisibility(View.VISIBLE);
+        mEditLabel.setVisibility(View.VISIBLE);
+        mDeleteFab.setVisibility(View.VISIBLE);
+        mDeleteLabel.setVisibility(View.VISIBLE);
+
+        mDimView.startAnimation(mDimViewOnAni);
+        mPlusFab.startAnimation(mFabRotateDisappearAni);
+        mEditFab.startAnimation(mFabRotateAppearAni);
+        mDeleteFab.startAnimation(mFabScaleAppearAni);
+        mEditLabel.startAnimation(mLabelAppearAni);
+        mDeleteLabel.startAnimation(mLabelAppearAni);
+    }
+
+    public void onClickDimView(View v) {
+        hideFabComponents();
+    }
+
+    private void hideFabComponents() {
+        mDimView.clearAnimation();
+        mEditFab.clearAnimation();
+        mDeleteFab.clearAnimation();
+        mEditLabel.clearAnimation();
+        mDeleteLabel.clearAnimation();
+        mPlusFab.clearAnimation();
+
+        mDimView.setVisibility(View.GONE);
+        mEditFab.setVisibility(View.GONE);
+        mDeleteFab.setVisibility(View.GONE);
+        mEditLabel.setVisibility(View.GONE);
+        mDeleteLabel.setVisibility(View.GONE);
+    }
+
+    public void onClickEdit(View v) {
+        /* Ask if changes ApplyDate or not */
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.dialog_style);
+        builder.setMessage(R.string.contents_dialog_if_change_applydate);
+        builder.setPositiveButton(R.string.edit_date_either, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // YES, display datepicker to get new ApplyDate
+                displayDatepicker();
+            }
+        });
+        builder.setNegativeButton(R.string.edit_location_only, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // No, set mNewDate to mDate (same)
+                mNewDate = mDate;
+                runSeatplanActivity();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    public void onClickDelete(View v) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.dialog_style);
+        builder.setTitle(R.string.title_dialog_warning);
+        builder.setMessage(R.string.contents_dialog_confirm_delete);
+        builder.setPositiveButton(R.string.action_delete, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked OK button
+                application.removeSeatplan(mSeatplan);
+                finish();
+            }
+        });
+        builder.setNegativeButton(R.string.action_cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User cancelled the dialog, Do nothing
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }

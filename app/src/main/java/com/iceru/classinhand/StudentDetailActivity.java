@@ -75,7 +75,7 @@ public class StudentDetailActivity extends ActionBarActivity {
 
         @Override
         public int getCount() {
-            return 2;
+            return 3;
         }
 
         @Override
@@ -95,9 +95,12 @@ public class StudentDetailActivity extends ActionBarActivity {
 
             switch(position) {
                 case 0:
-                    vh.iv_content.setImageResource(R.drawable.ic_call_indigo_500_24dp);
+                    vh.iv_content.setImageResource(R.drawable.ic_call_made_grey_700_24dp);
                     break;
                 case 1:
+                    vh.iv_content.setImageResource(R.drawable.ic_call_indigo_500_24dp);
+                    break;
+                case 2:
                     vh.iv_content.setImageResource(R.drawable.ic_sms_indigo_500_24dp);
                     break;
                 default:
@@ -151,15 +154,15 @@ public class StudentDetailActivity extends ActionBarActivity {
         mEdittextPhone.setText(mStudent.getPhone());
 
         mSpinnerCallorSms.setAdapter(new spinnerAdapter());
-        mSpinnerCallorSms.setSelection(0, false);
+        //mSpinnerCallorSms.setSelection(0, false);
         mSpinnerCallorSms.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 switch(position) {
-                    case 0:
+                    case 1:
                         makeCall();
                         break;
-                    case 1:
+                    case 2:
                         sendSms();
                         break;
                     default:
