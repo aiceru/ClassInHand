@@ -1,5 +1,7 @@
 package com.iceru.classinhand;
 
+import android.content.ClipData;
+import android.content.ClipDescription;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,96 +17,29 @@ import java.util.ArrayList;
  */
 public class SeatGridAdapter extends BaseAdapter {
 
-    private ArrayList<Seat> mDataset;
+    private ArrayList<Seat> mSeats;
     private Context         mContext;
     private int             mSegment;
+
     private InnerViewHolder.ISeatClick mListener;
-
-    public static class OuterViewHolder {
-        public InnerViewHolder lvh;
-        public InnerViewHolder rvh;
-
-        public OuterViewHolder(View v, InnerViewHolder.ISeatClick listener, int position) {
-            lvh = new InnerViewHolder(v, listener, position*2);
-            rvh = new InnerViewHolder(v, listener, position*2+1);
-        }
-    }
-
-    public static class InnerViewHolder implements View.OnClickListener {
-        public ISeatClick   mListener;
-        public int          mSeatId;
-        public int          mAdjustedViewHeight;
-
-        public RelativeLayout  rlayout;
-        public ImageView       imageviewFixed;
-        public FontFitTextView textviewNum;
-        public ImageView       imageviewGender;
-        public FontFitTextView textviewName;
-        public ImageView       imageviewSeatedLeft;
-        public ImageView       imageviewSeatedRight;
-
-        public InnerViewHolder(View v, ISeatClick listener, int seatId) {
-            mSeatId = seatId;
-            mListener = listener;
-
-            FontFitTextView.OnLayoutChangedListener viewsizeObserver = new FontFitTextView.OnLayoutChangedListener() {
-                @Override
-                public void onLayout(float size) {
-                    imageviewGender.getLayoutParams().width = (int)size;
-                    imageviewGender.getLayoutParams().height = (int)size;
-                    imageviewSeatedLeft.getLayoutParams().width = (int)size;
-                    imageviewSeatedLeft.getLayoutParams().height = (int)size;
-                    imageviewSeatedRight.getLayoutParams().width = (int)size;
-                    imageviewSeatedRight.getLayoutParams().height = (int)size;
-                }
-            };
-
-            if(seatId % 2 == 0) {
-                rlayout = (RelativeLayout) v.findViewById(R.id.relativelayout_seat_background_left);
-                imageviewFixed = (ImageView) v.findViewById(R.id.imageview_seat_fixed_left);
-                textviewNum = (FontFitTextView) v.findViewById(R.id.textview_seated_num_left);
-                textviewNum.setLayoutChagnedListener(viewsizeObserver);
-                imageviewGender = (ImageView) v.findViewById(R.id.imageview_seated_boygirl_left);
-                textviewName = (FontFitTextView) v.findViewById(R.id.textview_seated_name_left);
-                imageviewSeatedLeft = (ImageView) v.findViewById(R.id.imageview_recently_seated_left_left);
-                imageviewSeatedRight = (ImageView) v.findViewById(R.id.imageview_recently_seated_right_left);
-            }
-            else {
-                rlayout = (RelativeLayout) v.findViewById(R.id.relativelayout_seat_background_right);
-                imageviewFixed = (ImageView) v.findViewById(R.id.imageview_seat_fixed_right);
-                textviewNum = (FontFitTextView) v.findViewById(R.id.textview_seated_num_right);
-                textviewNum.setLayoutChagnedListener(viewsizeObserver);
-                imageviewGender = (ImageView) v.findViewById(R.id.imageview_seated_boygirl_right);
-                textviewName = (FontFitTextView) v.findViewById(R.id.textview_seated_name_right);
-                imageviewSeatedLeft = (ImageView) v.findViewById(R.id.imageview_recently_seated_left_right);
-                imageviewSeatedRight = (ImageView) v.findViewById(R.id.imageview_recently_seated_right_right);
-            }
-            rlayout.setOnClickListener(this);
-        }
-
-        @Override
-        public void onClick(View v) {
-            if(mListener != null) {
-                mListener.seatClick(v, mSeatId);
-            }
-        }
-
-        public static interface ISeatClick {
-            public void seatClick(View v, int seatId);
-        }
-    }
+    private InnerViewHolder.ISeatLongClick mLongClickListener;
+    private SeatplanEditActivity.DragEventListenerOfSeats mDragListener;
 
     public SeatGridAdapter(ArrayList<Seat> seats, Context context, int segment,
-                           InnerViewHolder.ISeatClick listener) {
-        this.mDataset = seats;
+                           InnerViewHolder.ISeatClick listener,
+                           InnerViewHolder.ISeatLongClick llistener,
+                           SeatplanEditActivity.DragEventListenerOfSeats dListener) {
+        this.mSeats = seats;
         this.mContext = context;
         this.mSegment = segment;
         this.mListener = listener;
+        this.mLongClickListener = llistener;
+        this.mDragListener = dListener;
     }
 
     @Override
     public int getCount() {
-        return (mDataset.size()+1) / 2;
+        return (mSeats.size()+1) / 2;
     }
 
     @Override
@@ -121,15 +56,15 @@ public class SeatGridAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         View view = convertView;
         final OuterViewHolder ovh;
-        Seat leftSeat = mDataset.get(position*2);
-        Seat rightSeat = position*2+1 >= mDataset.size()? null : mDataset.get(position*2+1);
+        Seat leftSeat = mSeats.get(position*2);
+        Seat rightSeat = mSeats.get(position*2+1);
         Student leftStudent = leftSeat.getItsStudent();
         Student rightStudent = rightSeat.getItsStudent();
 
         if(convertView == null) {
             view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.seat, parent, false);
-            ovh = new OuterViewHolder(view, mListener, position);
+            ovh = new OuterViewHolder(view, mListener, mLongClickListener, position);
 
             view.setTag(ovh);
         }
@@ -137,23 +72,17 @@ public class SeatGridAdapter extends BaseAdapter {
             ovh = (OuterViewHolder)view.getTag();
         }
 
+        ovh.lvh.rlayout.setTag(leftSeat.getId());
+        ovh.rvh.rlayout.setTag(rightSeat.getId());
+
+        ovh.lvh.rlayout.setOnDragListener(mDragListener);
+        ovh.rvh.rlayout.setOnDragListener(mDragListener);
+
         if(leftStudent != null) {
             ovh.lvh.textviewNum.setText(String.valueOf(leftStudent.getAttendNum()));
             ovh.lvh.textviewName.setText(leftStudent.getName());
             ovh.lvh.imageviewGender.setImageResource(
                     leftStudent.isBoy()? R.drawable.ic_gender_boy : R.drawable.ic_gender_girl);
-            /*ovh.lvh.rlayout.post(new Runnable() {
-                @Override
-                public void run() {
-                    int h = ovh.lvh.textviewNum.getHeight();
-                    ovh.lvh.imageviewGender.getLayoutParams().height = h;
-                    ovh.lvh.imageviewGender.getLayoutParams().width = h-8;
-                    ovh.lvh.imageviewSeatedLeft.getLayoutParams().width =
-                            ovh.lvh.imageviewSeatedLeft.getLayoutParams().height = h-8;
-                    ovh.lvh.imageviewSeatedRight.getLayoutParams().width =
-                            ovh.lvh.imageviewSeatedRight.getLayoutParams().height = h-8;
-                }
-            });*/
         }
         else {
             ovh.lvh.textviewNum.setText(null);
@@ -166,18 +95,6 @@ public class SeatGridAdapter extends BaseAdapter {
             ovh.rvh.textviewName.setText(rightStudent.getName());
             ovh.rvh.imageviewGender.setImageResource(
                     rightStudent.isBoy() ? R.drawable.ic_gender_boy : R.drawable.ic_gender_girl);
-            /*ovh.rvh.rlayout.post(new Runnable() {
-                @Override
-                public void run() {
-                    int h = ovh.rvh.textviewNum.getHeight();
-                    ovh.rvh.imageviewGender.getLayoutParams().height = h;
-                    ovh.rvh.imageviewGender.getLayoutParams().width = h - 8;
-                    ovh.rvh.imageviewSeatedLeft.getLayoutParams().width =
-                            ovh.rvh.imageviewSeatedLeft.getLayoutParams().height = h - 8;
-                    ovh.rvh.imageviewSeatedRight.getLayoutParams().width =
-                            ovh.rvh.imageviewSeatedRight.getLayoutParams().height = h - 8;
-                }
-            });*/
         }
         else {
             ovh.rvh.textviewNum.setText(null);
@@ -185,56 +102,32 @@ public class SeatGridAdapter extends BaseAdapter {
             ovh.rvh.imageviewGender.setImageDrawable(null);
         }
 
-
-        byte selectedFlag = leftSeat.getSelectedFlag();
-        if((selectedFlag & ClassInHandApplication.SEATED_LEFT) != 0) {
+        if(leftSeat.getSelectedFlag()) {
             ovh.lvh.rlayout.setBackgroundResource(R.drawable.seat_bg_pink_200);
-        }
-        else if((selectedFlag & ClassInHandApplication.SEATED_RIGHT) != 0) {
-            ovh.lvh.rlayout.setBackgroundResource(R.drawable.seat_bg_light_blue_200);
         }
         else {
             ovh.lvh.rlayout.setBackgroundResource(R.drawable.seat_bg);
         }
-        selectedFlag = rightSeat.getSelectedFlag();
-        if((selectedFlag & ClassInHandApplication.SEATED_LEFT) != 0) {
+
+        if(rightSeat.getSelectedFlag()) {
             ovh.rvh.rlayout.setBackgroundResource(R.drawable.seat_bg_pink_200);
-        }
-        else if((selectedFlag & ClassInHandApplication.SEATED_RIGHT) != 0) {
-            ovh.rvh.rlayout.setBackgroundResource(R.drawable.seat_bg_light_blue_200);
         }
         else {
             ovh.rvh.rlayout.setBackgroundResource(R.drawable.seat_bg);
         }
 
-        byte seatedFlag = leftSeat.getRecentSeatedFlag();
-        if((seatedFlag & ClassInHandApplication.SEATED_LEFT) != 0) {
-            ovh.lvh.imageviewSeatedLeft.setVisibility(View.VISIBLE);
+        if(leftSeat.getRecentSeatedFlag()) {
+            ovh.lvh.imageViewSeated.setVisibility(View.VISIBLE);
         }
         else {
-            ovh.lvh.imageviewSeatedLeft.setVisibility(View.GONE);
+            ovh.lvh.imageViewSeated.setVisibility(View.GONE);
         }
 
-        if((seatedFlag & ClassInHandApplication.SEATED_RIGHT) != 0) {
-            ovh.lvh.imageviewSeatedRight.setVisibility(View.VISIBLE);
+        if(rightSeat.getRecentSeatedFlag()) {
+            ovh.rvh.imageViewSeated.setVisibility(View.VISIBLE);
         }
         else {
-            ovh.lvh.imageviewSeatedRight.setVisibility(View.GONE);
-        }
-
-        seatedFlag = rightSeat.getRecentSeatedFlag();
-        if((seatedFlag & ClassInHandApplication.SEATED_LEFT) != 0) {
-            ovh.rvh.imageviewSeatedLeft.setVisibility(View.VISIBLE);
-        }
-        else {
-            ovh.rvh.imageviewSeatedLeft.setVisibility(View.GONE);
-        }
-
-        if((seatedFlag & ClassInHandApplication.SEATED_RIGHT) != 0) {
-            ovh.rvh.imageviewSeatedRight.setVisibility(View.VISIBLE);
-        }
-        else {
-            ovh.rvh.imageviewSeatedRight.setVisibility(View.GONE);
+            ovh.rvh.imageViewSeated.setVisibility(View.GONE);
         }
 
         if(leftSeat.isFixed()) ovh.lvh.imageviewFixed.setVisibility(View.VISIBLE);
@@ -244,5 +137,89 @@ public class SeatGridAdapter extends BaseAdapter {
         else ovh.rvh.imageviewFixed.setVisibility(View.GONE);
 
         return view;
+    }
+
+    public static class OuterViewHolder {
+        public InnerViewHolder lvh;
+        public InnerViewHolder rvh;
+
+        public OuterViewHolder(View v, InnerViewHolder.ISeatClick listener,
+                               InnerViewHolder.ISeatLongClick llistener, int position) {
+            lvh = new InnerViewHolder(v, listener, llistener, position*2);
+            rvh = new InnerViewHolder(v, listener, llistener, position*2+1);
+        }
+    }
+
+    public static class InnerViewHolder implements View.OnClickListener, View.OnLongClickListener {
+        public ISeatClick   mOnClickListener;
+        public ISeatLongClick mOnLongClickListener;
+        public int          mSeatId;
+
+        public RelativeLayout  rlayout;
+        public ImageView       imageviewFixed;
+        public FontFitTextView textviewNum;
+        public ImageView       imageviewGender;
+        public FontFitTextView textviewName;
+        public ImageView       imageViewSeated;
+
+        public InnerViewHolder(View v, ISeatClick listener, ISeatLongClick llistener, int seatId) {
+            mSeatId = seatId;
+            mOnClickListener = listener;
+            mOnLongClickListener = llistener;
+
+            FontFitTextView.OnLayoutChagnedListener viewsizeObserver = new FontFitTextView.OnLayoutChagnedListener() {
+                @Override
+                public void onLayout(float size) {
+                    imageviewGender.getLayoutParams().width = (int)size;
+                    imageviewGender.getLayoutParams().height = (int)size;
+                    imageViewSeated.getLayoutParams().width = (int)size;
+                    imageViewSeated.getLayoutParams().height = (int)size;
+                }
+            };
+
+            if(seatId % 2 == 0) {
+                rlayout = (RelativeLayout) v.findViewById(R.id.relativelayout_seat_background_left);
+                imageviewFixed = (ImageView) v.findViewById(R.id.imageview_seat_fixed_left);
+                textviewNum = (FontFitTextView) v.findViewById(R.id.textview_seated_num_left);
+                textviewNum.setLayoutChagnedListener(viewsizeObserver);
+                imageviewGender = (ImageView) v.findViewById(R.id.imageview_seated_boygirl_left);
+                textviewName = (FontFitTextView) v.findViewById(R.id.textview_seated_name_left);
+                imageViewSeated = (ImageView) v.findViewById(R.id.imageview_recently_seated_left);
+            }
+            else {
+                rlayout = (RelativeLayout) v.findViewById(R.id.relativelayout_seat_background_right);
+                imageviewFixed = (ImageView) v.findViewById(R.id.imageview_seat_fixed_right);
+                textviewNum = (FontFitTextView) v.findViewById(R.id.textview_seated_num_right);
+                textviewNum.setLayoutChagnedListener(viewsizeObserver);
+                imageviewGender = (ImageView) v.findViewById(R.id.imageview_seated_boygirl_right);
+                textviewName = (FontFitTextView) v.findViewById(R.id.textview_seated_name_right);
+                imageViewSeated = (ImageView) v.findViewById(R.id.imageview_recently_seated_right);
+            }
+            rlayout.setOnClickListener(this);
+            rlayout.setOnLongClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            if(mOnClickListener != null) {
+                mOnClickListener.seatClick(v);
+            }
+        }
+
+        @Override
+        public boolean onLongClick(View v) {
+            if(mOnLongClickListener != null) {
+                return mOnLongClickListener.seatLongClick(v);
+            }
+            return true;
+        }
+
+        public static interface ISeatClick {
+            public void seatClick(View v);
+        }
+
+        public static interface ISeatLongClick {
+            public boolean seatLongClick(View v);
+        }
     }
 }

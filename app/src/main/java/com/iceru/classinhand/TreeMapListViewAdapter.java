@@ -45,7 +45,7 @@ class TreeMapListViewAdapter extends BaseAdapter {
         View v = convertView;
 
         if(v == null) {
-            v = inflater.inflate(R.layout.student_info, parent, false);
+            v = inflater.inflate(R.layout.student_info_grid, parent, false);
         }
 
         Student s = (Student)getItem(position);

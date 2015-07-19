@@ -1,13 +1,16 @@
 package com.iceru.classinhand;
 
+import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.Toolbar;
 import android.telephony.PhoneNumberUtils;
 import android.view.Menu;
@@ -20,8 +23,10 @@ import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -39,6 +44,8 @@ public class StudentDetailActivity extends ActionBarActivity {
     private Student mStudent;
     private ClassInHandApplication application;
 
+    private ImageView       mImageViewPicture;
+    private ImageView       mImageViewCamera;
     private EditText        mEdittextAttendNum;
     private EditText        mEdittextName;
     private ToggleButton    mTglbtnGender;
@@ -113,25 +120,33 @@ public class StudentDetailActivity extends ActionBarActivity {
         mStudent = application.findStudentById(intent.getIntExtra(ClassInHandApplication.STUDENT_SELECTED_ID, -1));
         if(mStudent == null) finish();
 
-        setContentView(R.layout.activity_student_detail);
+        setContentView(R.layout.activity_student_common);
         initviews();
     }
 
     private void initviews() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_student_detail);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-        mTglbtnGender = (ToggleButton)findViewById(R.id.tglbtn_student_detail_gender);
-        mEdittextAttendNum = (EditText)findViewById(R.id.edittext_student_detail_attendnum);
-        mEdittextName = (EditText)findViewById(R.id.edittext_student_detail_name);
-        mEdittextPhone = (EditText)findViewById(R.id.edittext_student_detail_phone);
+        mImageViewPicture = (ImageView)findViewById(R.id.imageview_picture);
+        mImageViewCamera = (ImageView)findViewById(R.id.imageview_camera);
+        mTglbtnGender = (ToggleButton)findViewById(R.id.tglbtn_gender);
+        mEdittextAttendNum = (EditText)findViewById(R.id.edittext_attendnum);
+        mEdittextName = (EditText)findViewById(R.id.edittext_name);
+        mEdittextPhone = (EditText)findViewById(R.id.edittext_phone);
         mSpinnerCallorSms = (Spinner)findViewById(R.id.spinner_callorsms);
-        mTextviewIndate = (TextView)findViewById(R.id.textview_student_detail_indate);
-        mTextviewOutdate = (TextView)findViewById(R.id.textview_student_detail_outdate);
+        mTextviewIndate = (TextView)findViewById(R.id.textview_indate);
+        mTextviewOutdate = (TextView)findViewById(R.id.textview_outdate);
+
+        setEditEnable(false);
+
+        FrameLayout outdateFrame = (FrameLayout)findViewById(R.id.framelayout_outdate);
+        outdateFrame.setVisibility(View.VISIBLE);
+        mSpinnerCallorSms.setVisibility(View.VISIBLE);
 
         mTglbtnGender.setChecked(mStudent.isBoy());
         mEdittextAttendNum.setText(String.valueOf(mStudent.getAttendNum()));
@@ -139,6 +154,7 @@ public class StudentDetailActivity extends ActionBarActivity {
         mEdittextPhone.setText(mStudent.getPhone());
 
         mSpinnerCallorSms.setAdapter(new spinnerAdapter());
+        //mSpinnerCallorSms.setSelection(0, false);
         mSpinnerCallorSms.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -170,6 +186,8 @@ public class StudentDetailActivity extends ActionBarActivity {
         mOutdate.setTimeInMillis(mStudent.getOutDate());
         if(mOutdate.getTimeInMillis() != Long.MAX_VALUE) {
             mTextviewOutdate.setText(getDateString(mOutdate));
+        } else {
+            mTextviewOutdate.setText(R.string.hint_textview_outdate);
         }
 
     }
@@ -246,13 +264,7 @@ public class StudentDetailActivity extends ActionBarActivity {
         menu.findItem(R.id.action_done).setVisible(true);
         menu.findItem(R.id.action_student_detail_delete).setVisible(false);
 
-        mEdittextAttendNum.setEnabled(true);
-        mEdittextName.setEnabled(true);
-        mTglbtnGender.setClickable(true);
-        mEdittextPhone.setEnabled(true);
-        mSpinnerCallorSms.setEnabled(false);
-        mTextviewIndate.setClickable(true);
-        mTextviewOutdate.setClickable(true);
+        setEditEnable(true);
 
         mTextviewIndate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -266,6 +278,17 @@ public class StudentDetailActivity extends ActionBarActivity {
                 showDatePickDialog(mOutdate, mTextviewOutdate);
             }
         });
+    }
+
+    private void setEditEnable(boolean enable) {
+        mImageViewCamera.setVisibility(enable? View.VISIBLE : View.GONE);
+        mEdittextAttendNum.setEnabled(enable);
+        mEdittextName.setEnabled(enable);
+        mTglbtnGender.setClickable(enable);
+        mEdittextPhone.setEnabled(enable);
+        mSpinnerCallorSms.setEnabled(!enable);
+        mTextviewIndate.setClickable(enable);
+        mTextviewOutdate.setClickable(enable);
     }
 
     private void showDatePickDialog(final GregorianCalendar cal, final TextView tv) {
@@ -307,13 +330,7 @@ public class StudentDetailActivity extends ActionBarActivity {
             mStudent.setInClass(mStudent.getInDate() <= today && mStudent.getOutDate() > today);
             application.updateStudent(mStudent);
 
-            mEdittextAttendNum.setEnabled(false);
-            mEdittextName.setEnabled(false);
-            mTglbtnGender.setClickable(false);
-            mEdittextPhone.setEnabled(false);
-            mSpinnerCallorSms.setEnabled(true);
-            mTextviewIndate.setClickable(false);
-            mTextviewOutdate.setClickable(false);
+            setEditEnable(false);
         }
 
         else {
@@ -344,5 +361,13 @@ public class StudentDetailActivity extends ActionBarActivity {
         if (intent.resolveActivity(getPackageManager()) != null) {
             startActivity(intent);
         }
+    }
+
+    public void notYetSupported(View view) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.dialog_style);
+        builder.setTitle(R.string.title_dialog_notyetsupported);
+        builder.setMessage(R.string.contents_dialog_notyetsupported);
+        builder.setPositiveButton(R.string.confirm, null);
+        builder.create().show();
     }
 }

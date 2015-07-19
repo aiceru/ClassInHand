@@ -18,7 +18,8 @@
             android:name=".MainActivity"
             android:label="@string/app_name"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan|adjustNothing">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -32,16 +33,9 @@
             android:launchMode="singleInstance"
             android:theme="@android:style/Theme.Holo.Light.Dialog" />
         <activity
-            android:name=".StudentAddActivity"
-            android:label="@string/title_activity_student_add"
-            android:parentActivityName=".MainActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.iceru.classinhand.MainActivity" />
-        </activity>
-        <activity
             android:name=".SeatplanEditActivity"
-            android:parentActivityName=".MainActivity" >
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.iceru.classinhand.MainActivity" />
@@ -49,7 +43,18 @@
         <activity
             android:name=".SeatplanDetailActivity"
             android:label="@string/title_activity_seatplan_detail"
-            android:parentActivityName=".MainActivity" >
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.iceru.classinhand.MainActivity" />
+        </activity>
+        <activity
+            android:name=".StudentAddActivity"
+            android:label="@string/title_activity_student_add"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
+            android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.iceru.classinhand.MainActivity" />
@@ -57,13 +62,12 @@
         <activity
             android:name=".StudentDetailActivity"
             android:label="@string/title_activity_student_detail"
-            android:parentActivityName=".MainActivity" >
+            android:parentActivityName=".MainActivity"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.iceru.classinhand.MainActivity" />
-        </activity>
-        <activity android:name=".ShowcaseActivity"
-            android:theme="@style/Theme.Transparent">
         </activity>
     </application>
 

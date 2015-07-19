@@ -42,26 +42,15 @@ public class ClassInHandApplication extends Application {
     /* Global Constants */
     public static final int RESULT_OK = 0;
     public static final int MAX_STUDENTS = 99;
-    public static final byte SEATED_LEFT = 0x01;     // bit flag : 0000 0001
-    public static final byte SEATED_RIGHT = 0x02;    // bit flag : 0000 0010
-
-    public static final int REQUESTCODE_FIRST_SHOWCASE = 90;
-    public static final int REQUESTCODE_STUDENTLIST_SHOWCASE = 91;
 
     public static final String STATE_SELECTED_POSITION = "selected_navigation_drawer_position";
     public static final String PREF_USER_LEARNED_DRAWER = "navigation_drawer_learned";
-    public static final String PREF_FIRST_SHOWCASE = "first_showcase_shown";
-    public static final String PREF_STUDENTLIST_SHOWCASE = "studentlist_showcase_shown";
-    public static final String PREF_EDIT_SEATPLAN_SHOWCASE = "edit_seatplan_showcase_shown";
+    public static final String PREF_EDIT_SEATPLAN_DO_NOT_OPEN_MANUAL = "edit_seatplan_do_not_open_manual";
 
     public static final String SEATPLAN_SELECTED_POSITION = "com.iceru.classinhand.SEATPLAN_SELECTED_POSITION";
     public static final String STUDENT_SELECTED_ID = "com.iceru.classinhand.STUDENT_SELECTED_ID";
     public static final String SEATPLAN_EDIT_NEWDATE = "com.iceru.classinhand.SEATPLAN_EDIT_NEWDATE";
     public static final String SEATPLAN_EDIT_OLDDATE = "com.iceru.classinhand.SEATPLAN_EDIT_OLDDATE";
-
-    public static final String SHOWCASE_TARGET_POSITION = "com.iceru.classinhand.SHOWCASE_TARGET_POSITION";
-    public static final String SHOWCASE_TARGET_SIZE = "com.iceru.classinhand.SHOWCASE_TARGET_SIZE";
-    public static final String SHOWCASE_MESSAGE = "com.cier.classinhand.SHOWCASE_MESSAGE";
 
     /* Global Variables */
     public GlobalProperties globalProperties;

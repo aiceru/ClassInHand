@@ -8,9 +8,11 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 import android.view.View;
 
 import java.io.File;
@@ -26,10 +28,7 @@ import java.util.List;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.widget.AdapterView;
 import android.widget.DatePicker;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
@@ -43,31 +42,23 @@ public class MainActivity extends AppCompatActivity {
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
     private DrawerLayout            mDrawerLayout;
-    private ListView                mDrawerListView;
-    private List<DrawerContent>     mDrawerList;
+    private NavigationView          mNavigationView;
     private ActionBarDrawerToggle   mDrawerToggle;
-    private RelativeLayout          mMainLayout;
 
-    private int     mCurrentSelectedPosition = 0;
+    private int mCurrentSelectedItemId = R.id.menuitem_seatplan;
     private String  mDrawerTitle;
     private String  mTitle;
 
     private boolean mFromSavedInstanceState = false;
     private boolean mUserLearnedDrawer = false;
-    private boolean mFirstShowcaseShown = false;
 
     private GregorianCalendar mNewDate;
     private GregorianCalendar mOldDate;
 
-    /**
-     * Used to store the last screen title. For use in {link #restoreActionBar()}.
-     */
-    //private CharSequence mTitle;
-
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         //super.onSaveInstanceState(outState);
-        outState.putInt(ClassInHandApplication.STATE_SELECTED_POSITION, mCurrentSelectedPosition);
+        outState.putInt(ClassInHandApplication.STATE_SELECTED_POSITION, mCurrentSelectedItemId);
     }
 
     @Override
@@ -78,10 +69,9 @@ public class MainActivity extends AppCompatActivity {
 
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         mUserLearnedDrawer = sp.getBoolean(ClassInHandApplication.PREF_USER_LEARNED_DRAWER, false);
-        mFirstShowcaseShown = sp.getBoolean(ClassInHandApplication.PREF_FIRST_SHOWCASE, false);
 
         if (savedInstanceState != null) {
-            mCurrentSelectedPosition = savedInstanceState.getInt(ClassInHandApplication.STATE_SELECTED_POSITION);
+            mCurrentSelectedItemId = savedInstanceState.getInt(ClassInHandApplication.STATE_SELECTED_POSITION);
             mFromSavedInstanceState = true;
         }
         mDrawerTitle = getString(R.string.app_name);
@@ -93,31 +83,24 @@ public class MainActivity extends AppCompatActivity {
     private void initViews() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerListView = (ListView) findViewById(R.id.navigation_drawer);
-        mMainLayout = (RelativeLayout) findViewById(R.id.relativelayout_main);
+        mNavigationView = (NavigationView) findViewById(R.id.navigation);
 
         toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
         setSupportActionBar(toolbar);
 
-        mDrawerList = new ArrayList<>();
-        mDrawerList.add(DrawerItem.create(101, getString(R.string.title_seatplan), "ic_grid_on_grey600_24dp", true, this));
-        mDrawerList.add(DrawerItem.create(102, getString(R.string.title_message), "ic_message_grey_600_24dp", true, this));
-        mDrawerList.add(DrawerSection.create(200, "Settings"));
-        mDrawerList.add(DrawerSubItem.create(201, getString(R.string.title_fillinfo), "ic_edit_grey600_24dp", true, this));
-        mDrawerList.add(DrawerSubItem.create(301, getString(R.string.title_setting), "ic_settings_grey600_24dp", true, this));
-
-        // DEBUG 빌드에만 포함!
         if(BuildConfig.DEBUG) {
-            mDrawerList.add(DrawerSubItem.create(901, "DB추출(개발자용)", "ic_settings_grey600_24dp", false, this));
-            mDrawerList.add(DrawerSubItem.create(902, "DB삭제(개발자용)", "ic_settings_grey600_24dp", false, this));
-            mDrawerList.add(DrawerSubItem.create(903, "TestDB생성(개발자용)", "ic_settings_grey600_24dp", false, this));
+            mNavigationView.inflateMenu(R.menu.navigation_drawer_items_debug);
+        } else {
+            mNavigationView.inflateMenu(R.menu.navigation_drawer_items);
         }
 
-        mDrawerListView.setAdapter(new DrawerContentAdapter(getSupportActionBar().getThemedContext(), R.layout.drawer_item, mDrawerList));
-        mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                selectItem(position);
+            public boolean onNavigationItemSelected(MenuItem menuItem) {
+                menuItem.setChecked(true);
+                mDrawerLayout.closeDrawers();
+                selectItem(menuItem.getItemId());
+                return true;
             }
         });
 
@@ -127,15 +110,12 @@ public class MainActivity extends AppCompatActivity {
             /** Called when a drawer has settled in a completely closed state. */
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
-                //mDrawerToggle.syncState();
                 getSupportActionBar().setTitle(mTitle);
-                //invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
 
             /** Called when a drawer has settled in a completely open state. */
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                getSupportActionBar().setTitle(mDrawerTitle);
             }
         };
 
@@ -148,50 +128,44 @@ public class MainActivity extends AppCompatActivity {
         mDrawerToggle.syncState();
     }
 
-    private void selectItem(int position) {
-        if (mDrawerListView != null) {
-            mDrawerListView.setItemChecked(position, false);
-        }
-        if (mDrawerLayout != null) {
-            mDrawerLayout.closeDrawer(mDrawerListView);
-        }
+    private void selectItem(int navViewItemId) {
         if (!mUserLearnedDrawer) {
             mUserLearnedDrawer = true;
             SharedPreferences sp = PreferenceManager
                     .getDefaultSharedPreferences(getApplicationContext());
             sp.edit().putBoolean(ClassInHandApplication.PREF_USER_LEARNED_DRAWER, true).apply();
         }
-        mCurrentSelectedPosition = position;
+        mCurrentSelectedItemId = navViewItemId;
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         // 2015. 4. 22. wooseok.
         // commit() must be executed before onSaveInstanceState(), so use commitAllowingStateLoss().
         // http://www.kmshack.kr/fragment-%ED%8C%8C%ED%97%A4%EC%B9%98%EA%B8%B0-3-fragmentmanager-fragmenttransaction%EC%97%90-%EB%8C%80%ED%95%B4%EC%84%9C/
-        switch(position+1) {
-            case 1:
+        switch(navViewItemId) {
+            case R.id.menuitem_seatplan:
                 mTitle = getString(R.string.title_seatplan);
                 fragmentManager.beginTransaction().replace(R.id.main_contents, SeatplansFragment.getInstance()).commitAllowingStateLoss();
                 break;
-            case 2:
+            case R.id.menuitem_message:
                 mTitle = getString(R.string.title_message);
                 fragmentManager.beginTransaction().replace(R.id.main_contents, MessageFragment.getInstance()).commitAllowingStateLoss();
                 break;
-            case 4:
-                mTitle = getString(R.string.title_fillinfo);
-                fragmentManager.beginTransaction().replace(R.id.main_contents, FillInfoPagerFragment.getInstance()).commitAllowingStateLoss();
+            case R.id.menuitem_studentinfo:
+                mTitle = getString(R.string.title_studentinfo);
+                fragmentManager.beginTransaction().replace(R.id.main_contents, StudentListFragment.getInstance()).commitAllowingStateLoss();
                 break;
-            case 5:
+            case R.id.menuitem_setting:
                 mTitle = getString(R.string.title_setting);
                 fragmentManager.beginTransaction().replace(R.id.main_contents, SettingsFragment.getInstance()).commitAllowingStateLoss();
                 break;
-            case 6:
+            case R.id.menuitem_dev_exportdb:
                 exportDB();
                 break;
-            case 7:
+            case R.id.menuitem_dev_deletedb:
                 ClassInHandApplication.getInstance().removeAllStudents();
                 ClassInHandApplication.getInstance().removeAllSeatplans();
                 break;
-            case 8:
+            case R.id.menuitem_dev_createdb:
                 ClassInHandApplication.getInstance().createTestData();
                 break;
             default:
@@ -204,96 +178,9 @@ public class MainActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
         if (!mUserLearnedDrawer && !mFromSavedInstanceState) {
-            mDrawerLayout.openDrawer(mDrawerListView);
-        } else selectItem(mCurrentSelectedPosition);
-        if (!mFirstShowcaseShown) {
-            mDrawerListView.post(new Runnable() {
-                @Override
-                public void run() {
-                    View v = mDrawerListView.getChildAt(3);
-                    int[] location = new int[2];
-                    int[] size = new int[2];
-                    v.getLocationOnScreen(location);
-                    size[0] = v.getMeasuredWidth();
-                    size[1] = v.getMeasuredHeight();
-                    Intent showcaseIntent = new Intent(getApplicationContext(), ShowcaseActivity.class);
-                    showcaseIntent.putExtra(ClassInHandApplication.SHOWCASE_TARGET_POSITION, location);
-                    showcaseIntent.putExtra(ClassInHandApplication.SHOWCASE_TARGET_SIZE, size);
-                    showcaseIntent.putExtra(ClassInHandApplication.SHOWCASE_MESSAGE, R.string.welcome_input_students_info);
-                    startActivityForResult(showcaseIntent, ClassInHandApplication.REQUESTCODE_FIRST_SHOWCASE);
-                }
-            });
-        }
+            mDrawerLayout.openDrawer(mNavigationView);
+        } else selectItem(mCurrentSelectedItemId);
     }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode >> 16 != 0x0) { // this result is from fragment... maybe
-            // notifying nested fragments (support library bug fix)
-            final FragmentManager childFragmentManager = this.getSupportFragmentManager();
-
-            if (childFragmentManager != null) {
-                final List<Fragment> nestedFragments = childFragmentManager.getFragments();
-
-                if (nestedFragments == null || nestedFragments.size() == 0) return;
-
-                for (Fragment childFragment : nestedFragments) {
-                    if (childFragment != null && !childFragment.isDetached() && !childFragment.isRemoving()) {
-                        childFragment.onActivityResult(requestCode, resultCode, data);
-                    }
-                }
-            }
-        }
-        else {
-            switch (requestCode) {
-                case ClassInHandApplication.REQUESTCODE_FIRST_SHOWCASE:
-                    this.mFirstShowcaseShown = true;
-                    SharedPreferences sp = PreferenceManager
-                            .getDefaultSharedPreferences(getApplicationContext());
-                    sp.edit().putBoolean(ClassInHandApplication.PREF_FIRST_SHOWCASE, true).apply();
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
-
-    /*@Override
-    public void onBackPressed() {
-        if(mFragmentDepth > 1) {
-            getFragmentManager().popBackStackImmediate();
-            mFragmentDepth--;
-            getSupportActionBar().setTitle(mTitle);
-        }
-        else {
-            super.onBackPressed();
-        }
-    }*/
-
-    /*@Override
-    public void onNavigationDrawerItemSelected(int position) {
-        // update the main content by replacing fragments
-        FragmentManager fragmentManager = getFragmentManager();
-        switch(position+1) {
-	        case 1:
-		        fragmentManager.beginTransaction().replace(R.id.main_contents, SeatFragment.newInstance()).commit();
-		        break;
-	        case 3:
-	            fragmentManager.beginTransaction().replace(R.id.main_contents, FillInfoPagerFragment.newInstance()).commit();
-	            break;
-	        default:
-	            break;
-        }
-    }*/
-    
-    //public boolean isDrawerOpen() {
-    //	return mNavigationDrawerFragment.isDrawerOpen();
-    //}
-
-    /*public ClassDBHelper getDbHelper() {
-        return dbHelper;
-    }*/
 
 	public int getNum_roleConsume() {
 		return num_roleConsume;
@@ -302,30 +189,6 @@ public class MainActivity extends AppCompatActivity {
 	public ArrayList<Role> getmRoles() {
 		return mRoles;
 	}
-
-	/*public boolean addRole(Role role) {
-		boolean success = mRoles.add(role);
-		if(success) {
-			num_roleConsume += role.getConsume();
-
-			SharedPreferences.Editor editor = mShPrefRoleList.edit();
-			editor.putInt(role.getName(), role.getConsume());
-			editor.apply();
-		}
-		return success;
-	}
-
-	public boolean removeRole(Role role) {
-		boolean success = mRoles.remove(role);
-		if(success) {
-			num_roleConsume -= role.getConsume();
-
-			SharedPreferences.Editor editor = mShPrefRoleList.edit();
-			editor.remove(role.getName());
-			editor.apply();
-		}
-		return success;
-	}*/
 
     public void onClickNewPersonButton(View view) {
         Intent intent = new Intent(this, StudentAddActivity.class);
@@ -376,9 +239,16 @@ public class MainActivity extends AppCompatActivity {
         builder.setNegativeButton(R.string.action_cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 // User cancelled the dialog, Do nothing
+                mOldDate = null;
             }
         });
         AlertDialog dialog = builder.create();
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                mOldDate = null;
+            }
+        });
         dialog.show();
     }
 
@@ -389,30 +259,6 @@ public class MainActivity extends AppCompatActivity {
                 mOldDate == null? 0 : mOldDate.getTimeInMillis());
         startActivity(intent);
     }
-
-    
-
-/*    public void restoreActionBar() {
-        ActionBar actionBar = getActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        actionBar.setDisplayShowTitleEnabled(true);
-        actionBar.setTitle(mTitle);
-    }*/
-
-/*
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        if (!mNavigationDrawerFragment.isDrawerOpen()) {
-            // Only show items in the action bar relevant to this screen
-            // if the drawer is not showing. Otherwise, let the drawer
-            // decide what to show in the action bar.
-            //getMenuInflater().inflate(R.menu.menu_fillinfo, menu);
-            restoreActionBar();
-            return true;
-        }
-        return super.onCreateOptionsMenu(menu);
-    }
-    */
 
     private void exportDB() {
         File sd = Environment.getExternalStorageDirectory();

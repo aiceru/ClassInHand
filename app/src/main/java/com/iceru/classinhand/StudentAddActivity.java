@@ -1,10 +1,13 @@
 package com.iceru.classinhand;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.support.design.widget.Snackbar;
+import android.support.v4.widget.NestedScrollView;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.telephony.PhoneNumberUtils;
 import android.view.KeyEvent;
@@ -14,6 +17,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -23,7 +27,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 
-public class StudentAddActivity extends ActionBarActivity {
+public class StudentAddActivity extends AppCompatActivity {
 
     /* Application Class */
     private ClassInHandApplication          application;
@@ -34,9 +38,9 @@ public class StudentAddActivity extends ActionBarActivity {
     private GregorianCalendar               mInDate;
 
     /* Views */
-    private RecyclerView                    mStudentsList;
-    private RecyclerView.Adapter            mStudentsListAdapter;
-    private RecyclerView.LayoutManager      mStudentsListLayoutManager;
+    private NestedScrollView                mRootScrollView;
+    private ImageView                       mImageViewPicture;
+    private ImageView                       mImageViewCamera;
     private ToggleButton                    mGenderTglbtn;
     private EditText                        mNameEditText;
     private EditText                        mAttendNumEditText;
@@ -57,36 +61,33 @@ public class StudentAddActivity extends ActionBarActivity {
             mAttendNumArray[s.getAttendNum()] = true;
         }
 
-        setContentView(R.layout.activity_student_add);
+        setContentView(R.layout.activity_student_common);
         initViews();
     }
 
     private void initViews() {
         int attendNum = 1;
-        Toolbar toolbar = (Toolbar) findViewById(R.id.addpersonactivity_toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-        mStudentsList = (RecyclerView)findViewById(R.id.recyclerview_student_add_studentlist);
-        mStudentsList.setHasFixedSize(true);
-        mStudentsListLayoutManager = new LinearLayoutManager(this);
-        mStudentsList.setLayoutManager(mStudentsListLayoutManager);
-        mStudentsListAdapter = new StudentListAdapter(mStudents, this);
-        mStudentsList.setAdapter(mStudentsListAdapter);
-        mStudentsList.scrollToPosition(mStudents.size()-1);
+        mRootScrollView = (NestedScrollView)findViewById(R.id.root_scrollview);
 
-        mAttendNumEditText = (EditText)findViewById(R.id.edittext_student_add_attendnum);
+        mImageViewPicture = (ImageView)findViewById(R.id.imageview_picture);
+        mImageViewCamera = (ImageView)findViewById(R.id.imageview_camera);
+
+        mAttendNumEditText = (EditText)findViewById(R.id.edittext_attendnum);
         while(mAttendNumArray[attendNum]) attendNum++;
         mAttendNumEditText.setText(String.valueOf(attendNum));
 
-        mGenderTglbtn = (ToggleButton)findViewById(R.id.tglbtn_student_add_gender);
+        mGenderTglbtn = (ToggleButton)findViewById(R.id.tglbtn_gender);
 
-        mNameEditText = (EditText)findViewById(R.id.edittext_student_add_name);
+        mNameEditText = (EditText)findViewById(R.id.edittext_name);
 
-        mInDateTextView = (TextView)findViewById(R.id.textview_student_add_indate);
+        mInDateTextView = (TextView)findViewById(R.id.textview_indate);
         mInDateTextView.setText(getDateString(mInDate));
         mInDateTextView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,12 +96,12 @@ public class StudentAddActivity extends ActionBarActivity {
             }
         });
 
-        mPhoneEditText = (EditText)findViewById(R.id.edittext_student_add_phone);
+        mPhoneEditText = (EditText)findViewById(R.id.edittext_phone);
         mPhoneEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if(actionId == EditorInfo.IME_ACTION_DONE) {
-                    addStudent();
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    showSnackbar(addStudent());
                     return true;
                 }
                 return false;
@@ -108,12 +109,37 @@ public class StudentAddActivity extends ActionBarActivity {
         });
     }
 
-    private void addStudent() {
+    private void showSnackbar(Student student) {
+        final Snackbar bar;
+        if(student != null) {
+            StringBuilder builder = new StringBuilder();
+            builder.append("\"").append(student.getAttendNum()).append(". ")
+                    .append(student.getName()).append("\"")
+                    .append(getString(R.string.action_added));
+            bar = Snackbar.make(mRootScrollView, builder.toString(), Snackbar.LENGTH_LONG);
+            bar.setAction(R.string.action_dismiss, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    bar.dismiss();
+                }
+            });
+            View view = bar.getView();
+            view.setBackgroundColor(getResources().getColor(R.color.accent));
+            TextView tv = (TextView)view.findViewById(android.support.design.R.id.snackbar_text);
+            tv.setTextColor(Color.WHITE);
+            tv = (TextView)view.findViewById(android.support.design.R.id.snackbar_action);
+            tv.setTextColor(Color.WHITE);
+            bar.show();
+        }
+    }
+
+    private Student addStudent() {
         Student student;
         String name, numStr;
         String phone;
         int attendNum;
         boolean isboy;
+        boolean ret;
 
         long inDate = mInDate.getTimeInMillis();
         long today = application.getValueOfTodayCalendar().getTimeInMillis();
@@ -125,37 +151,38 @@ public class StudentAddActivity extends ActionBarActivity {
 
         if(numStr.equals("")) {
             Toast.makeText(this, R.string.warning_edittext_num_is_null, Toast.LENGTH_SHORT).show();
-            return;
+            return null;
         }
 
         if(name.equals("")) {
             Toast.makeText(this, R.string.warning_edittext_name_is_null, Toast.LENGTH_SHORT).show();
-            return;
+            return null;
         }
 
         attendNum = Integer.valueOf(numStr);
 
         if(mAttendNumArray[attendNum]) {
             Toast.makeText(this, R.string.warning_existing_attendnum, Toast.LENGTH_SHORT).show();
-            return;
+            return null;
         }
 
         student = new Student(ClassInHandApplication.NEXT_ID, attendNum, name, isboy,
                 phone, (inDate <= today), inDate, Long.MAX_VALUE);
         ClassInHandApplication.NEXT_ID++;
 
-        application.addStudent(student);
-        mAttendNumArray[attendNum] = true;
+        ret = application.addStudent(student);
+        if(ret) {
+            mAttendNumArray[attendNum] = true;
+            while(mAttendNumArray[attendNum]) attendNum++;
+            mAttendNumEditText.setText(String.valueOf(attendNum));
+            mNameEditText.setText(null);
+            mPhoneEditText.setText(null);
 
-        mStudentsListAdapter.notifyDataSetChanged();
-        mStudentsList.scrollToPosition(mStudents.size()-1);
+            mAttendNumEditText.requestFocus();
+            return student;
+        }
 
-        while(mAttendNumArray[attendNum]) attendNum++;
-        mAttendNumEditText.setText(String.valueOf(attendNum));
-        mNameEditText.setText(null);
-        mPhoneEditText.setText(null);
-
-        mAttendNumEditText.requestFocus();
+        return null;
     }
 
     @Override
@@ -200,5 +227,13 @@ public class StudentAddActivity extends ActionBarActivity {
         DatePickerDialog dateDialog = new DatePickerDialog(this, R.style.dialog_style, dateSetListener,
                 mInDate.get(Calendar.YEAR), mInDate.get(Calendar.MONTH), mInDate.get(Calendar.DAY_OF_MONTH));
         dateDialog.show();
+    }
+
+    public void notYetSupported(View view) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.dialog_style);
+        builder.setTitle(R.string.title_dialog_notyetsupported);
+        builder.setMessage(R.string.contents_dialog_notyetsupported);
+        builder.setPositiveButton(R.string.confirm, null);
+        builder.create().show();
     }
 }

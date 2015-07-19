@@ -7,16 +7,16 @@ public class Seat {
 	private int id;
 	private Student itsStudent;
     private int pairSeatId;
-    private byte recentSeatedFlag;
-    private byte selectedFlag;
+    private boolean recentSeatedFlag;
+    private boolean selectedFlag;
     private boolean fixed;
 
 	public Seat(int id, Student st, boolean fixed) {
 		this.id = id;
 		this.itsStudent = st;
         this.pairSeatId = this.id % 2 == 0? this.id + 1 : this.id - 1;
-        this.recentSeatedFlag = 0x00;
-        this.selectedFlag = 0x00;
+        this.recentSeatedFlag = false;
+        this.selectedFlag = false;
         this.fixed = fixed;
 	}
 
@@ -44,11 +44,11 @@ public class Seat {
         return pairSeatId;
     }
 
-    public byte getRecentSeatedFlag() {
+    public boolean getRecentSeatedFlag() {
         return recentSeatedFlag;
     }
 
-    public byte getSelectedFlag() { return selectedFlag; }
+    public boolean getSelectedFlag() { return selectedFlag; }
 
     public boolean isFixed() { return fixed; }
 
@@ -60,20 +60,12 @@ public class Seat {
 		this.itsStudent = itsStudent;
 	}
 
-    public void setRecentSeatedFlag(byte flag) {
-        this.recentSeatedFlag |= flag;
+    public void setRecentSeatedFlag(boolean flag) {
+        this.recentSeatedFlag = flag;
     }
 
-    public void clrRecentSeatedFlag(byte flag) {
-        this.recentSeatedFlag &= (~flag);
-    }
-
-    public void setSelectedFlag(byte flag) {
-        this.selectedFlag |= flag;
-    }
-
-    public void clrSelectedFlag(byte flag) {
-        this.selectedFlag &= (~flag);
+    public void setSelectedFlag(boolean flag) {
+        this.selectedFlag = flag;
     }
 
     public void setFixed(boolean fix) {

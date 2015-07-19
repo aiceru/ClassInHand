@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group
+        android:id="@+id/menugroup_contents">
+        <item
+            android:id="@+id/menuitem_seatplan"
+            android:icon="@drawable/ic_grid_on_grey600_24dp"
+            android:title="@string/title_seatplan"/>
+        <item
+            android:id="@+id/menuitem_message"
+            android:icon="@drawable/ic_message_grey_600_24dp"
+            android:title="@string/title_message"/>
+    </group>
+    <group
+        android:id="@+id/menugroup_settings">
+        <item
+            android:id="@+id/menuitem_studentinfo"
+            android:icon="@drawable/ic_edit_grey600_24dp"
+            android:title="@string/title_studentinfo"/>
+        <item
+            android:id="@+id/menuitem_setting"
+            android:icon="@drawable/ic_settings_grey600_24dp"
+            android:title="@string/title_setting"/>
+    </group>
+</menu>

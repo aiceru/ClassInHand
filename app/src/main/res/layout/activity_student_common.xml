@@ -1,0 +1,230 @@
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/background_material_light">
+
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/root_scrollview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="com.iceru.classinhand.PatchedScrollingViewBehavior">
+        <!--Design support library bug에 따른 임시 패치
+        from https://code.google.com/p/android/issues/detail?id=176373#c5-->
+        <!--app:layout_behavior="@string/appbar_scrolling_view_behavior"-->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/imageview_picture"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:src="@drawable/ic_person_white_48dp"
+                    android:scaleType="fitCenter"
+                    android:background="@color/dim_foreground_disabled_material_light"/>
+
+                <ImageView
+                    android:id="@+id/imageview_camera"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:src="@drawable/ic_photo_camera_white_18dp"
+                    android:layout_gravity="bottom|right"
+                    android:layout_margin="16dp"
+                    android:onClick="notYetSupported"/>
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="72dp"
+                android:paddingRight="16dp"
+                android:paddingLeft="16dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="left|center_vertical"
+                    android:src="@drawable/ic_attendnum_grey_700_24dp"/>
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="56dp"
+                    android:layout_gravity="left|top">
+                    <android.support.v7.widget.AppCompatEditText
+                        android:id="@+id/edittext_attendnum"
+                        android:layout_width="52dp"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/hint_edittext_attendnum"
+                        android:maxLength="2"
+                        android:singleLine="true"
+                        android:inputType="number"
+                        android:imeOptions="actionNext"
+                        android:nextFocusDown="@+id/edittext_name"/>
+                </android.support.design.widget.TextInputLayout>
+
+                <ToggleButton
+                    android:id="@+id/tglbtn_gender"
+                    style="@style/toggleButton"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_gravity="right|center_vertical"
+                    android:background="@drawable/tglbtn_boygirl_layerlist" />
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="72dp"
+                android:paddingRight="16dp"
+                android:paddingLeft="16dp"
+                android:layout_marginTop="-8dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="left|center_vertical"
+                    android:src="@drawable/ic_person_grey_700_24dp"/>
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="56dp"
+                    android:layout_gravity="left|top">
+                    <android.support.v7.widget.AppCompatEditText
+                        android:id="@id/edittext_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/hint_edittext_name"
+                        android:maxLength="6"
+                        android:singleLine="true"
+                        android:inputType="textPersonName"
+                        android:imeOptions="actionNext"
+                        android:nextFocusDown="@+id/edittext_phone" />
+                </android.support.design.widget.TextInputLayout>
+
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="72dp"
+                android:paddingRight="16dp"
+                android:paddingLeft="16dp"
+                android:layout_marginTop="-8dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="left|center_vertical"
+                    android:src="@drawable/ic_call_grey_700_24dp"/>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/textinputlayout_phone"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="32dp"
+                    android:layout_gravity="left|top">
+                    <android.support.v7.widget.AppCompatEditText
+                        android:id="@id/edittext_phone"
+                        android:layout_height="wrap_content"
+                        android:layout_width="match_parent"
+                        android:hint="@string/hint_edittext_phone"
+                        android:inputType="phone"
+                        android:imeOptions="actionDone"/>
+                </android.support.design.widget.TextInputLayout>
+
+                <!-- only in student detail/edit activity -->
+                <Spinner
+                    android:id="@+id/spinner_callorsms"
+                    android:layout_width="36dp"
+                    android:layout_height="wrap_content"
+                    android:dropDownWidth="36dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_gravity="right|center_vertical"
+                    android:spinnerMode="dropdown"
+                    android:visibility="gone"/>
+
+            </LinearLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="72dp"
+                android:paddingRight="16dp"
+                android:paddingLeft="16dp"
+                android:layout_marginTop="-8dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="left|center_vertical"
+                    android:src="@drawable/ic_date_in_grey_700_24dp"/>
+
+                <TextView
+                    android:id="@+id/textview_indate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="60dp"
+                    android:layout_gravity="left|center_vertical"
+                    android:textColor="@color/text_primary"
+                    android:textSize="16sp" />
+
+            </FrameLayout>
+
+            <!-- only in student detail/edit activity -->
+            <FrameLayout
+                android:id="@+id/framelayout_outdate"
+                android:layout_width="match_parent"
+                android:layout_height="72dp"
+                android:paddingRight="16dp"
+                android:paddingLeft="16dp"
+                android:layout_marginTop="-8dp"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="left|center_vertical"
+                    android:src="@drawable/ic_date_out_grey_700_24dp"/>
+
+                <TextView
+                    android:id="@+id/textview_outdate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="60dp"
+                    android:layout_gravity="left|center_vertical"
+                    android:textColor="@color/text_primary"
+                    android:textSize="16sp" />
+
+            </FrameLayout>
+
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    </android.support.design.widget.AppBarLayout>
+
+</android.support.design.widget.CoordinatorLayout>

@@ -82,11 +82,11 @@ public class StudentListAdapter extends RecyclerView.Adapter<StudentListAdapter.
                 s.isBoy() ? R.drawable.ic_gender_boy : R.drawable.ic_gender_girl);
 
         if(!s.isInClass()) {
-            viewHolder.linearLayout.setBackgroundColor(mContext.getResources().getColor(R.color.grey_300));
+            viewHolder.linearLayout.setBackgroundColor(mContext.getResources().getColor(R.color.grey_500));
             viewHolder.tv_name.setPaintFlags(viewHolder.tv_name.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         }
         else {
-            viewHolder.linearLayout.setBackgroundColor(mContext.getResources().getColor(R.color.white));
+            viewHolder.linearLayout.setBackgroundColor(mContext.getResources().getColor(R.color.background_material_light));
             viewHolder.tv_name.setPaintFlags(viewHolder.tv_name.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
         }
     }
