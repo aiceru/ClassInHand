@@ -48,6 +48,11 @@
                 android:verticalSpacing="1dp"
                 android:isScrollContainer="false" />
 
+            <LinearLayout
+                android:id="@+id/linearlayout_inflating"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
             <com.iceru.classinhand.ExpandableGridView
                 android:id="@+id/gridview_seats"
                 android:layout_width="match_parent"
@@ -64,13 +69,6 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="32dp"
                 android:background="@drawable/lectern" />
-
-            <LinearLayout
-                android:id="@+id/history_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-            </LinearLayout>
             
             <Space
                 android:layout_width="match_parent"
@@ -80,19 +78,83 @@
 
     </android.support.v4.widget.NestedScrollView>
 
+    <View
+        android:id="@+id/dimview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:onClick="onClickDimView"
+        android:background="@color/white"
+        android:visibility="gone"
+        />
+
     <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_plus"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_marginBottom="@dimen/fab_margin_bottom"
+        android:layout_marginRight="@dimen/fab_margin_right"
+        android:src="@drawable/ic_add_white_18dp"
+        android:onClick="onClickPlus"
+        app:fabSize="normal"
+        app:borderWidth="0dp"
+        app:elevation="6dp"
+        app:pressedTranslationZ="12dp"
+        app:rippleColor="@color/ripple_material_light"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_assign_random"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:layout_gravity="bottom|right"
         android:layout_marginBottom="@dimen/fab_margin_bottom"
         android:layout_marginRight="@dimen/fab_margin_right"
         android:src="@drawable/ic_loop_white_18dp"
-        android:onClick="assignRandom"
+        android:onClick="onClickAssignRandom"
+        android:visibility="gone"
         app:fabSize="normal"
         app:borderWidth="0dp"
         app:elevation="6dp"
         app:pressedTranslationZ="12dp"
         app:rippleColor="@color/ripple_material_light"/>
+
+    <TextView
+        android:id="@+id/label_assign_random"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="80dp"
+        android:visibility="gone"
+        android:text="@string/action_assign_random"
+        android:background="@drawable/label_bg"
+        app:layout_anchor="@id/fab_assign_random"
+        app:layout_anchorGravity="left|center_vertical"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_clear_all_seats"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="90dp"
+        android:src="@drawable/abc_ic_clear_mtrl_alpha"
+        android:onClick="onClickClearAllSeat"
+        android:visibility="gone"
+        app:layout_anchor="@id/fab_assign_random"
+        app:layout_anchorGravity="top|center_horizontal"
+        app:fabSize="mini"
+        app:borderWidth="0dp"
+        app:elevation="6dp"
+        app:pressedTranslationZ="12dp"
+        app:rippleColor="@color/ripple_material_light"/>
+
+    <TextView
+        android:id="@+id/label_clear_all_seats"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="80dp"
+        android:visibility="gone"
+        android:text="@string/action_clear_all_seats"
+        android:background="@drawable/label_bg"
+        app:layout_anchor="@id/fab_clear_all_seats"
+        app:layout_anchorGravity="left|center_vertical"/>
 
     <View
         android:id="@+id/screen_top_region"

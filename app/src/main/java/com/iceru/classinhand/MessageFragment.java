@@ -1,25 +1,17 @@
 package com.iceru.classinhand;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.getbase.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
@@ -40,15 +32,16 @@ public class MessageFragment extends Fragment {
     // views
     private RecyclerView            mContactsRecyclerView;
     private RecyclerView.LayoutManager  mLayoutManager;
-    private android.support.design.widget.FloatingActionButton mMainFab, mSelectAllFab, mDeselectAllFab;
-    private boolean                 mFabExpanded;
+    private android.support.design.widget.FloatingActionButton
+            mPlusFab, mSendFab, mSelectAllFab, mDeselectAllFab;
     private View                    mDimView;
 
     private TextView                mMainFabLabel;
     private LinearLayout            mSelectAllFabLayout, mDeselectAllFabLayout;
 
     // animations
-    private Animation rotateAni;
+    private Animation rotateAndAppearAni;
+    private Animation rotateAndDisappearAni;
     private Animation alphaAni;
     private Animation translateAni;
 
@@ -63,18 +56,18 @@ public class MessageFragment extends Fragment {
         application = ClassInHandApplication.getInstance();
         mContacts = application.getmStudents();
 
-        rotateAni = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate);
-        alphaAni = AnimationUtils.loadAnimation(getActivity(), R.anim.alpha);
+        rotateAndAppearAni = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_rotate_appear);
+        rotateAndDisappearAni = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_rotate_disappear);
+        alphaAni = AnimationUtils.loadAnimation(getActivity(), R.anim.toalpha_0_7);
         translateAni = AnimationUtils.loadAnimation(getActivity(), R.anim.translate);
-
-        mFabExpanded = false;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_message, container, false);
         mContactsRecyclerView = (RecyclerView)v.findViewById(R.id.recyclerview_contacts);
-        mMainFab = (android.support.design.widget.FloatingActionButton)v.findViewById(R.id.fab_message_main);
+        mPlusFab = (android.support.design.widget.FloatingActionButton)v.findViewById(R.id.fab_plus);
+        mSendFab = (android.support.design.widget.FloatingActionButton)v.findViewById(R.id.fab_send);
         mSelectAllFab = (android.support.design.widget.FloatingActionButton)v.findViewById(R.id.fab_message_selectall);
         mDeselectAllFab = (android.support.design.widget.FloatingActionButton)v.findViewById(R.id.fab_message_deselectall);
         mDimView = v.findViewById(R.id.dimview_message);
@@ -108,25 +101,27 @@ public class MessageFragment extends Fragment {
             }
         });
 
-        mMainFab.setOnClickListener(new View.OnClickListener() {
+        mPlusFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!mFabExpanded) {
-                    mMainFab.setImageResource(R.drawable.ic_message_white_18dp);
-                    mMainFab.startAnimation(rotateAni);
-                    mMainFabLabel.setVisibility(View.VISIBLE);
-                    mDimView.setVisibility(View.VISIBLE);
-                    mDimView.startAnimation(alphaAni);
-                    mSelectAllFabLayout.setVisibility(View.VISIBLE);
-                    mSelectAllFabLayout.startAnimation(translateAni);
-                    mDeselectAllFabLayout.setVisibility(View.VISIBLE);
-                    mDeselectAllFabLayout.startAnimation(translateAni);
-                    mFabExpanded = true;
-                }
-                else {
-                    hideFabComponents();
-                    composeMessage();
-                }
+                mPlusFab.startAnimation(rotateAndDisappearAni);
+                mSendFab.setVisibility(View.VISIBLE);
+                mSendFab.startAnimation(rotateAndAppearAni);
+                mMainFabLabel.setVisibility(View.VISIBLE);
+                mDimView.setVisibility(View.VISIBLE);
+                mDimView.startAnimation(alphaAni);
+                mDeselectAllFabLayout.setVisibility(View.VISIBLE);
+                mDeselectAllFabLayout.startAnimation(translateAni);
+                mSelectAllFabLayout.setVisibility(View.VISIBLE);
+                mSelectAllFabLayout.startAnimation(translateAni);
+            }
+        });
+
+        mSendFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hideFabComponents();
+                composeMessage();
             }
         });
 
@@ -134,8 +129,9 @@ public class MessageFragment extends Fragment {
     }
 
     private void hideFabComponents() {
-        mFabExpanded = false;
-        mMainFab.setImageResource(R.drawable.ic_add_white_18dp);
+        mPlusFab.clearAnimation();
+        mSendFab.clearAnimation();
+        mSendFab.setVisibility(View.GONE);
         mMainFabLabel.setVisibility(View.GONE);
         mDimView.clearAnimation();
         mDimView.setVisibility(View.GONE);

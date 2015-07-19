@@ -2,33 +2,32 @@ package com.iceru.classinhand;
 
 import android.app.AlertDialog;
 import android.content.ClipData;
-import android.content.ClipDescription;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.NestedScrollView;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.DragEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 
-import com.getbase.floatingactionbutton.FloatingActionButton;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Map;
 import java.util.TreeMap;
@@ -45,7 +44,7 @@ public class SeatplanEditActivity extends AppCompatActivity {
 
     /* Data Structures */
     private TreeMap<Integer, Student> mRemainStudents;
-    private TreeMap<Integer, Student> mRemainStudentsBackup;
+    private ArrayList<Seat> mFlaggedSeatList;
     private Seatplan mNewPlan, mOldPlan;
     private GregorianCalendar mNewDate, mOldDate;
 
@@ -60,10 +59,17 @@ public class SeatplanEditActivity extends AppCompatActivity {
     private StudentGridAdapter mStudentGridAdapter;
     private DragEventListenerOfSeats mDragEventListenerOfSeats;
 
+    private android.support.design.widget.FloatingActionButton  mPlusFab, mAssignRandomFab, mClearAllFab;
+    private TextView    mAssignRandomLabel, mClearAllLabel;
+
     private View mTopRegion;
     private View mBottomRegion;
+    private View mDimview;
 
     private LinearLayout mHistoryLayout;
+
+    private Animation mFabRotateAppearAni, mFabRotateDisappearAni,
+            mFabScaleAppearAni, mLabelAppearAni, mDimViewOnAni;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +88,7 @@ public class SeatplanEditActivity extends AppCompatActivity {
         if (newDatelong == 0) finish();
 
         mRemainStudents = application.getDatedStudentsTreeMapKeybyAttendNum(newDatelong);
-        mRemainStudentsBackup = new TreeMap<>(mRemainStudents);     // copy mRemainStudents
+        mFlaggedSeatList = new ArrayList<>();
 
         mNewDate = new GregorianCalendar();
         mNewDate.setTimeInMillis(newDatelong);
@@ -180,43 +186,49 @@ public class SeatplanEditActivity extends AppCompatActivity {
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setTitle(application.getDateString(mNewDate));
 
-        //mRemainStudentListAdapter = new TreeMapListViewAdapter(this, mRemainStudents);
-
         mRootScrollView = (NestedScrollView) findViewById(R.id.root_scrollview);
         mRemainStudentGridView = (ExpandableGridView) findViewById(R.id.gridview_remain_students);
+        mSeatsGridView = (ExpandableGridView) findViewById(R.id.gridview_seats);
+        mHistoryLayout = (LinearLayout) findViewById(R.id.linearlayout_inflating);
+        mTopRegion = findViewById(R.id.screen_top_region);
+        mBottomRegion = findViewById(R.id.screen_bottom_region);
+        mDimview = findViewById(R.id.dimview);
+        mPlusFab = (android.support.design.widget.FloatingActionButton)findViewById(R.id.fab_plus);
+        mAssignRandomFab = (android.support.design.widget.FloatingActionButton)findViewById(R.id.fab_assign_random);
+        mClearAllFab = (android.support.design.widget.FloatingActionButton)findViewById(R.id.fab_clear_all_seats);
+        mAssignRandomLabel = (TextView)findViewById(R.id.label_assign_random);
+        mClearAllLabel = (TextView)findViewById(R.id.label_clear_all_seats);
+
+        mFabRotateAppearAni = AnimationUtils.loadAnimation(this, R.anim.fab_rotate_appear);
+        mFabRotateDisappearAni = AnimationUtils.loadAnimation(this, R.anim.fab_rotate_disappear);
+        mFabScaleAppearAni = AnimationUtils.loadAnimation(this, R.anim.fab_scale_appear);
+        mDimViewOnAni = AnimationUtils.loadAnimation(this, R.anim.toalpha_0_7);
+        mLabelAppearAni = AnimationUtils.loadAnimation(this, R.anim.toalpha_1_0);
+
         mRemainStudentGridView.setExpanded(true);
         mRemainStudentGridView.setOnDragListener(new DragEventListenerOfStudentGrid());
-        mSeatsGridView = (ExpandableGridView) findViewById(R.id.gridview_seats);
-        mSeatsGridView.setExpanded(true);
-        mHistoryLayout = (LinearLayout) findViewById(R.id.history_layout);
+        mStudentGridAdapter = new StudentGridAdapter(this, mRemainStudents, new StudentGridAdapter.IStudentClick() {
+            @Override
+            public void studentClick(View v) {
+                onStudentClick(v);
+            }
+        });
+        mRemainStudentGridView.setAdapter(mStudentGridAdapter);
 
+        mSeatsGridView.setExpanded(true);
         mDragEventListenerOfSeats = new DragEventListenerOfSeats();
         mSeatGridAdapter = new SeatGridAdapter(mNewPlan.getmSeats(), this, mNewPlan.getmColumns() / 2,
                 new SeatGridAdapter.InnerViewHolder.ISeatClick() {
                     @Override
-                    public void seatClick(View v, int seatId) {
-                        //onSeatClick(seatId);
+                    public void seatClick(View v) {
+                        onSeatClick(v);
                     }
                 }, mDragEventListenerOfSeats);
         mSeatsGridView.setAdapter(mSeatGridAdapter);
         mSeatsGridView.setNumColumns(mNewPlan.getmColumns() / 2);
-        mSeatsGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //onSeatClick(position);
-            }
-        });
-
-        mStudentGridAdapter = new StudentGridAdapter(this, mRemainStudents);
-        mRemainStudentGridView.setAdapter(mStudentGridAdapter);
-
-        mTopRegion = findViewById(R.id.screen_top_region);
-        mBottomRegion = findViewById(R.id.screen_bottom_region);
 
         mTopRegion.setOnDragListener(new DragEventListenerOfEdgeView(TOP, mRootScrollView));
         mBottomRegion.setOnDragListener(new DragEventListenerOfEdgeView(BOTTOM, mRootScrollView));
-
-        /*mRandomAssignButton = (FloatingActionButton) findViewById(R.id.btn_random_assign);*/
 
         // user manual
         if(!mShowcaseShown) {
@@ -234,20 +246,33 @@ public class SeatplanEditActivity extends AppCompatActivity {
         }
     }
 
-    public void assignRandom(View view) {
+    public void onClickAssignRandom(View view) {
         mSaved = false;
 
         clearAllocation();
-        mRemainStudents.clear();
-        for (Map.Entry<Integer, Student> entry : mRemainStudentsBackup.entrySet()) {
-            Student s = entry.getValue();
-            mRemainStudents.put(s.getAttendNum(), s);
-            //pointedTreeMap.put(Math.random(), s);
-        }
+
+        clearHistoryView();
+        mHistoryLayout.setVisibility(View.GONE);
 
         AllocateExecutor AE = new AllocateExecutor(mNewPlan, mRemainStudents);
         AE.createRuleList();
         AE.allocateAllStudent(mNewPlan.getmSeats());
+
+        hideFabComponents();
+
+        mSeatGridAdapter.notifyDataSetChanged();
+        mStudentGridAdapter.notifyDataSetChanged();
+    }
+
+    public void onClickClearAllSeat(View v) {
+        mSaved = false;
+
+        clearAllocation();
+
+        clearHistoryView();
+        mHistoryLayout.setVisibility(View.GONE);
+
+        hideFabComponents();
 
         mSeatGridAdapter.notifyDataSetChanged();
         mStudentGridAdapter.notifyDataSetChanged();
@@ -277,9 +302,13 @@ public class SeatplanEditActivity extends AppCompatActivity {
             else {
                 mSaved = true;
 
+                clearHistoryView();
+                mHistoryLayout.setVisibility(View.GONE);
+
                 // Switch old and new plan simply
                 if (mOldPlan != null) application.removeSeatplan(mOldPlan);
                 application.addSeatplan(mNewPlan);
+
                 finish();
             }
         }
@@ -365,12 +394,77 @@ public class SeatplanEditActivity extends AppCompatActivity {
         mSaved = false;
     }
 
+    private void onStudentClick(View v) {
+        int attendNum = (int)v.getTag();
+        setHistoryView(null, mRemainStudents.get(attendNum));
+    }
+
+    private void onSeatClick(View v) {
+        Seat seat = mNewPlan.getmSeats().get((int)v.getTag());
+        Student st = seat.getItsStudent();
+        if(st != null) {
+            setHistoryView(seat, st);
+        }
+    }
+
+    private void setHistoryView(Seat selectedSeat, Student student) {
+        final LayoutInflater inflater = (LayoutInflater.from(this));
+        mHistoryLayout.setVisibility(View.VISIBLE);
+        inflater.inflate(R.layout.layout_history, mHistoryLayout);
+
+        clearHistoryView();
+
+        if(selectedSeat != null) {
+            selectedSeat.setSelectedFlag(true);
+            mFlaggedSeatList.add(selectedSeat);
+        }
+
+        TextView studentView = (TextView)mHistoryLayout.findViewById(R.id.textview_studentinfo);
+        LinearLayout historyLayout = (LinearLayout)mHistoryLayout.findViewById(R.id.linearlayout_histories);
+        historyLayout.removeAllViews();
+
+        int historyCount = 1;
+
+        studentView.setText(String.valueOf(student.getAttendNum()) +
+                ". " + student.getName());
+
+        for (PersonalHistory p : student.getHistories()) {
+            if (p.applyDate.before(mNewDate)) {
+                String whenStr = String.format("%02d.%02d ~ : ", p.applyDate.get(Calendar.MONTH) + 1, p.applyDate.get(Calendar.DAY_OF_MONTH));
+                String whereStr = ConvertAbsSeatToSegAndRow(p.seatId, p.totalRows, p.totalCols) + ", ";
+                Student pairStudent = application.findStudentById(p.pairId);
+                String pairStr = "짝궁: " + (pairStudent == null ? "" : pairStudent.getName());
+                TextView tv = new TextView(this);
+                tv.setText(whenStr + whereStr + pairStr);
+                historyLayout.addView(tv);
+
+                if (p.seatId < mNewPlan.getmSeats().size()) {
+                    Seat seat = mNewPlan.getmSeats().get(p.seatId);
+                    seat.setRecentSeatedFlag(true);
+                    mFlaggedSeatList.add(seat);
+                }
+                if(++historyCount > application.globalProperties.num_histories) break;
+            }
+        }
+
+        mSeatGridAdapter.notifyDataSetChanged();
+    }
+
+    private void clearHistoryView() {
+        for(Seat s : mFlaggedSeatList) {
+            s.setSelectedFlag(false);
+            s.setRecentSeatedFlag(false);
+        }
+        mFlaggedSeatList.clear();
+        mSeatGridAdapter.notifyDataSetChanged();
+    }
+
     /*
     private void onSeatClick(int position) {
         mSaved = false;
         final LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mHistoryLayout.setVisibility(View.VISIBLE);
-        inflater.inflate(R.layout.onseatclick_inflated, mHistoryLayout);
+        inflater.inflate(R.layout.layout_history.xml, mHistoryLayout);
 
         layout_onseatclick_left =
                 (LinearLayout) mHistoryLayout.findViewById(R.id.linearlayout_onseatclick_left);
@@ -382,79 +476,6 @@ public class SeatplanEditActivity extends AppCompatActivity {
         final Student selectedStudent;
         TextView tv;
 
-        *//* First of all, disable RANDOM ASSIGN while selected seat exists *//*
-        mRandomAssignButton.setVisibility(View.GONE);
-
-        *//* 자리교환 버튼, 왼쪽/오른쪽 선택된 자리가 있을 경우 (null이 아닐 때)에만 보임 *//*
-        mChangeSeatButton = (Button) mHistoryLayout.findViewById(R.id.btn_change_seat);
-        mChangeSeatButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                changeSeat();
-            }
-        });
-
-        *//* 선택된 자리 비우기 버튼 (왼쪽 또는 오른쪽 한쪽만 선택되었을 때만 보임) *//*
-        mVacateSeatButton = (Button) mHistoryLayout.findViewById(R.id.btn_vacate_seat);
-        mVacateSeatButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                vacateSeat();
-            }
-        });
-
-        *//* 왼쪽 선택된 자리 선택취소 버튼 *//*
-        mLeftCancelButton = (Button) mHistoryLayout.findViewById(R.id.btn_left_cancel);
-        mLeftCancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Seat seat;
-                if (mLeftSelectedSeat.getItsStudent() != null) {
-                    for (PersonalHistory p : mLeftSelectedSeat.getItsStudent().getHistories()) {
-                        seat = mNewPlan.getmSeats().get(p.seatId);
-                        seat.clrRecentSeatedFlag(ClassInHandApplication.SEATED_LEFT);
-                    }
-                }
-                mLeftSelectedSeat.clrSelectedFlag(ClassInHandApplication.SEATED_LEFT);
-                mLeftSelectedSeat = null;
-                layout_onseatclick_left.removeAllViews();
-                mLeftCancelButton.setVisibility(View.INVISIBLE);
-                mChangeSeatButton.setVisibility(View.INVISIBLE);
-                if (mRightSelectedSeat == null) {
-                    mHistoryLayout.setVisibility(View.GONE);
-                    mRandomAssignButton.setVisibility(View.VISIBLE);
-                } else {
-                    mVacateSeatButton.setVisibility(View.VISIBLE);
-                }
-                mSeatGridAdapter.notifyDataSetChanged();
-            }
-        });
-        *//* 오른쪽 선택된 자리 선택취소 버튼 *//*
-        mRightCancelButton = (Button) mHistoryLayout.findViewById(R.id.btn_right_cancel);
-        mRightCancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Seat seat;
-                if (mRightSelectedSeat.getItsStudent() != null) {
-                    for (PersonalHistory p : mRightSelectedSeat.getItsStudent().getHistories()) {
-                        seat = mNewPlan.getmSeats().get(p.seatId);
-                        seat.clrRecentSeatedFlag(ClassInHandApplication.SEATED_RIGHT);
-                    }
-                }
-                mRightSelectedSeat.clrSelectedFlag(ClassInHandApplication.SEATED_RIGHT);
-                mRightSelectedSeat = null;
-                layout_onseatclick_right.removeAllViews();
-                mRightCancelButton.setVisibility(View.INVISIBLE);
-                mChangeSeatButton.setVisibility(View.INVISIBLE);
-                if (mLeftSelectedSeat == null) {
-                    mHistoryLayout.setVisibility(View.GONE);
-                    mRandomAssignButton.setVisibility(View.VISIBLE);
-                } else {
-                    mVacateSeatButton.setVisibility(View.VISIBLE);
-                }
-                mSeatGridAdapter.notifyDataSetChanged();
-            }
-        });
 
         *//* 선택된 seat 가 없거나, 오른쪽 자리만 선택되어 있는 상태 *//*
         if (mLeftSelectedSeat == null) {
@@ -605,7 +626,11 @@ public class SeatplanEditActivity extends AppCompatActivity {
     private void clearAllocation() {
         for (Seat s : mNewPlan.getmSeats()) {
             if (!s.isFixed()) {
-                s.setItsStudent(null);
+                Student st = s.getItsStudent();
+                if(st != null) {
+                    mRemainStudents.put(st.getAttendNum(), st);
+                    s.setItsStudent(null);
+                }
             }
         }
     }
@@ -638,11 +663,15 @@ public class SeatplanEditActivity extends AppCompatActivity {
                         int srcSeatId = Integer.valueOf(String.valueOf(item.getText()));
                         int destSeatId = (int) v.getTag();
                         changeSeat(srcSeatId, destSeatId);
+                        clearHistoryView();
+                        mHistoryLayout.setVisibility(View.GONE);
                     }
-                else if (label.equals(Constants.DRAGLABEL_FROM_STUDENTGRID)) {
+                    else if (label.equals(Constants.DRAGLABEL_FROM_STUDENTGRID)) {
                         int studentAttendNum = Integer.valueOf(String.valueOf(item.getText()));
                         int seatId = (int) v.getTag();
                         locateStudent(seatId, studentAttendNum);
+                        clearHistoryView();
+                        mHistoryLayout.setVisibility(View.GONE);
                     }
                     return true;
                 case DragEvent.ACTION_DRAG_ENDED:
@@ -683,6 +712,8 @@ public class SeatplanEditActivity extends AppCompatActivity {
                     if(label.equals(Constants.DRAGLABEL_FROM_SEATGRID)) {
                         int srcSeatId = Integer.valueOf(String.valueOf(item.getText()));
                         vacateStudent(srcSeatId);
+                        clearHistoryView();
+                        mHistoryLayout.setVisibility(View.GONE);
                     }
                     return true;
                 case DragEvent.ACTION_DRAG_ENDED:
@@ -729,6 +760,8 @@ public class SeatplanEditActivity extends AppCompatActivity {
                     if (label.equals(Constants.DRAGLABEL_FROM_SEATGRID)) {
                         int srcSeatId = Integer.valueOf(String.valueOf(item.getText()));
                         vacateStudent(srcSeatId);
+                        clearHistoryView();
+                        mHistoryLayout.setVisibility(View.GONE);
                     }
                     return true;
                 default:
@@ -736,5 +769,39 @@ public class SeatplanEditActivity extends AppCompatActivity {
             }
             return false;
         }
+    }
+
+    public void onClickPlus(View v) {
+        mDimview.setVisibility(View.VISIBLE);
+        mAssignRandomFab.setVisibility(View.VISIBLE);
+        mClearAllFab.setVisibility(View.VISIBLE);
+        mAssignRandomLabel.setVisibility(View.VISIBLE);
+        mClearAllLabel.setVisibility(View.VISIBLE);
+
+        mDimview.startAnimation(mDimViewOnAni);
+        mPlusFab.startAnimation(mFabRotateDisappearAni);
+        mAssignRandomFab.startAnimation(mFabRotateAppearAni);
+        mClearAllFab.startAnimation(mFabScaleAppearAni);
+        mAssignRandomLabel.startAnimation(mLabelAppearAni);
+        mClearAllLabel.startAnimation(mLabelAppearAni);
+    }
+
+    public void onClickDimView(View v) {
+        hideFabComponents();
+    }
+
+    private void hideFabComponents() {
+        mDimview.clearAnimation();
+        mAssignRandomFab.clearAnimation();
+        mClearAllFab.clearAnimation();
+        mAssignRandomLabel.clearAnimation();
+        mClearAllLabel.clearAnimation();
+        mPlusFab.clearAnimation();
+
+        mDimview.setVisibility(View.GONE);
+        mAssignRandomFab.setVisibility(View.GONE);
+        mClearAllFab.setVisibility(View.GONE);
+        mAssignRandomLabel.setVisibility(View.GONE);
+        mClearAllLabel.setVisibility(View.GONE);
     }
 }

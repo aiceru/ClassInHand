@@ -18,16 +18,18 @@ import java.util.TreeMap;
 /**
  * Created by iceru on 15. 1. 12..
  */
-class StudentGridAdapter extends BaseAdapter {
+class StudentGridAdapter extends BaseAdapter implements View.OnClickListener{
+    private IStudentClick   mItemClickListener;
     private TreeMap<Integer, Student> mDataset;
     private Collection<Student> mDataCollection;
     private LayoutInflater inflater;
     private View.OnLongClickListener mItemLongClickListener;
 
-    public StudentGridAdapter(Context context, TreeMap<Integer, Student> dataset) {
+    public StudentGridAdapter(Context context, TreeMap<Integer, Student> dataset, IStudentClick listener) {
         this.mDataset = dataset;
         inflater = LayoutInflater.from(context);
         mDataCollection = mDataset.values();
+        this.mItemClickListener  = listener;
 
         mItemLongClickListener = new View.OnLongClickListener() {
             @Override
@@ -44,6 +46,17 @@ class StudentGridAdapter extends BaseAdapter {
                 return true;
             }
         };
+    }
+
+    @Override
+    public void onClick(View v) {
+        if(mItemClickListener != null) {
+            mItemClickListener.studentClick(v);
+        }
+    }
+
+    public static interface IStudentClick {
+        public void studentClick(View v);
     }
 
     @Override
@@ -81,6 +94,7 @@ class StudentGridAdapter extends BaseAdapter {
         tv.setText(s.getName());
 
         v.setTag(s.getAttendNum());
+        v.setOnClickListener(this);
         v.setOnLongClickListener(mItemLongClickListener);
 
         return v;

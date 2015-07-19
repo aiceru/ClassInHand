@@ -42,8 +42,6 @@ public class ClassInHandApplication extends Application {
     /* Global Constants */
     public static final int RESULT_OK = 0;
     public static final int MAX_STUDENTS = 99;
-    public static final byte SEATED_LEFT = 0x01;     // bit flag : 0000 0001
-    public static final byte SEATED_RIGHT = 0x02;    // bit flag : 0000 0010
 
     public static final int REQUESTCODE_FIRST_SHOWCASE = 90;
     public static final int REQUESTCODE_STUDENTLIST_SHOWCASE = 91;

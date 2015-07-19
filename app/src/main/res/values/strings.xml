@@ -198,5 +198,7 @@
 
     <string name="log_error_tag">com.iceru.classinhand:Error</string>
     <string name="hello_world">Hello world!</string>
+    <string name="action_assign_random">랜덤 배치하기</string>
+    <string name="action_clear_all_seats">전부 비우기</string>
 
 </resources>
