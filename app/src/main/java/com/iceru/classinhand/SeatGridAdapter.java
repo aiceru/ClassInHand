@@ -167,7 +167,7 @@ public class SeatGridAdapter extends BaseAdapter {
             mOnClickListener = listener;
             mOnLongClickListener = llistener;
 
-            FontFitTextView.OnLayoutChagnedListener viewsizeObserver = new FontFitTextView.OnLayoutChagnedListener() {
+            FontFitTextView.OnLayoutChangedListener viewsizeObserver = new FontFitTextView.OnLayoutChangedListener() {
                 @Override
                 public void onLayout(float size) {
                     imageviewGender.getLayoutParams().width = (int)size;
